@@ -16,45 +16,54 @@ Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o 
 ## Conteúdos
 
  - [Visão de Projeto](#visao-de-projeto)
- - [Recursos em Escopo](#recursos-em-escopo)
- - [Recursos Fora de Escopo](#recursos-fora-de-escopo)
- - [Tech Stack](tech-stack)
- - [Instalação](instalacao)
+ - [Escolha de fatia](#escolha-de-fatia)
+ - [Tech Stack](#tech-stack)
+ - [Instalação](#instalação)
  - [Equipe](#equipe)
+
+
 ## Visão de Projeto
 
-- Optamos por priorizar a fatia referente ao **Portal do Cliente**, pois entendemos que ela oferece maior potencial de geração de valor e disponibiliza dados estratégicos que não podem ser obtidos apenas com a melhoria dos processos internos. Outras fatias do projeto podem ser significantemente aprimoradas sem a necessidade imediata do desenvolvimento de uma ferramenta.
+- **O que resolve?** o Portal do Cliente resolve um grande problema da EcoVolt atualmente: a descentralização de canais de comunicação e suporte, que afeta a eficiência de equipes diretamente em contato com o cliente e causa frustração do consumidor. 
 
-- Além de melhorar a experiência do cliente, essa fatia permitirá coletar indicadores importantes, como os principais motivos de chamados, dúvidas recorrentes e pontos de atrito durante a jornada do cliente. Esses dados fornecerão insumos para identificar oportunidades de melhoria contínua tanto nos processos internos quanto nos demais módulos da plataforma.
+  Além disso, o desenvolvimento do portal soluciona a falta de conhecimento de dados que afetam a tomada de decisões da EcoVolt
 
-- Dessa forma, entendemos que iniciar pelo Portal do Cliente proporciona um equilíbrio entre impacto no negócio e esforço de implementação, ao mesmo tempo em que cria uma base de informações que poderá orientar o desenvolvimento e a priorização das demais fatias da plataforma EcoVolt 360 nas próximas etapas do projeto.
-## Recursos em Escopo
-## Recursos Fora de Escopo
+- **Por que?** Este módulo resolve os problemas de canais e suporte porque centraliza a comunicação empresa-cliente e informações úteis em um só lugar de fácil acesso ao consumidor, tornando o processo desde o pré ao pós venda mais transparente e diminuindo a necessidade de contato ao suporte para informações que estão disponíveis de imediato.
+
+  A coleta de dados no portal permite que a empresa faça decisões baseadas em valores reais e consolide dados em informações que orientam o negócio.
+
+- **Como (recursos em escopo)?** ver backlog na reunião
+
+## Escolha de fatia
+
+- Durante a análise inicial, identificamos que etapas como o **funil comercial**, a **padronização de orçamentos** e o **agendamento das instalações** podem ser significativamente aprimoradas por meio da revisão e otimização dos processos internos da empresa, reduzindo retrabalho, conflitos de agenda e inconsistências operacionais.
+- Portanto, optamos por priorizar a fatia referente ao Portal do Cliente, pois entendemos que ela oferece maior potencial de geração de valor e disponibiliza dados estratégicos que não podem ser obtidos apenas com a melhoria dos processos internos.
+
 ## Tech Stack
 
-**Client:** React
+**Client:** React + TypeScript
 
-**Server:** Java, Spring (? etc)
+**Server:** Java/Spring Boot
 
 
 ## Instalação
 
-instale tududu com tududu
-
+#### frontend
 ```bash
-  exemplo de bash
-  cd my-project
+  cd frontend
+  npm install
+  npm run dev
 ```
     
 ## Equipe
 
 Este projeto foi desenvolvido como case integrador pela equipe **Branch Master**, formada por membros do programa Zallpy Academy.
 
-- [George Abreu de Siqueira](https://github.com/George-Abreu-git$0)
-- [Guilherme Silveira](https://github.com/guisilvs$0)
-- [Jullia Ross]()
-- [Maria Helena Machado Melo](https://github.com/notmasmas$0)
-- [Mariele Leiria](https://github.com/MarieleLeiria$0)
+- [George Abreu de Siqueira](https://github.com/George-Abreu-git)
+- [Guilherme Silveira](https://github.com/guisilvs)
+- [Jullia Ross](https://github.com/JulliaRoss)
+- [Maria Helena Machado Melo](https://github.com/notmasmas)
+- [Mariele Leiria](https://github.com/MarieleLeiria)
 
 
 ![Logo Branch Master](https://i.imgur.com/k8mRGaH.png$0)
