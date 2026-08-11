@@ -22,6 +22,10 @@ Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o 
  - [Equipe](#equipe)
 
 
+
+ 
+
+
 ## Visão de Projeto
 
 - **O que resolve?** o Portal do Cliente resolve um grande problema da EcoVolt atualmente: a descentralização de canais de comunicação e suporte, que afeta a eficiência de equipes diretamente em contato com o cliente e causa frustração do consumidor. 
@@ -32,7 +36,9 @@ Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o 
 
   A coleta de dados no portal permite que a empresa faça decisões baseadas em valores reais e consolide dados em informações que orientam o negócio.
 
-- **Como (recursos em escopo)?** ver backlog na reunião
+- **Como?** Implementando o módulo de Painel do Cliente com visualização da instalação, status do projeto e homologação, monitoramento do sistema (energia gerada, saúde da bateria) e abertura, acompanhamento e histórico de chamados.
+
+  A utilização destas funcionalidades gerarão dados que podem ser coletados e analisados posteriormente.
 
 ## Escolha de fatia
 
