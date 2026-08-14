@@ -72,5 +72,5 @@ Este projeto foi desenvolvido como case integrador pela equipe **Branch Master**
 - [Mariele Leiria](https://github.com/MarieleLeiria)
 
 
-![Logo Branch Master](https://i.imgur.com/k8mRGaH.png$0)
+![Logo Branch Master](https://i.imgur.com/DsOq7mj.png)
 
