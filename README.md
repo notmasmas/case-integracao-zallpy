@@ -69,6 +69,7 @@ Este projeto foi desenvolvido como case integrador pela equipe **Branch Master**
 - [Guilherme Silveira](https://github.com/guisilvs)
 - [Jullia Ross](https://github.com/JulliaRoss)
 - [Maria Helena Machado Melo](https://github.com/notmasmas)
+- [Luiz Rosa](https://github.com/EngEleLuiz)
 - [Mariele Leiria](https://github.com/MarieleLeiria)
 
 
