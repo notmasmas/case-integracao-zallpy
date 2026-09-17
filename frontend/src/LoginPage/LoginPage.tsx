@@ -1,43 +1,39 @@
 import { Flex, Image } from "@chakra-ui/react";
 import Logo from "../assets/logo.svg";
 import "../index.css";
+import "./loginPage.css";
 import LoginPageForm from "./LoginPageForm/LoginPageForm";
 
 function LoginPage() {
   return (
-    <div>
+    <div className="login-page">
       <Flex
+        className="login-page__layout"
         justify="space-between"
         align="center"
-        direction="row"
-        height="100%"
+        direction={{ base: "column", md: "row" }}
+        minHeight="calc(100vh - 4rem)"
         width="100%"
+        gap={{ base: "2rem", md: "1rem" }}
       >
         <Flex
-          width="55%"
+          className="login-page__brand"
           justify="center"
-          align="left"
+          align="flex-start"
           direction="column"
           gap="2rem"
         >
-          <Flex width="100%" height="100%">
-            <Image src={Logo} alt="Logo" width="520px" height="350px" />
+          <Flex width="100%">
+            <Image className="login-page__logo" src={Logo} alt="Logo" />
           </Flex>
           <Flex width="80%" justify="center" align="center">
-            <p
-              style={{
-                fontSize: "3.75rem",
-                fontFamily: "var(--font-family-instrument-serif)",
-                fontWeight: "400",
-                color: "var(--color-text-primary)",
-              }}
-            >
+            <p className="login-page__slogan">
               Onde há Sol, <br /> há energia
             </p>
           </Flex>
         </Flex>
 
-        <Flex width="45%" justify="flex-start" align="center">
+        <Flex className="login-page__form" justify="center" align="center">
           <LoginPageForm />
         </Flex>
       </Flex>

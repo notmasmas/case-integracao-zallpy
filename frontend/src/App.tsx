@@ -2,7 +2,7 @@ import "./App.css";
 import LoginPage from "./LoginPage/LoginPage";
 function App() {
   return (
-    <div>
+    <div className="app">
       <LoginPage />
     </div>
   );
