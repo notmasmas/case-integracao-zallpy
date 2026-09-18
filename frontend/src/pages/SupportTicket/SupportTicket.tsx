@@ -7,7 +7,9 @@ function SupportTicket() {
     <Box className="support-ticket-page">
       <Box className="support-ticket-page__header">
         <h1 className="support-ticket-page__title">Meus chamados de suporte</h1>
-        <span>1 chamado(s) resolvido(s)</span>
+        <span className="support-ticket-page__subtitle">
+          1 chamado(s) resolvido(s)
+        </span>
       </Box>
       <SupportTicketList />
     </Box>
