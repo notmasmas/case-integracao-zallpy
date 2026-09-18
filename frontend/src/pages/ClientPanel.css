@@ -1,0 +1,15 @@
+:root {
+  --sidebar-width: 224px;
+  --header-height: 139px;
+}
+
+.template-wrapper {
+  position: relative;
+  min-height: 120vh;
+}
+
+.main-content {
+  min-height: calc(100vh - var(--header-height));
+  margin-left: var(--sidebar-width);
+  padding: 24px;
+}

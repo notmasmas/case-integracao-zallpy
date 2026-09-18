@@ -1,10 +1,15 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import LoginPage from "./LoginPage/LoginPage";
+
+import ClientPanel from "./pages/ClientPanel";
+
 function App() {
   return (
-    <div className="app">
-      <LoginPage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/painel-cliente" element={<ClientPanel />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

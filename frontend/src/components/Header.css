@@ -1,0 +1,19 @@
+.header-wrapper {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: var(--header-height);
+
+    background-color: var(--primary);
+    text-align: justify;
+}
+
+.header-wrapper p {
+    font-size: 18px;
+    font-weight: bold;
+}

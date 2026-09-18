@@ -5,9 +5,9 @@ import "./index.css";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <ChakraProvider value={defaultSystem}>
-    <StrictMode>
+  <StrictMode>
+    <ChakraProvider value={defaultSystem}>
       <App />
-    </StrictMode>
-  </ChakraProvider>,
+    </ChakraProvider>
+  </StrictMode>,
 );
