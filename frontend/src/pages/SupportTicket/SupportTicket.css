@@ -1,6 +1,95 @@
 .support-ticket-page {
   max-width: 75rem;
   padding: var(--space-32) var(--space-24) var(--space-64);
+  gap: var(--space-32);
+  display: flex;
+  flex-direction: column;
+}
+.support-ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin-top: var(--space-32);
+}
+.support-ticket-list__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+.support-ticket-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+  gap: var(--space-16);
+  padding: var(--space-16) var(--space-24);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-gray-primary);
+  background-color: var(--color-surface-white);
+}
+.support-ticket-page__filters {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: var(--space-32);
+  width: 100%;
+}
+
+.support-ticket-page__filters select {
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-gray);
+  font-size: var(--font-size-body-md);
+}
+
+.support-ticket-page__filters input {
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-gray);
+  font-size: var(--font-size-body-md);
+}
+
+.support-ticket-search {
+  position: relative;
+}
+
+.support-ticket-search input {
+  padding-right: var(--space-40);
+}
+
+.support-ticket-search__icon {
+  position: absolute;
+  top: 50%;
+  right: var(--space-12);
+  color: var(--color-text-gray-primary);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.support-ticket-search:focus-within .support-ticket-search__icon {
+  display: none;
+}
+
+.support-ticket-item__button {
+  display: flex;
+  padding: var(--space-8) var(--space-16);
+  background-color: var(--color-primary);
+  font-size: var(--font-size-body-md);
+  border: none;
+  border-radius: var(--radius-md);
+}
+
+.support-ticket-item__button:hover {
+  transition: transform 0.2s ease;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.support-ticket-list__header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+  gap: var(--space-16);
+  padding: var(--space-16) var(--space-24);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-white);
 }
 
 .support-ticket-page__title {
@@ -8,6 +97,13 @@
   color: var(--color-text-primary);
   font-size: var(--font-size-heading-lg);
   font-weight: var(--font-weight-heading-lg);
+}
+
+.support-ticket-page__subtitle {
+  color: var(--color-text-gray-secondary);
+  font-size: var(--font-size-body-md);
+  font-weight: var(--font-weight-body-md);
+  line-height: var(--line-height);
 }
 
 @media (max-width: 48rem) {
