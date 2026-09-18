@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
-import ClientPanel from "./pages/ClientPanel";
+import ClientPanel from "./pages/ClientPanel/ClientPanel";
 
 function App() {
   return (
