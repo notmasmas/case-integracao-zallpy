@@ -1,10 +1,8 @@
-import { Flex, Image } from "@chakra-ui/react";
+import { Box, Button, Flex, Image, Text } from "@chakra-ui/react";
 import Logo from "../../assets/logo.svg";
-import "../../index.css";
-import "./loginPage.css";
-import LoginPageForm from "./LoginPageForm/LoginPageForm";
+import RegistrationForms from "./Components/RegistrationForms";
 
-function LoginPage() {
+function RegistrationPage() {
   return (
     <div className="login-page">
       <Flex
@@ -34,11 +32,11 @@ function LoginPage() {
         </Flex>
 
         <Flex className="login-page__form" justify="center" align="center">
-          <LoginPageForm />
+          <RegistrationForms />
         </Flex>
       </Flex>
     </div>
   );
 }
 
-export default LoginPage;
+export default RegistrationPage;
