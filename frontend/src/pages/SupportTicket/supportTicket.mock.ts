@@ -42,7 +42,7 @@ export const supportTicketMock2: SupportTicket = {
   createdAT: new Date("2026-09-12T14:30:00"),
   title: "Dúvida sobre a geração de energia",
   category: ticketCategory.energy_generation,
-  status: "waiting_customer",
+  status: "resolved",
 };
 export const supportTicketMock3: SupportTicket = {
   id: "03",

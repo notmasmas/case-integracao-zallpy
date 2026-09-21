@@ -6,6 +6,7 @@
   --color-black: #000000;
   --color-gray: #b1b1b1;
   --color-background: #f5f5f5;
+  --color-background-modal-header: #ededed;
   --color-success-default: #c4d83a;
   --color-success-dark: #8fa51e;
   --color-success-light: #f0f4d8;
@@ -13,12 +14,13 @@
   --color-warning-dark: #7a271a;
   --color-warning-light: #fee4e2;
   --color-warning-on-default: #ffffff;
-  --color-warning-on-light: #000000;
-  --color-text-primary: #000000;
+  --color-warning-on-light: var(--color-black);
+  --color-text-primary: var(--color-black);
   --color-text-gray-primary: #3f3f3f;
   --color-text-gray-secondary: #b1b1b1;
+  --color-text-gray-tertiary: #7e7e7e;
   --color-border-gray: #b1b1b1;
-  --color-border-black: #000000;
+  --color-border-black: var(--color-black);
   --color-background-gray: #f5f5f5;
   --color-surface-white: #ffffff;
 
@@ -28,22 +30,24 @@
 
   --font-family: "Inter", system-ui, sans-serif;
   --font-family-instrument-serif: "Instrument Serif", serif;
+
   --font-size-display: 2.25rem;
+  --font-size-heading-sm: 1.25rem;
+  --font-size-heading-md: 1.5rem;
+  --font-size-heading-lg: 1.875rem;
+  --font-size-body-lead: 1rem;
+  --font-size-body: 0.875rem;
+  --font-size-caption: 0.75rem;
+
   --font-weight-display-bold: 700;
   --font-weight-display-semibold: 600;
-  --font-size-heading-lg: 1.875rem;
   --font-weight-heading-lg: 700;
-  --font-size-heading-md: 1.5rem;
   --font-weight-heading-md: 700;
-  --font-size-heading-sm: 1.25rem;
   --font-weight-heading-sm: 600;
-  --font-size-body-lead: 1rem;
   --font-weight-body-lead: 500;
-  --font-size-body: 0.875rem;
   --font-weight-body-regular: 400;
   --font-weight-body-medium: 500;
   --font-weight-label: 600;
-  --font-size-caption: 0.75rem;
   --font-weight-caption-regular: 400;
   --font-weight-caption-medium: 500;
   --line-height: normal;
@@ -58,6 +62,7 @@
   --space-40: 2.5rem;
   --space-48: 3rem;
   --space-64: 4rem;
+  --space-80: 5rem;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -77,6 +82,15 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  transition: transform 0.2s ease;
+  transform: scale(1.05);
 }
 
 html,

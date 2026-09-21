@@ -73,8 +73,8 @@ function SupportTicketList({
       </Box>
       <Box className="support-ticket-list__body">
         {filteredTickets.map((ticket) => (
-          <Box className="support-ticket-item">
-            <Box key={formatId(ticket.id)}>
+          <Box className="support-ticket-item" key={formatId(ticket.id)}>
+            <Box>
               <Box>
                 {formatId(ticket.id)}
                 <Box color="var(--color-text-gray-secondary)">
