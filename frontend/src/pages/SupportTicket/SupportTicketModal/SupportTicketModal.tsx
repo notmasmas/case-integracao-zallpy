@@ -4,9 +4,12 @@ import { useState } from "react";
 import "./SupportTicketModal.css";
 import { MdClose } from "react-icons/md";
 import { BsSendArrowUp } from "react-icons/bs";
+import type { RequestContext } from "../../../models/request";
+
 type SupportTicketModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  requestContext: RequestContext;
 };
 type SupportTicketFormData = {
   projectId: string;
@@ -14,7 +17,11 @@ type SupportTicketFormData = {
   body: string;
 };
 
-function SupportTicketModal({ isOpen, onClose }: SupportTicketModalProps) {
+function SupportTicketModal({
+  isOpen,
+  onClose,
+  requestContext,
+}: SupportTicketModalProps) {
   const [subject, setSubject] = useState<string>("");
   const [body, setBody] = useState<string>("");
 
@@ -76,7 +83,7 @@ function SupportTicketModal({ isOpen, onClose }: SupportTicketModalProps) {
       <Box className="support-ticket-modal__informations">
         <Box className="support-ticket-modal__informations__item1">
           <span> Cliente solicitante:</span>
-          <p>Dummy</p>
+          <p title={requestContext.requestName}>{requestContext.requestName}</p>
         </Box>
         <Box className="support-ticket-modal__informations__item2">
           <span> ID do projeto:</span>
