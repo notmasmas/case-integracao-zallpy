@@ -1,7 +1,45 @@
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
 
 :root {
-  /* Base tokens use rem so the layout follows the user's font-size setting. */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      "Open Sans",
+      "Helvetica Neue",
+      sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-body-regular);
+    color: "var(--color-text-primary)";
+    background-color: var(--color-background);
+  }
+  /* Color */
   --color-primary: #c4d83a;
   --color-black: #000000;
   --color-gray: #b1b1b1;
@@ -48,6 +86,33 @@
   --font-weight-body-regular: 400;
   --font-weight-body-medium: 500;
   --font-weight-label: 600;
+  --color-warning-on-light: #000000;
+  --color-text-primary: #000000;
+  --color-text-secondary: #b1b1b1;
+  --color-border-gray: #b1b1b1;
+  --color-border-black: #000000;
+  --color-background-gray: #f5f5f5;
+  --color-surface-white: #ffffff;
+
+  /* Typography */
+  --font-family: "Inter", system-ui, sans-serif;
+  --font-family-instrument-serif: "Instrument Serif", serif;
+  --font-size-display: 36px;
+  --font-weight-display-bold: 700;
+  --font-weight-display-semibold: 600;
+  --font-size-heading-lg: 30px;
+  --font-weight-heading-lg: 700;
+  --font-size-heading-md: 24px;
+  --font-weight-heading-md: 700;
+  --font-size-heading-sm: 20px;
+  --font-weight-heading-sm: 600;
+  --font-size-body-lead: 16px;
+  --font-weight-body-lead: 500;
+  --font-size-body: 14px;
+  --font-weight-body-regular: 400;
+  --font-weight-body-medium: 500;
+  --font-weight-label: 600;
+  --font-size-caption: 12px;
   --font-weight-caption-regular: 400;
   --font-weight-caption-medium: 500;
   --line-height: normal;
@@ -136,4 +201,28 @@ select {
     --page-padding-inline: 1rem;
     --page-padding-block: 1.5rem;
   }
+  /* Spacing */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Elevation */
+  --shadow-sm: 0px 1px 1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0px 4px 3px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0px 10px 7.5px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0px 20px 12.5px rgba(0, 0, 0, 0.15);
 }
