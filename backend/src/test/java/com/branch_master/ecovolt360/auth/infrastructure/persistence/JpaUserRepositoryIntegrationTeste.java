@@ -5,6 +5,9 @@ import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.branch_master.ecovolt360.auth.application.port.PasswordVerifier;
+import com.branch_master.ecovolt360.auth.application.port.TokenIssuer;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +19,12 @@ class JpaUserRepositoryIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @MockitoBean
+    private PasswordVerifier passwordVerifier;
+
+    @MockitoBean
+    private TokenIssuer tokenIssuer;
 
     @Test
     void shouldReturnEmptyWhenEmailDoesNotExist() {

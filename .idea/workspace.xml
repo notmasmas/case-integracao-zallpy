@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b39f02f-2082-4628-a558-387adbce04a1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/dto/LoginResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/exception/InvalidCredentialsException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/port/PasswordVerifier.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/port/TokenIssuer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/service/LoginService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/branch_master/ecovolt360/auth/infrastructure/persistence/JpaUserRepositoryIntegrationTeste.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infrastructure/config/AuthConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/dto/ApiError.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/dto/LoginResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/exception/AuthExceptionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infastructure/persintance/JpaUserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infrastructure/persintence/JpaUserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infastructure/persintance/SpringDataUserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infrastructure/persintence/SpringDataUserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/dto/LoginResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/application/dto/LoginResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/controller/LoginController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,60 +40,60 @@
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.000000000024237" />
-      <entry key="S2" value="1.0022188415282154" />
-      <entry key="S5" value="1.0883516893661827" />
-      <entry key="S10" value="1.3759608636557372" />
-      <entry key="S30" value="4.4948578553113325" />
-      <entry key="S60" value="11.853487545148603" />
-      <entry key="M2" value="24.89879806200888" />
-      <entry key="M5" value="50.152531531814056" />
-      <entry key="M10" value="88.4063128307178" />
-      <entry key="M15" value="123.49447549211425" />
-      <entry key="M30" value="196.63406542042293" />
-      <entry key="H1" value="266.60379235947386" />
-      <entry key="H2" value="350.36609810308204" />
-      <entry key="H4" value="522.5191578311377" />
-      <entry key="D1" value="1105.8876750262157" />
-      <entry key="W1" value="1320.5513759456126" />
+      <entry key="MS500" value="1.0000000000000022" />
+      <entry key="S2" value="1.0003469213171698" />
+      <entry key="S5" value="1.0840007225513728" />
+      <entry key="S10" value="1.691160385201325" />
+      <entry key="S30" value="6.413330475339114" />
+      <entry key="S60" value="12.396900256805367" />
+      <entry key="M2" value="19.830554056012854" />
+      <entry key="M5" value="41.709492218184415" />
+      <entry key="M10" value="84.30823942374418" />
+      <entry key="M15" value="126.36382868485002" />
+      <entry key="M30" value="230.65573498654723" />
+      <entry key="H1" value="352.9641268989511" />
+      <entry key="H2" value="482.146250404685" />
+      <entry key="H4" value="679.9734529665178" />
+      <entry key="D1" value="1307.597982085672" />
+      <entry key="W1" value="1540.7749519051063" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.55027413718229E-130" />
-      <entry key="MS500" value="1.205916877421432E-26" />
-      <entry key="S2" value="3.3256650847046656E-7" />
-      <entry key="S5" value="0.002972382546043663" />
-      <entry key="S10" value="0.08428091297126175" />
-      <entry key="S30" value="1.20266961218115" />
-      <entry key="S60" value="3.0621798122805832" />
-      <entry key="M2" value="5.813708201229466" />
-      <entry key="M5" value="9.981926718815865" />
-      <entry key="M10" value="14.024885099239915" />
-      <entry key="M15" value="16.852474505139057" />
-      <entry key="M30" value="21.69006966687288" />
-      <entry key="H1" value="25.607541680822695" />
-      <entry key="H2" value="29.07219075468659" />
-      <entry key="H4" value="34.09587810458974" />
-      <entry key="D1" value="49.90589585761521" />
-      <entry key="W1" value="55.844055637659" />
+      <entry key="MS100" value="2.392027951359021E-108" />
+      <entry key="MS500" value="2.990565026047214E-22" />
+      <entry key="S2" value="4.159080188051846E-6" />
+      <entry key="S5" value="0.007276543326733098" />
+      <entry key="S10" value="0.10460227889532993" />
+      <entry key="S30" value="1.0008166904866092" />
+      <entry key="S60" value="2.281585003852037" />
+      <entry key="M2" value="4.489894030088062" />
+      <entry key="M5" value="11.788066661986086" />
+      <entry key="M10" value="21.181246511952423" />
+      <entry key="M15" value="27.82458817381198" />
+      <entry key="M30" value="40.27678296298817" />
+      <entry key="H1" value="51.76595087417575" />
+      <entry key="H2" value="60.86158998512408" />
+      <entry key="H4" value="69.27738016503281" />
+      <entry key="D1" value="88.78105102061156" />
+      <entry key="W1" value="95.6665337478009" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.14458602298816092" />
-      <entry key="MS500" value="0.6792431422818805" />
-      <entry key="S2" value="0.9094838139296064" />
-      <entry key="S5" value="1.0430547802032233" />
-      <entry key="S10" value="1.4099682991931777" />
-      <entry key="S30" value="5.590206772966324" />
-      <entry key="S60" value="14.782911047029875" />
-      <entry key="M2" value="30.584854779692723" />
-      <entry key="M5" value="60.043548873255304" />
-      <entry key="M10" value="102.36315941125723" />
-      <entry key="M15" value="140.29046209831918" />
-      <entry key="M30" value="218.28636200025315" />
-      <entry key="H1" value="292.1885326214114" />
-      <entry key="H2" value="379.42461867561644" />
-      <entry key="H4" value="556.6061012659648" />
-      <entry key="D1" value="1155.790987508408" />
-      <entry key="W1" value="1376.3950059499246" />
+      <entry key="MS100" value="0.020760715845257988" />
+      <entry key="MS500" value="0.46073209309935215" />
+      <entry key="S2" value="0.8241001895091163" />
+      <entry key="S5" value="1.0048191282852108" />
+      <entry key="S10" value="1.7148239786374748" />
+      <entry key="S30" value="7.324135655254698" />
+      <entry key="S60" value="14.598768337048169" />
+      <entry key="M2" value="24.24835228102802" />
+      <entry key="M5" value="53.41976087620879" />
+      <entry key="M10" value="105.41810360349356" />
+      <entry key="M15" value="154.1241336423341" />
+      <entry key="M30" value="270.8828147076275" />
+      <entry key="H1" value="404.6962640873273" />
+      <entry key="H2" value="542.9867091222571" />
+      <entry key="H4" value="749.2375900191894" />
+      <entry key="D1" value="1396.3756000609744" />
+      <entry key="W1" value="1636.440932429492" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{

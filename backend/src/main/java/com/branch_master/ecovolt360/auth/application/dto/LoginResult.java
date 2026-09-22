@@ -12,6 +12,6 @@ public record LoginResult(
 ) {
     @Override
     public String toString() {
-        return "LoginResult[userId=]" + userId + ", role=" + role + "]";
+        return "LoginResult[userId=" + userId + ", role=" + role + "]";
     }
 }
