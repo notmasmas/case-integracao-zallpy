@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3b39f02f-2082-4628-a558-387adbce04a1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,61 +33,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.655385973893405" />
-      <entry key="MS500" value="3.839131248397338" />
-      <entry key="S2" value="6.386183169922272" />
-      <entry key="S5" value="8.356668538917027" />
-      <entry key="S10" value="11.116745437961553" />
-      <entry key="S30" value="15.760160326654411" />
-      <entry key="S60" value="17.75675347384632" />
-      <entry key="M2" value="19.352368126299655" />
-      <entry key="M5" value="23.77244730623185" />
-      <entry key="M10" value="37.256566467964475" />
-      <entry key="M15" value="53.96216931512843" />
-      <entry key="M30" value="120.84474357633096" />
-      <entry key="H1" value="267.0994734119862" />
-      <entry key="H2" value="473.54541573887735" />
-      <entry key="H4" value="741.8169046783835" />
-      <entry key="D1" value="1502.650679170259" />
-      <entry key="W1" value="1788.9812849386553" />
+      <entry key="MS100" value="1.0000000000000016" />
+      <entry key="MS500" value="1.0011063319192341" />
+      <entry key="S2" value="1.182377543030022" />
+      <entry key="S5" value="1.5062783357452116" />
+      <entry key="S10" value="1.7148419465610756" />
+      <entry key="S30" value="3.349357012264747" />
+      <entry key="S60" value="9.805548331789465" />
+      <entry key="M2" value="20.859168354370716" />
+      <entry key="M5" value="36.55000324262375" />
+      <entry key="M10" value="54.28662077791275" />
+      <entry key="M15" value="72.21568114857489" />
+      <entry key="M30" value="139.40908912556827" />
+      <entry key="H1" value="285.45287905839535" />
+      <entry key="H2" value="493.08501593245813" />
+      <entry key="H4" value="763.0478325350039" />
+      <entry key="D1" value="1527.7260391797627" />
+      <entry key="W1" value="1815.6545424869457" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="0.0" />
-      <entry key="S10" value="1.0869113100868096E-169" />
-      <entry key="S30" value="1.0136908505529443E-56" />
-      <entry key="S60" value="2.296212872741943E-28" />
-      <entry key="M2" value="4.504264007086779E-14" />
-      <entry key="M5" value="2.9648155641302043E-5" />
-      <entry key="M10" value="0.03359147421990391" />
-      <entry key="M15" value="0.37839650058522134" />
-      <entry key="M30" value="4.696928595046092" />
-      <entry key="H1" value="17.67761973096787" />
-      <entry key="H2" value="35.56584158282274" />
-      <entry key="H4" value="52.958582682283435" />
-      <entry key="D1" value="84.894150136978" />
-      <entry key="W1" value="95.05665687606813" />
+      <entry key="MS500" value="7.780248094980284E-86" />
+      <entry key="S2" value="5.28139149185289E-22" />
+      <entry key="S5" value="3.083893308232499E-9" />
+      <entry key="S10" value="5.553281289681352E-5" />
+      <entry key="S30" value="0.03815193393871303" />
+      <entry key="S60" value="0.1953252004701725" />
+      <entry key="M2" value="0.4419561069497606" />
+      <entry key="M5" value="0.7213799433714714" />
+      <entry key="M10" value="0.877335450662674" />
+      <entry key="M15" value="1.2320433366040906" />
+      <entry key="M30" value="5.367724081611644" />
+      <entry key="H1" value="18.123088278912356" />
+      <entry key="H2" value="36.01747951456955" />
+      <entry key="H4" value="53.552092741280774" />
+      <entry key="D1" value="85.78588856749101" />
+      <entry key="W1" value="96.03934957125446" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.4877718795412518" />
-      <entry key="MS500" value="3.687559024310638" />
-      <entry key="S2" value="6.331411238163911" />
-      <entry key="S5" value="8.329558670756176" />
-      <entry key="S10" value="11.099633149709959" />
-      <entry key="S30" value="15.752669413471063" />
-      <entry key="S60" value="17.75243070737853" />
-      <entry key="M2" value="19.34956212964188" />
-      <entry key="M5" value="23.770691350814886" />
-      <entry key="M10" value="37.28861422202" />
-      <entry key="M15" value="54.33840228172021" />
-      <entry key="M30" value="125.53483192869842" />
-      <entry key="H1" value="284.7647984482287" />
-      <entry key="H2" value="509.0984428834243" />
-      <entry key="H4" value="794.7651007354165" />
-      <entry key="D1" value="1587.5414977685396" />
-      <entry key="W1" value="1884.0373850143558" />
+      <entry key="MS100" value="0.20166043980553158" />
+      <entry key="MS500" value="0.7264253467147544" />
+      <entry key="S2" value="1.0684019718436006" />
+      <entry key="S5" value="1.4308164896635005" />
+      <entry key="S10" value="1.6674171587599975" />
+      <entry key="S30" value="3.365866367054491" />
+      <entry key="S60" value="9.983402841852216" />
+      <entry key="M2" value="21.287034813964638" />
+      <entry key="M5" value="37.26289033032753" />
+      <entry key="M10" value="55.15856912634252" />
+      <entry key="M15" value="73.44295710293116" />
+      <entry key="M30" value="144.76888776014226" />
+      <entry key="H1" value="303.5632797394031" />
+      <entry key="H2" value="529.0894896380946" />
+      <entry key="H4" value="816.5894239646225" />
+      <entry key="D1" value="1613.508568086969" />
+      <entry key="W1" value="1911.6933307367303" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -100,37 +99,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "feature/login",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/george.siqueira/IdeaProjects/case-integracao-zallpy",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.jshint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.jshint": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2026.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/login&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/george.siqueira/IdeaProjects/case-integracao-zallpy&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2026.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JAVA&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy" />

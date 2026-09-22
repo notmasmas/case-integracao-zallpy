@@ -1,6 +1,7 @@
 .DS_Store
 .env
-.idea/
+/.idea
+/.ai
 
 # Servidor local para testes manuais do login
 /backend/src/test/java/com/branch_master/ecovolt360/auth/manual/ManualLoginPostman.java
