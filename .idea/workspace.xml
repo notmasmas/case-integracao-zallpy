@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b39f02f-2082-4628-a558-387adbce04a1" name="Changes" comment="" />
+    <list default="true" id="3b39f02f-2082-4628-a558-387adbce04a1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/domain/entity/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/domain/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/domain/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infastructure/persintance/JpaUserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/infastructure/persintance/SpringDataUserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/controller/LoginController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/auth/presentation/dto/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crição" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/Ecovolt360Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/branch_master/ecovolt360/Ecovolt360Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,22 +29,85 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "George-Abreu-git"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;George-Abreu-git&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/notmasmas/case-integracao-zallpy.git",
-    "accountId": "007c263a-b263-4e86-9602-c31e5aa03c66"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/notmasmas/case-integracao-zallpy.git&quot;,
+    &quot;accountId&quot;: &quot;007c263a-b263-4e86-9602-c31e5aa03c66&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 8
-}]]></component>
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000158721877543" />
+      <entry key="S2" value="1.1261831136509264" />
+      <entry key="S5" value="2.176037379255079" />
+      <entry key="S10" value="4.362654175150857" />
+      <entry key="S30" value="12.057340821843901" />
+      <entry key="S60" value="18.80258077949758" />
+      <entry key="M2" value="24.765283600760498" />
+      <entry key="M5" value="31.706003260190283" />
+      <entry key="M10" value="44.56027852942132" />
+      <entry key="M15" value="59.611494459369055" />
+      <entry key="M30" value="99.75450702543891" />
+      <entry key="H1" value="173.72852606678765" />
+      <entry key="H2" value="323.69542494958165" />
+      <entry key="H4" value="527.2534818145276" />
+      <entry key="D1" value="882.4630199505901" />
+      <entry key="W1" value="973.6351076856951" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.9621698951026193E-105" />
+      <entry key="MS500" value="1.1443195604884006E-21" />
+      <entry key="S2" value="5.8161666191747705E-6" />
+      <entry key="S5" value="0.008057933278178601" />
+      <entry key="S10" value="0.09244199361348861" />
+      <entry key="S30" value="0.6318949335289874" />
+      <entry key="S60" value="1.2557790984258308" />
+      <entry key="M2" value="1.8914605526791974" />
+      <entry key="M5" value="2.484813458923351" />
+      <entry key="M10" value="2.8763904268492606" />
+      <entry key="M15" value="3.2781918706870394" />
+      <entry key="M30" value="4.400583448267765" />
+      <entry key="H1" value="5.995602058404215" />
+      <entry key="H2" value="8.893939107628732" />
+      <entry key="H4" value="13.46838808904778" />
+      <entry key="D1" value="22.885060888124148" />
+      <entry key="W1" value="25.51938990562032" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.0012708416557050126" />
+      <entry key="MS500" value="0.26353699399864233" />
+      <entry key="S2" value="0.8249726533084465" />
+      <entry key="S5" value="1.9741350412201926" />
+      <entry key="S10" value="4.2558533950001545" />
+      <entry key="S30" value="12.460112168795797" />
+      <entry key="S60" value="19.841612945105652" />
+      <entry key="M2" value="26.49523330803235" />
+      <entry key="M5" value="34.105863053848346" />
+      <entry key="M10" value="47.387621803740515" />
+      <entry key="M15" value="62.853368898554535" />
+      <entry key="M30" value="104.1324336462321" />
+      <entry key="H1" value="179.70959720533506" />
+      <entry key="H2" value="332.5794397137432" />
+      <entry key="H4" value="540.7150608611528" />
+      <entry key="D1" value="905.3463665254201" />
+      <entry key="W1" value="999.154230416142" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="3JKZod4kR8tLnDihaIDIQoid4iU" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -33,15 +115,46 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "develop",
-    "kotlin-language-version-configured": "true"
+    "git-widget-placeholder": "feature/login",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/george.siqueira/IdeaProjects/case-integracao-zallpy",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2026.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "JAVA"
+    ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy\backend\src\main\java\com\branch_master\ecovolt360\auth\presentation" />
+      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy\backend\src\main\java\com\branch_master\ecovolt360\auth\domain" />
+      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy\backend\src\main\java\com\branch_master\ecovolt360\users\domain" />
+      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy\backend\src\main\java\com\branch_master\ecovolt360\users" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="case-integracao-zallpy" />
@@ -58,8 +171,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-34e2839f716b-intellij.indexing.shared.core-IU-262.9437.185" />
-        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.9437.185" />
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
       </set>
     </attachedChunks>
   </component>
@@ -75,5 +188,69 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="e48e71e9-15e7-4279-9af9-f82228745982" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="george/teste-login" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="feature/login" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="e48e71e9-15e7-4279-9af9-f82228745982">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="george/teste-login" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
