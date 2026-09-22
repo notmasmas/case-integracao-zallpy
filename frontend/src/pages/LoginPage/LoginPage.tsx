@@ -1,6 +1,6 @@
 import { Flex, Image } from "@chakra-ui/react";
-import Logo from "../assets/logo.svg";
-import "../index.css";
+import Logo from "../../assets/logo.svg";
+import "../../index.css";
 import "./loginPage.css";
 import LoginPageForm from "./LoginPageForm/LoginPageForm";
 
