@@ -1,0 +1,204 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+
+:root {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      "Open Sans",
+      "Helvetica Neue",
+      sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-body-regular);
+    color: "var(--color-text-primary)";
+    background-color: var(--color-background);
+  }
+  /* Color */
+  --color-primary: #c4d83a;
+  --color-black: #000000;
+  --color-gray: #b1b1b1;
+  --color-background: #f5f5f5;
+  --color-background-modal-header: #ededed;
+  --color-success-default: #c4d83a;
+  --color-success-dark: #8fa51e;
+  --color-success-light: #f0f4d8;
+  --color-warning-default: #b42318;
+  --color-warning-dark: #7a271a;
+  --color-warning-light: #fee4e2;
+  --color-warning-on-default: #ffffff;
+  --color-warning-on-light: var(--color-black);
+  --color-text-primary: var(--color-black);
+  --color-text-gray-primary: #3f3f3f;
+  --color-text-gray-secondary: #b1b1b1;
+  --color-text-gray-tertiary: #7e7e7e;
+  --color-border-gray: #b1b1b1;
+  --color-border-black: var(--color-black);
+  --color-background-gray: #f5f5f5;
+  --color-surface-white: #ffffff;
+
+  --page-padding-inline: clamp(1rem, 5vw, 4rem);
+  --page-padding-block: clamp(1.5rem, 4vw, 4rem);
+  --content-max-width: 90rem;
+
+  --font-family: "Inter", system-ui, sans-serif;
+  --font-family-instrument-serif: "Instrument Serif", serif;
+
+  --font-size-display: 2.25rem;
+  --font-size-heading-sm: 1.25rem;
+  --font-size-heading-md: 1.5rem;
+  --font-size-heading-lg: 1.875rem;
+  --font-size-body-lead: 1rem;
+  --font-size-body: 0.875rem;
+  --font-size-caption: 0.75rem;
+
+  --font-weight-display-bold: 700;
+  --font-weight-display-semibold: 600;
+  --font-weight-heading-lg: 700;
+  --font-weight-heading-md: 700;
+  --font-weight-heading-sm: 600;
+  --font-weight-body-lead: 500;
+  --font-weight-body-regular: 400;
+  --font-weight-body-medium: 500;
+  --font-weight-label: 600;
+  --color-warning-on-light: #000000;
+  --color-text-primary: #000000;
+  --color-text-secondary: #b1b1b1;
+  --color-border-gray: #b1b1b1;
+  --color-border-black: #000000;
+  --color-background-gray: #f5f5f5;
+  --color-surface-white: #ffffff;
+
+  /* Typography */
+  --font-family: "Inter", system-ui, sans-serif;
+  --font-family-instrument-serif: "Instrument Serif", serif;
+  --font-size-display: 36px;
+  --font-weight-display-bold: 700;
+  --font-weight-display-semibold: 600;
+  --font-size-heading-lg: 30px;
+  --font-weight-heading-lg: 700;
+  --font-size-heading-md: 24px;
+  --font-weight-heading-md: 700;
+  --font-size-heading-sm: 20px;
+  --font-weight-heading-sm: 600;
+  --font-size-body-lead: 16px;
+  --font-weight-body-lead: 500;
+  --font-size-body: 14px;
+  --font-weight-body-regular: 400;
+  --font-weight-body-medium: 500;
+  --font-weight-label: 600;
+  --font-size-caption: 12px;
+  --font-weight-caption-regular: 400;
+  --font-weight-caption-medium: 500;
+  --line-height: normal;
+
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-20: 1.25rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-40: 2.5rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+  --space-80: 5rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1.375rem;
+  --radius-full: 624.9375rem;
+
+  --shadow-sm: 0 0.0625rem 0.0625rem rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 0.25rem 0.1875rem rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 0.625rem 0.46875rem rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 1.25rem 0.78125rem rgba(0, 0, 0, 0.15);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  transition: transform 0.2s ease;
+  transform: scale(1.05);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-body-regular);
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  max-width: 100%;
+}
+
+.page-container {
+  width: min(100% - 2rem, var(--content-max-width));
+  margin-inline: auto;
+}
+
+@media (max-width: 48rem) {
+  :root {
+    --page-padding-inline: 1rem;
+    --page-padding-block: 1.5rem;
+  }
+}
