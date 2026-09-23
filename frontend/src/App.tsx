@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
-import ClientPanel from "./pages/ClientPanel/ClientPanel";
+import PanelBase from "./pages/PanelBase/PanelBase";
 import Login from "./pages/LoginPage/LoginPage";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/painel-cliente" element={<ClientPanel />} />
+        <Route path="/painel-cliente" element={<PanelBase />} />
       </Routes>
     </BrowserRouter>
   );
