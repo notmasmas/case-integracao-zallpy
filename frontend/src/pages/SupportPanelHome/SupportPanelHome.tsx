@@ -8,7 +8,7 @@ import { BsArrowRight } from "react-icons/bs";
 import "./SupportPanelHome.css";
 import { useState } from "react";
 
-type TicketFilter = "mine" | "third_party";
+type TicketFilter = "mine" | "all";
 
 function SupportPanelHome() {
   const [ticketFilter, setTicketFilter] = useState<TicketFilter>("mine");
@@ -17,7 +17,7 @@ function SupportPanelHome() {
       return ticket.ownerId === currentMockUser.id;
     }
 
-    return ticket.ownerType === "third_party";
+    return true;
   });
 
   return (
@@ -71,17 +71,11 @@ function SupportPanelHome() {
             </Box>
             <Box
               className={`support-panel-filter ${
-                ticketFilter === "third_party" ? "active" : ""
+                ticketFilter === "all" ? "active" : ""
               }`}
             >
-              <button onClick={() => setTicketFilter("third_party")}>
-                Terceiros (
-                {
-                  supportPanelTicketsMock.filter(
-                    (ticket) => ticket.ownerType === "third_party",
-                  ).length
-                }
-                )
+              <button onClick={() => setTicketFilter("all")}>
+                Todos ({supportPanelTicketsMock.length})
               </button>
             </Box>
           </Box>
