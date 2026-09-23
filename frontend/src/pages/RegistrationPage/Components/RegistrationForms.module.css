@@ -46,8 +46,17 @@
 }
 
 .field {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  gap: var(--space-8);
   min-width: 0;
+}
+
+.label {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-body-medium);
 }
 
 .dots {
@@ -71,11 +80,30 @@
   background-color: var(--color-text-primary);
 }
 
+.dot:focus-visible,
+.submit:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
 .input {
+  width: 100%;
   padding: var(--space-12);
   border: 1px solid var(--color-border-gray);
   border-radius: var(--radius-lg);
   background-color: var(--color-surface-white);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-body-lead);
+}
+
+.input::placeholder {
+  color: var(--color-text-gray-secondary);
+}
+
+.input:focus-visible {
+  border-color: var(--color-border-black);
+  outline: none;
 }
 
 .actions {
@@ -84,6 +112,9 @@
 
 .submit {
   width: 100%;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
   padding: var(--space-16) var(--space-24);
   border-radius: var(--radius-lg);
   background-color: var(--color-primary);

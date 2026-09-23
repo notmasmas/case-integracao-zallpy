@@ -1,142 +1,125 @@
 import { useState } from "react";
-import { Box, Button, Field, Input } from "@chakra-ui/react";
-import styles from "./RegistrationForms.module.css";
 import { FiUserPlus } from "react-icons/fi";
+import styles from "./RegistrationForms.module.css";
+
+type FormFieldProps = {
+  id: string;
+  label: string;
+  type?: "text" | "email" | "password";
+  placeholder: string;
+};
+
+function FormField({ id, label, type = "text", placeholder }: FormFieldProps) {
+  return (
+    <div className={styles.field}>
+      <label className={styles.label} htmlFor={id}>
+        {label}
+      </label>
+      <input
+        id={id}
+        name={id}
+        type={type}
+        placeholder={placeholder}
+        className={styles.input}
+      />
+    </div>
+  );
+}
 
 function RegistrationForms() {
   const [step, setStep] = useState(0);
 
   return (
-    <Box className={styles.form}>
-      <div className={styles.icon}>
+    <section className={styles.form} aria-labelledby="registration-title">
+      <div className={styles.icon} aria-hidden="true">
         <FiUserPlus />
       </div>
 
-      <Box className={styles.header}>
-        <h2 className={styles.title}>Cadastro</h2>
-      </Box>
+      <header className={styles.header}>
+        <h2 id="registration-title" className={styles.title}>
+          Cadastro
+        </h2>
+      </header>
 
-      <Box className={styles.fields}>
+      <div className={styles.fields}>
         {step === 0 ? (
           <>
-            <Field.Root>
-              <Field.Label>Nome completo</Field.Label>
-              <Input
-                type="text"
-                placeholder="Digite seu nome completo"
-                className={styles.input}
-              />
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Email</Field.Label>
-              <Input
-                type="email"
-                placeholder="Digite seu email"
-                className={styles.input}
-              />
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Senha</Field.Label>
-              <Input
-                type="password"
-                placeholder="Digite sua senha"
-                className={styles.input}
-              />
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Confirmar senha</Field.Label>
-              <Input
-                type="password"
-                placeholder="Confirme sua senha"
-                className={styles.input}
-              />
-            </Field.Root>
+            <FormField
+              id="fullName"
+              label="Nome completo"
+              placeholder="Digite seu nome completo"
+            />
+            <FormField
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="Digite seu email"
+            />
+            <FormField
+              id="password"
+              label="Senha"
+              type="password"
+              placeholder="Digite sua senha"
+            />
+            <FormField
+              id="confirmPassword"
+              label="Confirmar senha"
+              type="password"
+              placeholder="Confirme sua senha"
+            />
           </>
         ) : (
           <>
-            <Box className={styles.fieldsRow}>
-              <Field.Root className={styles.field}>
-                <Field.Label>CEP</Field.Label>
-                <Input
-                  type="text"
-                  placeholder="Digite seu CEP"
-                  className={styles.input}
-                />
-              </Field.Root>
-              <Field.Root className={styles.field}>
-                <Field.Label>Estado</Field.Label>
-                <Input
-                  type="text"
-                  placeholder="UF"
-                  className={styles.input}
-                />
-              </Field.Root>
-            </Box>
-            <Field.Root>
-              <Field.Label>Cidade</Field.Label>
-              <Input
-                type="text"
-                placeholder="Digite sua cidade"
-                className={styles.input}
+            <div className={styles.fieldsRow}>
+              <FormField id="zipCode" label="CEP" placeholder="Digite seu CEP" />
+              <FormField id="state" label="Estado" placeholder="UF" />
+            </div>
+            <FormField
+              id="city"
+              label="Cidade"
+              placeholder="Digite sua cidade"
+            />
+            <FormField
+              id="district"
+              label="Bairro"
+              placeholder="Digite seu bairro"
+            />
+            <FormField id="street" label="Rua" placeholder="Digite sua rua" />
+            <div className={styles.fieldsRow}>
+              <FormField
+                id="complement"
+                label="Complemento"
+                placeholder="Complemento"
               />
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Bairro</Field.Label>
-              <Input
-                type="text"
-                placeholder="Digite seu bairro"
-                className={styles.input}
-              />
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Rua</Field.Label>
-              <Input
-                type="text"
-                placeholder="Digite sua rua"
-                className={styles.input}
-              />
-            </Field.Root>
-            <Box className={styles.fieldsRow}>
-              <Field.Root className={styles.field}>
-                <Field.Label>Complemento</Field.Label>
-                <Input
-                  type="text"
-                  placeholder="Complemento"
-                  className={styles.input}
-                />
-              </Field.Root>
-              <Field.Root className={styles.field}>
-                <Field.Label>Número</Field.Label>
-                <Input
-                  type="text"
-                  placeholder="Número"
-                  className={styles.input}
-                />
-              </Field.Root>
-            </Box>
+              <FormField id="number" label="Número" placeholder="Número" />
+            </div>
           </>
         )}
-      </Box>
+      </div>
 
-      <Box className={styles.dots}>
+      <div className={styles.dots}>
         <button
           type="button"
           aria-label="Ir para etapa 1"
+          aria-current={step === 0 ? "step" : undefined}
           className={`${styles.dot}${step === 0 ? ` ${styles.dotActive}` : ""}`}
           onClick={() => setStep(0)}
         />
         <button
           type="button"
           aria-label="Ir para etapa 2"
+          aria-current={step === 1 ? "step" : undefined}
           className={`${styles.dot}${step === 1 ? ` ${styles.dotActive}` : ""}`}
           onClick={() => setStep(1)}
         />
-      </Box>
+      </div>
 
-      <Box className={styles.actions}>
-        <Button className={styles.submit}>Cadastrar</Button>
-      </Box>
-    </Box>
+      <div className={styles.actions}>
+        <button type="button" className={styles.submit}>
+          Cadastrar
+        </button>
+      </div>
+    </section>
   );
 }
 
