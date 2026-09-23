@@ -1,40 +1,22 @@
-import { Box, Button, Flex, Image, Text } from "@chakra-ui/react";
 import Logo from "../../assets/logo.svg";
 import RegistrationForms from "./Components/RegistrationForms";
+import styles from "./RegistrationPage.module.css";
 
 function RegistrationPage() {
   return (
-    <div className="login-page">
-      <Flex
-        className="login-page__layout"
-        justify="space-between"
-        align="center"
-        direction={{ base: "column", md: "row" }}
-        minHeight="calc(100vh - 4rem)"
-        width="100%"
-        gap={{ base: "2rem", md: "1rem" }}
-      >
-        <Flex
-          className="login-page__brand"
-          justify="center"
-          align="flex-start"
-          direction="column"
-          gap="2rem"
-        >
-          <Flex width="100%">
-            <Image className="login-page__logo" src={Logo} alt="Logo" />
-          </Flex>
-          <Flex width="80%" justify="center" align="center">
-            <p className="login-page__slogan">
-              Onde há Sol, <br /> há energia
-            </p>
-          </Flex>
-        </Flex>
+    <div className={styles.page}>
+      <div className={styles.layout}>
+        <section className={styles.brand}>
+          <img className={styles.logo} src={Logo} alt="Logo EcoVolt 360" />
+          <h1 className={styles.slogan}>
+            Onde há Sol, <br /> há energia
+          </h1>
+        </section>
 
-        <Flex className="login-page__form" justify="center" align="center">
+        <section className={styles.form}>
           <RegistrationForms />
-        </Flex>
-      </Flex>
+        </section>
+      </div>
     </div>
   );
 }

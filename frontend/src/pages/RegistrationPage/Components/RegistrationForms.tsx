@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { Box, Button, Field, Input } from "@chakra-ui/react";
-import "./RegistrationForms.css";
+import styles from "./RegistrationForms.module.css";
 import { FiUserPlus } from "react-icons/fi";
 
 function RegistrationForms() {
   const [step, setStep] = useState(0);
 
   return (
-    <Box className="registration-form">
-        
-      <div className="icon"><FiUserPlus/></div>
-    
-      <Box className="registration-form__header">
-        <p className="registration-form__title">Cadastro</p>
+    <Box className={styles.form}>
+      <div className={styles.icon}>
+        <FiUserPlus />
+      </div>
+
+      <Box className={styles.header}>
+        <h2 className={styles.title}>Cadastro</h2>
       </Box>
 
-      <Box className="registration-form__fields">
+      <Box className={styles.fields}>
         {step === 0 ? (
           <>
             <Field.Root>
@@ -23,7 +24,7 @@ function RegistrationForms() {
               <Input
                 type="text"
                 placeholder="Digite seu nome completo"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
             <Field.Root>
@@ -31,7 +32,7 @@ function RegistrationForms() {
               <Input
                 type="email"
                 placeholder="Digite seu email"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
             <Field.Root>
@@ -39,7 +40,7 @@ function RegistrationForms() {
               <Input
                 type="password"
                 placeholder="Digite sua senha"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
             <Field.Root>
@@ -47,27 +48,27 @@ function RegistrationForms() {
               <Input
                 type="password"
                 placeholder="Confirme sua senha"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
           </>
         ) : (
           <>
-            <Box className="registration-form__fields-row">
-              <Field.Root className="registration-form__field">
+            <Box className={styles.fieldsRow}>
+              <Field.Root className={styles.field}>
                 <Field.Label>CEP</Field.Label>
                 <Input
                   type="text"
                   placeholder="Digite seu CEP"
-                  className="registration-form__input"
+                  className={styles.input}
                 />
               </Field.Root>
-              <Field.Root className="registration-form__field">
+              <Field.Root className={styles.field}>
                 <Field.Label>Estado</Field.Label>
                 <Input
                   type="text"
                   placeholder="UF"
-                  className="registration-form__input"
+                  className={styles.input}
                 />
               </Field.Root>
             </Box>
@@ -76,7 +77,7 @@ function RegistrationForms() {
               <Input
                 type="text"
                 placeholder="Digite sua cidade"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
             <Field.Root>
@@ -84,7 +85,7 @@ function RegistrationForms() {
               <Input
                 type="text"
                 placeholder="Digite seu bairro"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
             <Field.Root>
@@ -92,24 +93,24 @@ function RegistrationForms() {
               <Input
                 type="text"
                 placeholder="Digite sua rua"
-                className="registration-form__input"
+                className={styles.input}
               />
             </Field.Root>
-            <Box className="registration-form__fields-row">
-              <Field.Root className="registration-form__field">
+            <Box className={styles.fieldsRow}>
+              <Field.Root className={styles.field}>
                 <Field.Label>Complemento</Field.Label>
                 <Input
                   type="text"
                   placeholder="Complemento"
-                  className="registration-form__input"
+                  className={styles.input}
                 />
               </Field.Root>
-              <Field.Root className="registration-form__field">
+              <Field.Root className={styles.field}>
                 <Field.Label>Número</Field.Label>
                 <Input
                   type="text"
                   placeholder="Número"
-                  className="registration-form__input"
+                  className={styles.input}
                 />
               </Field.Root>
             </Box>
@@ -117,27 +118,23 @@ function RegistrationForms() {
         )}
       </Box>
 
-      <Box className="registration-form__dots">
+      <Box className={styles.dots}>
         <button
           type="button"
           aria-label="Ir para etapa 1"
-          className={`registration-form__dot${
-            step === 0 ? " registration-form__dot--active" : ""
-          }`}
+          className={`${styles.dot}${step === 0 ? ` ${styles.dotActive}` : ""}`}
           onClick={() => setStep(0)}
         />
         <button
           type="button"
           aria-label="Ir para etapa 2"
-          className={`registration-form__dot${
-            step === 1 ? " registration-form__dot--active" : ""
-          }`}
+          className={`${styles.dot}${step === 1 ? ` ${styles.dotActive}` : ""}`}
           onClick={() => setStep(1)}
         />
       </Box>
 
-      <Box className="registration-form__actions">
-        <Button className="registration-form__submit">Cadastrar</Button>
+      <Box className={styles.actions}>
+        <Button className={styles.submit}>Cadastrar</Button>
       </Box>
     </Box>
   );
