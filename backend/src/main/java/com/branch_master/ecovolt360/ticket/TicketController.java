@@ -22,7 +22,9 @@ public class TicketController {
     @PostMapping
     @Transactional
     public ResponseEntity<TicketDetailsDTO> createTicket(@RequestBody @Valid TicketBodyDTO ticket,
+                                                         // @AuthenticationPrincipal UserPrincipal currentUser
                                                          UriComponentsBuilder uriBuilder) {
+        // UUID customerId = currentUser.getId();
         UUID customerId = UUID.randomUUID(); // temp
 
         TicketDetailsDTO newTicket = ticketService.processTicket(customerId, ticket);
