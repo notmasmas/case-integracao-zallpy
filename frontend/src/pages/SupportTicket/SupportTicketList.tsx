@@ -1,5 +1,4 @@
-import { Box, Button, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button } from "@chakra-ui/react";
 import {
   supportTicketsMock,
   type SupportTicket as SupportTicketData,
@@ -27,6 +26,7 @@ const statusLabels: Record<SupportTicketData["status"], string> = {
   closed: "Encerrado",
 };
 
+// o backend ja pode retornar a data e o id formatado para o front end apenas renderizar
 function formatTicketDate(date: Date) {
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
@@ -34,7 +34,34 @@ function formatTicketDate(date: Date) {
   }).format(date);
 }
 
-function SupportTicketList() {
+const formatId = (id: string) => {
+  return `ID-${new Date().getFullYear()}-00${id}`;
+};
+
+type SupportTicketListProps = {
+  ticketCategoryFilter: string;
+  searchFilter: string;
+};
+
+function SupportTicketList({
+  ticketCategoryFilter,
+  searchFilter,
+}: SupportTicketListProps) {
+  const filteredTickets = supportTicketsMock.filter((ticket) => {
+    const normalizedSearch = searchFilter.trim().toLowerCase();
+
+    const matchesCategory =
+      ticketCategoryFilter === "all" ||
+      ticket.category === ticketCategoryFilter;
+
+    const matchesSearch =
+      normalizedSearch === "" ||
+      ticket.title.toLowerCase().includes(normalizedSearch) ||
+      ticket.status.toLowerCase().includes(normalizedSearch);
+
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <Box className="support-ticket-list">
       <Box className="support-ticket-list__header">
@@ -43,6 +70,28 @@ function SupportTicketList() {
         <Box> Categoria </Box>
         <Box> Status </Box>
         <Box> Ações </Box>
+      </Box>
+      <Box className="support-ticket-list__body">
+        {filteredTickets.map((ticket) => (
+          <Box className="support-ticket-item" key={formatId(ticket.id)}>
+            <Box>
+              <Box>
+                {formatId(ticket.id)}
+                <Box color="var(--color-text-gray-secondary)">
+                  {formatTicketDate(ticket.createdAT)}
+                </Box>
+              </Box>
+            </Box>
+            <Box>{ticket.title}</Box>
+            <Box>{categoryLabels[ticket.category]}</Box>
+            <Box>{statusLabels[ticket.status]}</Box>
+            <Box>
+              <Button className="support-ticket-item__button">
+                Ver detalhes
+              </Button>
+            </Box>
+          </Box>
+        ))}
       </Box>
     </Box>
   );

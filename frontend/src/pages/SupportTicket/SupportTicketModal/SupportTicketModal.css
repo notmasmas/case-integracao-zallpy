@@ -1,0 +1,193 @@
+.support-ticket-modal {
+  display: flex;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-xl);
+  flex-direction: column;
+  position: absolute;
+  z-index: 1000;
+  align-items: center;
+  gap: var(--space-32);
+  padding: var(--space-32) var(--space-40);
+  top: 40%;
+  left: 50%;
+  transform: translate(-40%, -60%);
+  max-width: 520px;
+  max-height: 700px;
+}
+
+.support-ticket-modal__header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.support-ticket-modal__title {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: var(--space-16);
+}
+.support-ticket-modal__title button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-gray-secondary);
+  font-size: 1.5rem;
+}
+
+.support-ticket-modal__title h3 {
+  font-size: var(--font-size-heading-sm);
+  font-weight: var(--font-weight-heading-md);
+  color: var(--color-text-primary);
+}
+
+.support-ticket-modal__subtitle {
+  font-size: var(--font-size-body);
+  color: var(--color-text-gray-tertiary);
+  font-weight: var(--font-weight-display-semibold);
+}
+.support-ticket-modal__informations {
+  display: flex;
+  padding: var(--space-12) var(--space-16);
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+  background-color: var(--color-background-modal-header);
+  flex-direction: row;
+  gap: var(--space-16);
+  width: 100%;
+  align-items: center;
+}
+
+.support-ticket-modal__informations__item1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.support-ticket-modal__informations__item1 span,
+.support-ticket-modal__informations__item2 span {
+  color: var(--color-text-gray-secondary);
+  font-weight: var(--font-weight-body-medium);
+}
+
+.support-ticket-modal__informations__item1 p,
+.support-ticket-modal__informations__item2 p {
+  color: var(--color-text-gray-primary);
+  font-weight: var(--font-weight-heading-sm);
+}
+
+.support-ticket-modal__informations__item2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.support-ticket-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.support-ticket-modal__form_body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--space-16);
+}
+
+.support-ticket-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.support-ticket-title label {
+  color: var(--color-text-gray-tertiary);
+  font-weight: var(--font-weight-label);
+  font-size: var(--font-size-body-lead);
+}
+
+.support-ticket-title input {
+  padding: var(--space-8);
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-gray);
+  font-size: var(--font-size-body-md);
+}
+
+.support-ticket-title input:focus {
+  outline: none;
+  border-color: var(--color-border-gray);
+  box-shadow: 0 0 0 1px var(--color-gray);
+}
+
+.support-ticket-character-count {
+  align-self: flex-end;
+  color: var(--color-text-gray-secondary);
+  font-size: var(--font-size-caption);
+  line-height: 1;
+}
+
+.support-ticket-description textarea:focus {
+  outline: none;
+  border-color: var(--color-border-gray);
+  box-shadow: 0 0 0 1px var(--color-gray);
+}
+
+.support-ticket-description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.support-ticket-description label {
+  color: var(--color-text-gray-tertiary);
+  font-weight: var(--font-weight-label);
+  font-size: var(--font-size-body-lead);
+}
+
+.support-ticket-description textarea {
+  padding: var(--space-24);
+  height: 10rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-gray);
+  font-size: var(--font-size-body);
+  resize: none;
+}
+
+.support-ticket-modal__form__button {
+  display: flex;
+  gap: var(--space-32);
+  margin-top: var(--space-8);
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.support-ticket-modal__form__button button {
+  display: flex;
+  background-color: var(--color-primary);
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-16);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-surface-white);
+}
+
+.support-ticket-modal__form__button button:disabled {
+  background-color: var(--color-gray);
+  cursor: not-allowed;
+  opacity: 0.6;
+}

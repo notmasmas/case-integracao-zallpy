@@ -105,6 +105,24 @@
   outline: none;
 }
 
+.input[aria-invalid="true"] {
+  border-color: var(--color-warning-default);
+}
+
+.helperText,
+.errorText {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-caption-regular);
+}
+
+.helperText {
+  color: var(--color-text-gray-primary);
+}
+
+.errorText {
+  color: var(--color-warning-default);
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

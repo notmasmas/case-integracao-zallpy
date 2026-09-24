@@ -30,7 +30,7 @@ export type SupportTicket = {
 };
 
 export const supportTicketMock1: SupportTicket = {
-  id: "ID-2026-0001",
+  id: "01",
   createdAT: new Date("2026-09-10T09:00:00"),
   title: "Monitoramento do sistema indisponível",
   category: ticketCategory.system_monitoring,
@@ -38,14 +38,14 @@ export const supportTicketMock1: SupportTicket = {
 };
 
 export const supportTicketMock2: SupportTicket = {
-  id: "ID-2026-0002",
+  id: "02",
   createdAT: new Date("2026-09-12T14:30:00"),
   title: "Dúvida sobre a geração de energia",
   category: ticketCategory.energy_generation,
-  status: "waiting_customer",
+  status: "resolved",
 };
 export const supportTicketMock3: SupportTicket = {
-  id: "ID-2026-0003",
+  id: "03",
   createdAT: new Date("2026-09-15T11:15:00"),
   title: "Problema com o equipamento",
   category: ticketCategory.equipment,
@@ -53,7 +53,7 @@ export const supportTicketMock3: SupportTicket = {
 };
 
 export const supportTicketMock4: SupportTicket = {
-  id: "ID-2026-0004",
+  id: "04",
   createdAT: new Date("2026-09-18T16:45:00"),
   title: "Solicitação de manutenção",
   category: ticketCategory.maintenance,
@@ -61,7 +61,7 @@ export const supportTicketMock4: SupportTicket = {
 };
 
 export const supportTicketMock5: SupportTicket = {
-  id: "ID-2026-0005",
+  id: "05",
   createdAT: new Date("2026-09-20T10:30:00"),
   title: "Agendamento de instalação",
   category: ticketCategory.installation,
@@ -69,7 +69,7 @@ export const supportTicketMock5: SupportTicket = {
 };
 
 export const supportTicketMock6: SupportTicket = {
-  id: "ID-2026-0006",
+  id: "06",
   createdAT: new Date("2026-09-22T13:00:00"),
   title: "Dúvida sobre pagamento",
   category: ticketCategory.payment,
