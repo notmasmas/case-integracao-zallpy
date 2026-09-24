@@ -1,4 +1,4 @@
-package com.branch_master.ecovolt360.ticket;
+package com.branch_master.ecovolt360.ticket.enums;
 
 public enum TicketCategory {
     SYSTEM_MONITORING,

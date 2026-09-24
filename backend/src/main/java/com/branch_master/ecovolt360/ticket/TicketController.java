@@ -21,13 +21,11 @@ public class TicketController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<TicketDetailsDTO> createTicket(@RequestHeader(value = "Authorization") String authorization,
-                                                         @RequestBody @Valid TicketBodyDTO ticket,
+    public ResponseEntity<TicketDetailsDTO> createTicket(@RequestBody @Valid TicketBodyDTO ticket,
                                                          UriComponentsBuilder uriBuilder) {
+        UUID customerId = UUID.randomUUID(); // temp
 
-        String token = authorization.substring(7);
-
-        TicketDetailsDTO newTicket = ticketService.processTicket(String.valueOf(UUID.randomUUID()), ticket);
+        TicketDetailsDTO newTicket = ticketService.processTicket(customerId, ticket);
         URI uri = uriBuilder.path("/tickets/{id}").buildAndExpand(newTicket.id()).toUri();
 
         return ResponseEntity.created(uri).body(newTicket);
