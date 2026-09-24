@@ -39,6 +39,10 @@
   gap: var(--space-16);
 }
 
+.fields[hidden] {
+  display: none;
+}
+
 .fieldsRow {
   display: flex;
   flex-direction: column;
@@ -67,13 +71,7 @@
 }
 
 .dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-full);
   background-color: var(--color-gray);
-  cursor: pointer;
 }
 
 .dotActive {
@@ -88,6 +86,7 @@
 
 .input {
   width: 100%;
+  height: auto;
   padding: var(--space-12);
   border: 1px solid var(--color-border-gray);
   border-radius: var(--radius-lg);
@@ -107,19 +106,14 @@
 }
 
 .actions {
+  display: flex;
+  justify-content: flex-end;
   margin-top: var(--space-24);
 }
 
 .submit {
-  width: 100%;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  padding: var(--space-16) var(--space-24);
-  border-radius: var(--radius-lg);
   background-color: var(--color-primary);
   color: var(--color-surface-white);
-  font-size: var(--font-size-heading-sm);
   font-weight: var(--font-weight-heading-sm);
 }
 

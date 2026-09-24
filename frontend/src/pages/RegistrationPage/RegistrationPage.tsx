@@ -1,23 +1,24 @@
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import Logo from "../../assets/logo.svg";
 import RegistrationForms from "./Components/RegistrationForms";
 import styles from "./RegistrationPage.module.css";
 
 function RegistrationPage() {
   return (
-    <div className={styles.page}>
-      <div className={styles.layout}>
-        <section className={styles.brand}>
-          <img className={styles.logo} src={Logo} alt="Logo EcoVolt 360" />
-          <h1 className={styles.slogan}>
+    <Box className={styles.page}>
+      <Flex className={styles.layout}>
+        <Flex as="section" className={styles.brand}>
+          <Image className={styles.logo} src={Logo} alt="Logo EcoVolt 360" />
+          <Heading as="h1" className={styles.slogan}>
             Onde há Sol, <br /> há energia
-          </h1>
-        </section>
+          </Heading>
+        </Flex>
 
-        <section className={styles.form}>
+        <Flex as="section" className={styles.form}>
           <RegistrationForms />
-        </section>
-      </div>
-    </div>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }
 
