@@ -1,72 +1,71 @@
 .sidebar-wrapper {
-    position: fixed;
-    z-index: 2;
-    top: 0;
-    left: 0;
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
-    height: 100vh;
-    width: var(--sidebar-width);
-    background-color: var(--sidebar-light);
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-light);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.14);
 }
 
 .profile-wrapper {
-    display: flex;
-    padding: 20px;
-    justify-content: space-around;
-    align-items: center;
-    background-color: var(--primary);
-    border-radius: 15px;
-    width: 200px;
-    height: 57px;
-    margin-bottom: 64px;
+  display: flex;
+  padding: 20px;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--primary);
+  border-radius: 15px;
+  width: 200px;
+  height: 57px;
+  margin-bottom: 64px;
 }
 
 .profile-picture {
-    width: 32px;
-    height: 32px;
-    border-radius: 9999px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
 }
 
 .profile-wrapper p {
-    font-size: 14px;
-    font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 ul {
-    font-size: 18px;
-    font-weight: bold;
-    color: black;
-    line-height: 2em;
-    text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+  line-height: 2em;
+  text-align: flex-start;
 }
 
 .sidebar-links {
-    width: 100%;
-    font-size: 18px;
-    font-weight: bold;
-    color: black;
-    line-height: 2em;
-    text-align: center;
+  width: 100%;
+  font-size: 18px;
+  font-weight: Var(--font-weight-display-semibold);
+  color: var(--color-text-tertiary);
+  line-height: 2em;
 }
 
 .sidebar-links a {
-    position: relative;
-    display: block;
-    padding-left: 30px;
-    white-space: nowrap;
+  position: relative;
+  display: block;
+  padding-left: 30px;
+  white-space: nowrap;
 }
 
 .sidebar-links a.active::before {
-    content: "";
-    position: absolute;
-    left: -30px;
-    top: 0;
-    width: 10px;
-    height: 100%;
-    background-color: var(--primary);
+  content: "";
+  position: absolute;
+  left: -30px;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background-color: var(--primary);
 }
