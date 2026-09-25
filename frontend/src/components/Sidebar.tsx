@@ -19,7 +19,7 @@ export default function Sidebar({ requestContext }: SidebarProps) {
       </div>
       <ul className="sidebar-links">
         <li>
-          <NavLink to="/painel-cliente">Painel do Cliente</NavLink>
+          <NavLink to="/home">Painel do Cliente</NavLink>
         </li>
         <li>
           <NavLink to="/tickets">Chamados</NavLink>

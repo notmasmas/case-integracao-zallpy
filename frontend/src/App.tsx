@@ -10,8 +10,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/painel-cliente" element={<PanelBase />} />
-        <Route path="/cadastro" element={<RegistrationPage />} />
+        <Route path="/home" element={<PanelBase />} />
+        <Route path="/customer-registration" element={<RegistrationPage />} />
       </Routes>
     </BrowserRouter>
   );

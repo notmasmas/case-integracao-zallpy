@@ -27,6 +27,7 @@ import {
   hasErrors,
   initialRegistrationValues,
   onlyDigits,
+  stepFields,
   validateField,
   validateStep,
   validationMessages,
@@ -133,6 +134,7 @@ function RegistrationForms() {
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
   const zipCodeRequestRef = useRef<AbortController | null>(null);
   const numberInputRef = useRef<HTMLInputElement>(null);
+  const submitRequestedRef = useRef(false);
 
   useEffect(() => () => zipCodeRequestRef.current?.abort(), []);
 
@@ -214,16 +216,13 @@ function RegistrationForms() {
 
   function handleBlur(field: RegistrationField) {
     return () => {
-      // Keep the lookup error visible instead of overwriting it on blur.
-      if (field === "zipCode" && isFetchingAddress) return;
-      if (
-        field === "zipCode" &&
-        (errors.zipCode === validationMessages.zipCodeNotFound ||
-          errors.zipCode === validationMessages.zipCodeUnavailable)
-      ) {
-        return;
-      }
-      setFieldError(field, validateField(field, values));
+      // Address fields are validated only when the user clicks Cadastrar.
+      if (stepFields[1].includes(field)) return;
+
+      const message = validateField(field, values);
+      // "Campo obrigatório." is shown on the step arrow and on submit.
+      if (message === validationMessages.required) return;
+      setFieldError(field, message);
     };
   }
 
@@ -244,12 +243,29 @@ function RegistrationForms() {
         setErrors((prev) => ({ ...prev, ...stepErrors }));
         return;
       }
+      // Address warnings belong to Cadastrar, not to opening this step.
+      setErrors((prev) => {
+        const next = { ...prev };
+        for (const field of stepFields[1]) {
+          if (
+            next[field] === validationMessages.zipCodeNotFound ||
+            next[field] === validationMessages.zipCodeUnavailable
+          ) {
+            continue;
+          }
+          next[field] = undefined;
+        }
+        return next;
+      });
     }
     setStep(target);
   }
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    const requested = submitRequestedRef.current;
+    submitRequestedRef.current = false;
+    if (!requested) return;
 
     const personalErrors = validateStep(values, 0);
     const addressErrors = validateStep(values, 1);
@@ -426,23 +442,31 @@ function RegistrationForms() {
       <Flex className={styles.actions}>
         {step === 0 ? (
           <Button
+            key="next-step"
             type="button"
             aria-label="Próxima etapa"
             size="xl"
             width="1/5"
             rounded="lg"
             className={styles.submit}
-            onClick={() => goToStep(1)}
+            onClick={(event) => {
+              event.preventDefault();
+              goToStep(1);
+            }}
           >
             →
           </Button>
         ) : (
           <Button
+            key="register"
             type="submit"
             size="xl"
             width="full"
             rounded="lg"
             className={styles.submit}
+            onClick={() => {
+              submitRequestedRef.current = true;
+            }}
           >
             Cadastrar
           </Button>
