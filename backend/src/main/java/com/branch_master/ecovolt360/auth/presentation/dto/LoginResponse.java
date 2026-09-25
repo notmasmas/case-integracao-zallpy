@@ -13,6 +13,6 @@ public record LoginResponse(
 ){
     @Override
     public String toString() {
-        return "LoginReponse[userId=" + userId + ",role=" + role "]";
+        return "LoginReponse[userId=" + userId + ",role=" + role + "]";
     }
 }
