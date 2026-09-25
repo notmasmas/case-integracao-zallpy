@@ -4,6 +4,9 @@ import com.branch_master.ecovolt360.ticket.enums.TicketCategory;
 import com.branch_master.ecovolt360.ticket.enums.TicketStatus;
 import com.branch_master.ecovolt360.ticket.dto.TicketBodyDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -11,6 +14,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name="tickets")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Ticket {
 
     @Id
@@ -40,9 +46,7 @@ public class Ticket {
 
     private ZonedDateTime createdAt;
 
-    public Ticket() {}
-
-        public Ticket(UUID userId, TicketBodyDTO ticketDTO) {
+    public Ticket(UUID userId, TicketBodyDTO ticketDTO) {
         this.projectId = ticketDTO.projectId();
         this.customerId = userId;
         this.supportId = null;
@@ -51,77 +55,5 @@ public class Ticket {
         this.category = null;
         this.status = TicketStatus.PENDING;
         this.createdAt = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
-    }
-
-    public UUID getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(UUID projectId) {
-        this.projectId = projectId;
-    }
-
-    public UUID getSupportId() {
-        return supportId;
-    }
-
-    public void setSupportId(UUID supportId) {
-        this.supportId = supportId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public TicketCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(TicketCategory category) {
-        this.category = category;
-    }
-
-    public TicketStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TicketStatus status) {
-        this.status = status;
-    }
-
-    public ZonedDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(ZonedDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
