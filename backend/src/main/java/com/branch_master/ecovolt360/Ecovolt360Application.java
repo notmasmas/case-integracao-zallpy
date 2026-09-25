@@ -7,6 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Ecovolt360Application {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(Ecovolt360Application.class, args);
+
+//		User user1 = new User();
+
 	}
 }
