@@ -2,6 +2,7 @@ import { Avatar } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import type { RequestContext } from "../models/request";
+import { paths } from "../routes/routes";
 
 type SidebarProps = {
   requestContext: RequestContext;
@@ -19,7 +20,7 @@ export default function Sidebar({ requestContext }: SidebarProps) {
       </div>
       <ul className="sidebar-links">
         <li>
-          <NavLink to="/home">Painel do Cliente</NavLink>
+          <NavLink to={paths.panel}>Painel do Cliente</NavLink>
         </li>
         <li>
           <NavLink to="/tickets">Chamados</NavLink>

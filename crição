@@ -1,0 +1,234 @@
+warning: in the working copy of '.idea/workspace.xml', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex 496ee2c..4befed3 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -1 +1,2 @@[m
+[31m-.DS_Store[m
+\ No newline at end of file[m
+[32m+[m[32m.DS_Store[m
+[32m+[m[32m.idea[m
+[1mdiff --git a/.idea/workspace.xml b/.idea/workspace.xml[m
+[1mindex 492ed37..b6b9d37 100644[m
+[1m--- a/.idea/workspace.xml[m
+[1m+++ b/.idea/workspace.xml[m
+[36m@@ -1,7 +1,13 @@[m
+ <?xml version="1.0" encoding="UTF-8"?>[m
+ <project version="4">[m
+[32m+[m[32m  <component name="AutoImportSettings">[m
+[32m+[m[32m    <option name="autoReloadType" value="SELECTIVE" />[m
+[32m+[m[32m  </component>[m
+   <component name="ChangeListManager">[m
+[31m-    <list default="true" id="3b39f02f-2082-4628-a558-387adbce04a1" name="Changes" comment="" />[m
+[32m+[m[32m    <list default="true" id="3b39f02f-2082-4628-a558-387adbce04a1" name="Changes" comment="">[m
+[32m+[m[32m      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />[m
+[32m+[m[32m      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />[m
+[32m+[m[32m    </list>[m
+     <option name="SHOW_DIALOG" value="false" />[m
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />[m
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />[m
+[36m@@ -10,22 +16,85 @@[m
+   <component name="Git.Settings">[m
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />[m
+   </component>[m
+[31m-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{[m
+[31m-  "lastFilter": {[m
+[31m-    "state": "OPEN",[m
+[31m-    "assignee": "George-Abreu-git"[m
+[32m+[m[32m  <component name="GitHubPullRequestSearchHistory">{[m
+[32m+[m[32m  &quot;lastFilter&quot;: {[m
+[32m+[m[32m    &quot;state&quot;: &quot;OPEN&quot;,[m
+[32m+[m[32m    &quot;assignee&quot;: &quot;George-Abreu-git&quot;[m
+   }[m
+[31m-}]]></component>[m
+[31m-  <component name="GithubPullRequestsUISettings"><![CDATA[{[m
+[31m-  "selectedUrlAndAccountId": {[m
+[31m-    "url": "https://github.com/notmasmas/case-integracao-zallpy.git",[m
+[31m-    "accountId": "007c263a-b263-4e86-9602-c31e5aa03c66"[m
+[32m+[m[32m}</component>[m
+[32m+[m[32m  <component name="GithubPullRequestsUISettings">{[m
+[32m+[m[32m  &quot;selectedUrlAndAccountId&quot;: {[m
+[32m+[m[32m    &quot;url&quot;: &quot;https://github.com/notmasmas/case-integracao-zallpy.git&quot;,[m
+[32m+[m[32m    &quot;accountId&quot;: &quot;007c263a-b263-4e86-9602-c31e5aa03c66&quot;[m
+   }[m
+[31m-}]]></component>[m
+[31m-  <component name="ProjectColorInfo"><![CDATA[{[m
+[31m-  "customColor": "",[m
+[31m-  "associatedIndex": 8[m
+[31m-}]]></component>[m
+[32m+[m[32m}</component>[m
+[32m+[m[32m  <component name="McpProjectServerCommands">[m
+[32m+[m[32m    <commands />[m
+[32m+[m[32m    <urls />[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m  <component name="NextEditCompletionFeaturesState">[m
+[32m+[m[32m    <decayedCancelled>[m
+[32m+[m[32m      <entry key="MS100" value="1.0" />[m
+[32m+[m[32m      <entry key="MS500" value="1.0" />[m
+[32m+[m[32m      <entry key="S2" value="1.0000000000016918" />[m
+[32m+[m[32m      <entry key="S5" value="1.000023376342499" />[m
+[32m+[m[32m      <entry key="S10" value="1.0078612756156102" />[m
+[32m+[m[32m      <entry key="S30" value="1.5673600776371257" />[m
+[32m+[m[32m      <entry key="S60" value="2.8941478915734082" />[m
+[32m+[m[32m      <entry key="M2" value="4.589575486679787" />[m
+[32m+[m[32m      <entry key="M5" value="6.339687096819348" />[m
+[32m+[m[32m      <entry key="M10" value="7.148459161384548" />[m
+[32m+[m[32m      <entry key="M15" value="7.8689878285056745" />[m
+[32m+[m[32m      <entry key="M30" value="14.118609614781633" />[m
+[32m+[m[32m      <entry key="H1" value="32.712257056183276" />[m
+[32m+[m[32m      <entry key="H2" value="57.69932271502126" />[m
+[32m+[m[32m      <entry key="H4" value="78.73964684312142" />[m
+[32m+[m[32m      <entry key="D1" value="103.15787747948687" />[m
+[32m+[m[32m      <entry key="W1" value="108.14336545280923" />[m
+[32m+[m[32m    </decayedCancelled>[m
+[32m+[m[32m    <decayedSelected>[m
+[32m+[m[32m      <entry key="MS100" value="5.7400989714194636E-291" />[m
+[32m+[m[32m      <entry key="MS500" value="8.949193038389073E-59" />[m
+[32m+[m[32m      <entry key="S2" value="3.075714138559459E-15" />[m
+[32m+[m[32m      <entry key="S5" value="1.567394749460345E-6" />[m
+[32m+[m[32m      <entry key="S10" value="0.0012519563688325344" />[m
+[32m+[m[32m      <entry key="S30" value="0.10777790346024865" />[m
+[32m+[m[32m      <entry key="S60" value="0.32829545147663663" />[m
+[32m+[m[32m      <entry key="M2" value="0.5729707247989527" />[m
+[32m+[m[32m      <entry key="M5" value="0.8003020191956213" />[m
+[32m+[m[32m      <entry key="M10" value="0.8979234128258802" />[m
+[32m+[m[32m      <entry key="M15" value="0.971918755547942" />[m
+[32m+[m[32m      <entry key="M30" value="1.546227607691638" />[m
+[32m+[m[32m      <entry key="H1" value="3.134256773807153" />[m
+[32m+[m[32m      <entry key="H2" value="5.13758798665192" />[m
+[32m+[m[32m      <entry key="H4" value="6.754073610435644" />[m
+[32m+[m[32m      <entry key="D1" value="8.572523662328463" />[m
+[32m+[m[32m      <entry key="W1" value="8.937485823557987" />[m
+[32m+[m[32m    </decayedSelected>[m
+[32m+[m[32m    <decayedShown>[m
+[32m+[m[32m      <entry key="MS100" value="0.7900413118633771" />[m
+[32m+[m[32m      <entry key="MS500" value="0.9539595505475581" />[m
+[32m+[m[32m      <entry key="S2" value="0.9882856515023648" />[m
+[32m+[m[32m      <entry key="S5" value="0.9953221505094785" />[m
+[32m+[m[32m      <entry key="S10" value="1.00664126543376" />[m
+[32m+[m[32m      <entry key="S30" value="1.6712502742178845" />[m
+[32m+[m[32m      <entry key="S60" value="3.2172859404790746" />[m
+[32m+[m[32m      <entry key="M2" value="5.158149804739103" />[m
+[32m+[m[32m      <entry key="M5" value="7.1375444487731485" />[m
+[32m+[m[32m      <entry key="M10" value="8.044987964524656" />[m
+[32m+[m[32m      <entry key="M15" value="8.839729904894966" />[m
+[32m+[m[32m      <entry key="M30" value="15.662898257779302" />[m
+[32m+[m[32m      <entry key="H1" value="35.84366591844037" />[m
+[32m+[m[32m      <entry key="H2" value="62.83431448879193" />[m
+[32m+[m[32m      <entry key="H4" value="85.49195222806071" />[m
+[32m+[m[32m      <entry key="D1" value="111.73001861602003" />[m
+[32m+[m[32m      <entry key="W1" value="117.08079411640304" />[m
+[32m+[m[32m    </decayedShown>[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m  <component name="ProjectColorInfo">{[m
+[32m+[m[32m  &quot;customColor&quot;: &quot;&quot;,[m
+[32m+[m[32m  &quot;associatedIndex&quot;: 8[m
+[32m+[m[32m}</component>[m
+   <component name="ProjectId" id="3JKZod4kR8tLnDihaIDIQoid4iU" />[m
+   <component name="ProjectViewState">[m
+     <option name="hideEmptyMiddlePackages" value="true" />[m
+[36m@@ -34,14 +103,36 @@[m
+   <component name="PropertiesComponent"><![CDATA[{[m
+   "keyToString": {[m
+     "ModuleVcsDetector.initialDetectionPerformed": "true",[m
+[32m+[m[32m    "RunOnceActivity.MCP Project settings loaded": "true",[m
+     "RunOnceActivity.ShowReadmeOnStart": "true",[m
+     "RunOnceActivity.git.unshallow": "true",[m
+     "RunOnceActivity.typescript.service.memoryLimit.init": "true",[m
+     "codeWithMe.voiceChat.enabledByDefault": "false",[m
+[31m-    "git-widget-placeholder": "develop",[m
+[31m-    "kotlin-language-version-configured": "true"[m
+[32m+[m[32m    "git-widget-placeholder": "us01/scrum137",[m
+[32m+[m[32m    "kotlin-language-version-configured": "true",[m
+[32m+[m[32m    "node.js.detected.package.eslint": "true",[m
+[32m+[m[32m    "node.js.detected.package.jshint": "true",[m
+[32m+[m[32m    "node.js.detected.package.tslint": "true",[m
+[32m+[m[32m    "node.js.selected.package.eslint": "(autodetect)",[m
+[32m+[m[32m    "node.js.selected.package.jshint": "",[m
+[32m+[m[32m    "node.js.selected.package.tslint": "(autodetect)",[m
+[32m+[m[32m    "nodejs_package_manager_path": "npm",[m
+[32m+[m[32m    "project.structure.last.edited": "Project",[m
+[32m+[m[32m    "project.structure.proportion": "0.0",[m
+[32m+[m[32m    "project.structure.side.proportion": "0.0"[m
+[32m+[m[32m  },[m
+[32m+[m[32m  "keyToStringList": {[m
+[32m+[m[32m    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [[m
+[32m+[m[32m      "JAVA"[m
+[32m+[m[32m    ][m
+   }[m
+ }]]></component>[m
+[32m+[m[32m  <component name="RecentsManager">[m
+[32m+[m[32m    <key name="MoveFile.RECENT_KEYS">[m
+[32m+[m[32m      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy\backend\src\main\java\com\branch_master\ecovolt360\users\domain" />[m
+[32m+[m[32m      <recent name="C:\Users\george.siqueira\IdeaProjects\case-integracao-zallpy\backend\src\main\java\com\branch_master\ecovolt360\users" />[m
+[32m+[m[32m    </key>[m
+[32m+[m[32m  </component>[m
+   <component name="RunManager">[m
+     <configuration default="true" type="JetRunConfigurationType">[m
+       <module name="case-integracao-zallpy" />[m
+[36m@@ -76,4 +167,64 @@[m
+   <component name="TypeScriptGeneratedFilesManager">[m
+     <option name="version" value="3" />[m
+   </component>[m
+[32m+[m[32m  <component name="Vcs.Log.Tabs.Properties">[m
+[32m+[m[32m    <option name="OPEN_GENERIC_TABS">[m
+[32m+[m[32m      <map>[m
+[32m+[m[32m        <entry key="e48e71e9-15e7-4279-9af9-f82228745982" value="TOOL_WINDOW" />[m
+[32m+[m[32m      </map>[m
+[32m+[m[32m    </option>[m
+[32m+[m[32m    <option name="RECENT_FILTERS">[m
+[32m+[m[32m      <map>[m
+[32m+[m[32m        <entry key="Branch">[m
+[32m+[m[32m          <value>[m
+[32m+[m[32m            <list>[m
+[32m+[m[32m              <RecentGroup>[m
+[32m+[m[32m                <option name="FILTER_VALUES">[m
+[32m+[m[32m                  <option value="george/teste-login" />[m
+[32m+[m[32m                </option>[m
+[32m+[m[32m              </RecentGroup>[m
+[32m+[m[32m            </list>[m
+[32m+[m[32m          </value>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m      </map>[m
+[32m+[m[32m    </option>[m
+[32m+[m[32m    <option name="TAB_STATES">[m
+[32m+[m[32m      <map>[m
+[32m+[m[32m        <entry key="MAIN">[m
+[32m+[m[32m          <value>[m
+[32m+[m[32m            <State>[m
+[32m+[m[32m              <option name="FILTERS">[m
+[32m+[m[32m                <map>[m
+[32m+[m[32m                  <entry key="branch">[m
+[32m+[m[32m                    <value>[m
+[32m+[m[32m                      <list>[m
+[32m+[m[32m                        <option value="george/teste-login" />[m
+[32m+[m[32m                      </list>[m
+[32m+[m[32m                    </value>[m
+[32m+[m[32m                  </entry>[m
+[32m+[m[32m                </map>[m
+[32m+[m[32m              </option>[m
+[32m+[m[32m            </State>[m
+[32m+[m[32m          </value>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m        <entry key="e48e71e9-15e7-4279-9af9-f82228745982">[m
+[32m+[m[32m          <value>[m
+[32m+[m[32m            <State>[m
+[32m+[m[32m              <option name="FILTERS">[m
+[32m+[m[32m                <map>[m
+[32m+[m[32m                  <entry key="branch">[m
+[32m+[m[32m                    <value>[m
+[32m+[m[32m                      <list>[m
+[32m+[m[32m                        <option value="george/teste-login" />[m
+[32m+[m[32m                      </list>[m
+[32m+[m[32m                    </value>[m
+[32m+[m[32m                  </entry>[m
+[32m+[m[32m                </map>[m
+[32m+[m[32m              </option>[m
+[32m+[m[32m            </State>[m
+[32m+[m[32m          </value>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m      </map>[m
+[32m+[m[32m    </option>[m
+[32m+[m[32m  </component>[m
+ </project>[m
+\ No newline at end of file[m
