@@ -16,4 +16,5 @@ VALUES (
     'suporte@email.com',
     '248afa0d328e67db55738f227da784f77f30f28ee7f5ea273893c9ab03b62a1f5830018af9bfd95641663a65b95ffe45',
     'SUPPORT'
+    
 );
