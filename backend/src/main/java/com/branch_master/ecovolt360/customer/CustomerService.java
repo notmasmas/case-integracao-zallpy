@@ -35,6 +35,7 @@ public class CustomerService {
         UserBodyDTO userDTO = customerDTO.user();
 
         User user = userRepository.findByCpf(userDTO.cpf())
+                .filter(found -> "CUSTOMER".equals(found.getRole()))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "CPF não cadastrado."));
 
