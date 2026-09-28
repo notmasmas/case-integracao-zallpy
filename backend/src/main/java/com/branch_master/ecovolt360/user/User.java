@@ -1,6 +1,5 @@
 package com.branch_master.ecovolt360.user;
 
-import com.branch_master.ecovolt360.user.dto.UserBodyDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +28,4 @@ public class User {
     private String email;
     private String password;
     private String role;
-
-    public User(UserBodyDTO userDTO, String passwordHash, UUID addressId) {
-        this.name = userDTO.name();
-        this.email = userDTO.email();
-        this.password = passwordHash;
-        this.addressId = addressId;
-        this.role = "CUSTOMER";
-    }
 }

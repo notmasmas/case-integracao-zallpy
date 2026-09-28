@@ -14,6 +14,7 @@ function App() {
         <Routes>
           <Route path={paths.login} element={<Login />} />
           <Route path={paths.panel} element={<PanelBase />} />
+          <Route path={paths.registration} element={<RegistrationPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

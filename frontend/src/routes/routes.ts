@@ -1,6 +1,7 @@
 export const paths = {
   login: "/",
   panel: "/painel",
+  registration: "/cadastro",
 } as const;
 
 export type UserRole = "CUSTOMER" | "SUPPORT";

@@ -1,5 +1,6 @@
 export type RegistrationFormValues = {
   fullName: string;
+  cpf: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -22,6 +23,8 @@ export const PASSWORD_MAX_LENGTH = 25;
 export const validationMessages = {
   required: "Campo obrigatório.",
   email: "Informe um email válido.",
+  cpf: "Informe um CPF com 11 dígitos.",
+  cpfNotFound: "CPF não encontrado na base de clientes.",
   passwordLength: `A senha deve ter entre ${PASSWORD_MIN_LENGTH} e ${PASSWORD_MAX_LENGTH} caracteres.`,
   passwordPattern: "A senha deve conter letras e números.",
   passwordHint: `Use de ${PASSWORD_MIN_LENGTH} a ${PASSWORD_MAX_LENGTH} caracteres, com letras e números.`,
@@ -35,6 +38,7 @@ export const validationMessages = {
 
 export const initialRegistrationValues: RegistrationFormValues = {
   fullName: "",
+  cpf: "",
   email: "",
   password: "",
   confirmPassword: "",
@@ -48,7 +52,7 @@ export const initialRegistrationValues: RegistrationFormValues = {
 };
 
 export const stepFields: RegistrationField[][] = [
-  ["fullName", "email", "password", "confirmPassword"],
+  ["fullName", "cpf", "email", "password", "confirmPassword"],
   ["zipCode", "state", "city", "district", "street", "complement", "number"],
 ];
 
@@ -68,6 +72,20 @@ export function formatZipCode(value: string) {
   return digits.length > 5
     ? `${digits.slice(0, 5)}-${digits.slice(5)}`
     : digits;
+}
+
+export function formatCpf(value: string) {
+  const digits = onlyDigits(value).slice(0, 11);
+  if (digits.length > 9) {
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+  }
+  if (digits.length > 6) {
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+  }
+  if (digits.length > 3) {
+    return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+  }
+  return digits;
 }
 
 export function validatePassword(value: string) {
@@ -104,6 +122,9 @@ export function validateField(
     case "email":
       if (!value) return validationMessages.required;
       return EMAIL_PATTERN.test(value) ? undefined : validationMessages.email;
+    case "cpf":
+      if (!value) return validationMessages.required;
+      return onlyDigits(value).length === 11 ? undefined : validationMessages.cpf;
     case "zipCode":
       if (!value) return validationMessages.required;
       return onlyDigits(value).length === 8
