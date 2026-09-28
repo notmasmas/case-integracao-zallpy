@@ -1,0 +1,82 @@
+/* Mobile-first: base styles target small screens; 64rem is the main breakpoint. */
+
+.page {
+  min-height: 100vh;
+  padding-block: var(--space-24);
+  padding-inline: var(--space-16);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-32);
+  width: 100%;
+  min-height: calc(100vh - var(--space-48));
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  width: 100%;
+  min-width: 0;
+}
+
+.logo {
+  width: min(20rem, 70vw);
+  height: auto;
+}
+
+.slogan {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-instrument-serif);
+  font-size: clamp(2.25rem, 8vw, 3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .page {
+    padding-block: var(--space-32);
+    padding-inline-start: 0;
+    padding-inline-end: clamp(var(--space-16), 5vw, var(--space-64));
+  }
+
+  .layout {
+    flex-direction: row;
+    gap: var(--space-16);
+    min-height: calc(100vh - var(--space-64));
+  }
+
+  .brand {
+    flex: 1 1 45%;
+    align-items: flex-start;
+    gap: var(--space-32);
+  }
+
+  .logo {
+    width: min(30.625rem, 80%);
+  }
+
+  .slogan {
+    width: 80%;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+  }
+
+  .form {
+    flex: 1 1 55%;
+  }
+}

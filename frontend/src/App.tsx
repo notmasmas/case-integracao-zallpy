@@ -5,6 +5,7 @@ import PanelBase from "./pages/PanelBase/PanelBase";
 import Login from "./pages/LoginPage/LoginPage";
 import { AuthProvider } from "./context/AuthContext";
 import { paths } from "./routes/routes";
+import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 
 function App() {
   return (
