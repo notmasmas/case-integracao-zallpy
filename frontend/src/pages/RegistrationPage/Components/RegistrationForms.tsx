@@ -19,10 +19,14 @@ import {
   InputGroup,
   Spinner,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { FiUserPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import api from "../../../api/api";
 import { toaster } from "../../../components/ui/toaster";
+import { paths } from "../../../routes/routes";
 import {
+  formatCpf,
   formatZipCode,
   hasErrors,
   initialRegistrationValues,
@@ -108,19 +112,21 @@ function FormField({
   );
 }
 
-type RegistrationFormData = {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  address: {
-    zipCode: string;
-    state: string;
-    city: string;
-    district: string;
-    street: string;
-    complement: string;
-    number: string;
+type CustomerRequest = {
+  user: {
+    name: string;
+    email: string;
+    password: string;
+    cpf: string;
+    address: {
+      cep: string;
+      state: string;
+      city: string;
+      neighborhood: string;
+      street: string;
+      number: string;
+      complement: string;
+    };
   };
 };
 
@@ -132,6 +138,7 @@ function RegistrationForms() {
   );
   const [errors, setErrors] = useState<FormErrors>({});
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const zipCodeRequestRef = useRef<AbortController | null>(null);
   const numberInputRef = useRef<HTMLInputElement>(null);
   const submitRequestedRef = useRef(false);
@@ -192,6 +199,7 @@ function RegistrationForms() {
     return (event: ChangeEvent<HTMLInputElement>) => {
       let value = event.target.value;
       if (field === "zipCode") value = formatZipCode(value);
+      if (field === "cpf") value = formatCpf(value);
       if (field === "state") value = value.toUpperCase();
 
       const nextValues = { ...values, [field]: value };
@@ -261,11 +269,11 @@ function RegistrationForms() {
     setStep(target);
   }
 
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const requested = submitRequestedRef.current;
     submitRequestedRef.current = false;
-    if (!requested) return;
+    if (!requested || isSubmitting) return;
 
     const personalErrors = validateStep(values, 0);
     const addressErrors = validateStep(values, 1);
@@ -285,32 +293,59 @@ function RegistrationForms() {
     }
     if (hasErrors(addressErrors)) return;
 
-    const data: RegistrationFormData = {
-      fullName: values.fullName.trim(),
-      email: values.email.trim(),
-      password: values.password,
-      confirmPassword: values.confirmPassword,
-      address: {
-        zipCode: values.zipCode,
-        state: values.state.trim(),
-        city: values.city.trim(),
-        district: values.district.trim(),
-        street: values.street.trim(),
-        complement: values.complement.trim(),
-        number: values.number.trim(),
+    const body: CustomerRequest = {
+      user: {
+        name: values.fullName.trim(),
+        email: values.email.trim(),
+        password: values.password,
+        cpf: onlyDigits(values.cpf),
+        address: {
+          cep: values.zipCode,
+          state: values.state.trim(),
+          city: values.city.trim(),
+          neighborhood: values.district.trim(),
+          street: values.street.trim(),
+          number: values.number.trim(),
+          complement: values.complement.trim(),
+        },
       },
     };
 
-    // TODO: enviar `data` ao backend quando a API de cadastro existir e só
-    // mostrar o sucesso/redirecionar depois da resposta.
-    console.log(data);
+    setIsSubmitting(true);
+    try {
+      await api.post("/customers", body);
+      toaster.create({
+        type: "success",
+        title: "Cadastro realizado com sucesso!",
+        description: "Faça login para acessar sua conta.",
+      });
+      navigate(paths.login);
+    } catch (error) {
+      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+      const apiMessage = axios.isAxiosError(error)
+        ? (error.response?.data as { message?: string } | undefined)?.message
+        : undefined;
 
-    toaster.create({
-      type: "success",
-      title: "Cadastro realizado com sucesso!",
-      description: "Faça login para acessar sua conta.",
-    });
-    navigate("/");
+      if (status === 404) {
+        setFieldError("cpf", validationMessages.cpfNotFound);
+        setStep(0);
+      }
+
+      toaster.create({
+        type: "error",
+        title: "Não foi possível concluir o cadastro",
+        description:
+          status === 404
+            ? validationMessages.cpfNotFound
+            : status === 409 && apiMessage
+              ? apiMessage
+              : status
+                ? "Verifique os dados informados e tente novamente."
+                : "Não foi possível conectar ao servidor.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -336,6 +371,13 @@ function RegistrationForms() {
           label="Nome completo"
           placeholder="Digite seu nome completo"
           autoComplete="name"
+        />
+        <FormField
+          {...fieldProps("cpf")}
+          label="CPF"
+          placeholder="000.000.000-00"
+          inputMode="numeric"
+          maxLength={14}
         />
         <FormField
           {...fieldProps("email")}
@@ -464,6 +506,7 @@ function RegistrationForms() {
             width="full"
             rounded="lg"
             className={styles.submit}
+            loading={isSubmitting}
             onClick={() => {
               submitRequestedRef.current = true;
             }}

@@ -3,7 +3,7 @@ import axios from "axios";
 import api from "../../../api/api";
 import "../loginPage.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../../components/ui/toaster";
 import { useAuth } from "../../../context/AuthContext";
 import { paths, type UserRole } from "../../../routes/routes";
@@ -120,9 +120,9 @@ function LoginPageForm() {
         </Box>
       </Box>
       <Box className="login-form__footer">
-        <a className="login-form__link" href="/cadastro">
+        <Link className="login-form__link" to={paths.registration}>
           Primeiro acesso?
-        </a>
+        </Link>
         <a className="login-form__link" href="#">
           Perguntas frequentes
         </a>

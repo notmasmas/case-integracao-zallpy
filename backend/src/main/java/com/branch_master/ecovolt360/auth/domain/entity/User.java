@@ -3,7 +3,7 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 
-@Entity
+@Entity(name = "AuthUser")
 @Table(name = "users")
 public class  User {
 
@@ -26,6 +26,7 @@ public class  User {
     private String password;
 
 
+    @Column(name = "address_id")
     private UUID addressId;
 
     @Enumerated(EnumType.STRING)
