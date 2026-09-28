@@ -1,21 +1,53 @@
 import { Box, Button, Checkbox, Field, Input } from "@chakra-ui/react";
+import axios from "axios";
+import api from "../../../api/api";
 import "../loginPage.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toaster } from "../../../components/ui/toaster";
+import { useAuth } from "../../../context/AuthContext";
+import { paths, type UserRole } from "../../../routes/routes";
 
 type LoginPageFormProps = {
   email: string;
   password: string;
 };
+
 function LoginPageForm() {
+  const navigate = useNavigate();
+  const { setSession } = useAuth();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = (formData: LoginPageFormProps): void => {
+  const handleSubmit = async (formData: LoginPageFormProps): Promise<void> => {
     if (!formData.email.trim() || !formData.password.trim()) {
       toaster.create({
         title: "Login inválido",
         description: "Por favor, preencha todos os campos obrigatórios.",
+        type: "error",
+      });
+      return;
+    }
+    try {
+      const response = await api.post<{
+        role: UserRole;
+        name: string;
+        accessToken: string;
+      }>("/login", formData);
+      setSession({
+        role: response.data.role,
+        name: response.data.name,
+        accessToken: response.data.accessToken,
+      });
+      navigate(paths.panel);
+    } catch (error) {
+      const offline = axios.isAxiosError(error) && !error.response;
+      toaster.create({
+        title: "Login inválido",
+        description: offline
+          ? "Não foi possível conectar ao servidor."
+          : "E-mail ou senha inválidos.",
         type: "error",
       });
     }
@@ -88,7 +120,7 @@ function LoginPageForm() {
         </Box>
       </Box>
       <Box className="login-form__footer">
-        <a className="login-form__link" href="#">
+        <a className="login-form__link" href="/cadastro">
           Primeiro acesso?
         </a>
         <a className="login-form__link" href="#">
