@@ -120,7 +120,7 @@ function LoginPageForm() {
         </Box>
       </Box>
       <Box className="login-form__footer">
-        <a className="login-form__link" href="#">
+        <a className="login-form__link" href="/cadastro">
           Primeiro acesso?
         </a>
         <a className="login-form__link" href="#">
