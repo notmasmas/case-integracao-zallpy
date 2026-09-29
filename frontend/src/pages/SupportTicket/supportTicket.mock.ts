@@ -1,6 +1,7 @@
+import type { TicketStatus } from "../../models/ticketStatus";
+
 export const ticketCategory = {
   system_monitoring: "SYSTEM_MONITORING",
-  energy_generation: "ENERGY_GENERATION",
   equipment: "EQUIPMENT",
   installation: "INSTALLATION",
   maintenance: "MAINTENANCE",
@@ -13,13 +14,6 @@ export const ticketCategory = {
 
 export type TicketCategory =
   (typeof ticketCategory)[keyof typeof ticketCategory];
-
-export type TicketStatus =
-  | "under_review"
-  | "in_progress"
-  | "waiting_customer"
-  | "resolved"
-  | "closed";
 
 export type SupportTicket = {
   id: string;
@@ -41,7 +35,7 @@ export const supportTicketMock2: SupportTicket = {
   id: "02",
   createdAT: new Date("2026-09-12T14:30:00"),
   title: "Dúvida sobre a geração de energia",
-  category: ticketCategory.energy_generation,
+  category: ticketCategory.project,
   status: "resolved",
 };
 export const supportTicketMock3: SupportTicket = {

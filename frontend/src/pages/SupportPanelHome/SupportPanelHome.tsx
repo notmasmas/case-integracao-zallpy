@@ -5,6 +5,7 @@ import {
   supportPanelTicketsMock,
 } from "./supportTickets.mock";
 import { BsArrowRight } from "react-icons/bs";
+import TicketStatusBadge from "../../components/TicketStatusBadge";
 import "./SupportPanelHome.css";
 import { useState } from "react";
 
@@ -92,9 +93,7 @@ function SupportPanelHome() {
                 <p className="support-panel-ticket-category">
                   {ticket.category}
                 </p>
-                <p className="support-panel-ticket-status">
-                  {ticket.statusLabel}
-                </p>
+                <TicketStatusBadge status={ticket.status} />
               </Box>
               <Box className="support-panel-tickets__list__details">
                 <Box className="support-panel-tickets__list__title">
