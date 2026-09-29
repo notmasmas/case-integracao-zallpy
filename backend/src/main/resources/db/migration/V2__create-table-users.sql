@@ -1,10 +1,10 @@
 CREATE TABLE users (
-    id uuid,
-    name VARCHAR(100),
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
     phone VARCHAR(50),
-    cpf VARCHAR(15),
+    cpf VARCHAR(15) UNIQUE NOT NULL,
     address_id uuid REFERENCES addresses(id),
-    email VARCHAR(50),
+    email VARCHAR(50) UNIQUE,
     password VARCHAR(100),
     role VARCHAR(50),
 
