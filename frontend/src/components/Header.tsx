@@ -9,7 +9,7 @@ export default function Header({ requestContext }: HeaderProps) {
   return (
     <header className="header-wrapper">
       <p>
-        Olá, seja bem-vindo à {requestContext.requestName}!
+        Olá, seja bem-vindo(a) {requestContext.requestName}!
         <br />
         Acompanhe seu projeto, consulte suas informações e conte com nosso
         suporte sempre que precisar.
