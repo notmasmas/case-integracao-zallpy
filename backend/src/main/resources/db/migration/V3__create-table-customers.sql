@@ -1,6 +1,6 @@
 CREATE TABLE customers (
     id uuid,
-    user_id uuid REFERENCES users(id),
+    user_id uuid UNIQUE REFERENCES users(id),
 
     PRIMARY KEY (id)
 )
