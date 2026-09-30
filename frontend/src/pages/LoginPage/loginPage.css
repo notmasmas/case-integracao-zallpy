@@ -19,7 +19,9 @@
   font-size: clamp(2.25rem, 5vw, 3.75rem);
   font-family: var(--font-family-instrument-serif);
   font-weight: 400;
+  text-align: center;
   color: var(--color-text-primary);
+  line-height: 1.2;
 }
 
 .login-page__form {
