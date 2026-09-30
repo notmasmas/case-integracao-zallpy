@@ -1,6 +1,6 @@
 CREATE TABLE projects (
     id uuid,
-    customer_id uuid REFERENCES users(id),
+    customer_id uuid REFERENCES customers(id),
     address_id uuid REFERENCES addresses(id),
     name VARCHAR(50),
     status VARCHAR(50),
