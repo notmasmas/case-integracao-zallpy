@@ -1,6 +1,6 @@
-CREATE TABLE support (
+CREATE TABLE supports (
     id uuid,
-    support_id uuid REFERENCES users(id),
+    user_id uuid REFERENCES users(id),
 
     PRIMARY KEY (id)
 )
