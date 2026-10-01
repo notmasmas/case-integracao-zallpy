@@ -16,6 +16,8 @@ public record TicketDetailsDTO (
         String description,
         TicketCategory category,
         TicketStatus status,
+        Integer evaluate,
+        String evaluateComment,
         ZonedDateTime createdAt
 ) {
     public TicketDetailsDTO(Ticket ticket) {
@@ -28,6 +30,8 @@ public record TicketDetailsDTO (
             ticket.getDescription(),
             ticket.getCategory(),
             ticket.getStatus(),
+            ticket.getEvaluate(),
+            ticket.getEvaluateComment(),
             ticket.getCreatedAt()
         );
     }
