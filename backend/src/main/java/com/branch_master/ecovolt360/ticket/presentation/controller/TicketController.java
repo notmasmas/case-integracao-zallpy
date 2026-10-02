@@ -1,9 +1,7 @@
 package com.branch_master.ecovolt360.ticket.presentation.controller;
 
 import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
-import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
-import com.branch_master.ecovolt360.auth.presentation.security.RequiredRole;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
@@ -18,7 +16,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/tickets")
-@RequiredRole(Role.CUSTOMER)
 public class TicketController {
 
     private final TicketService ticketService;
