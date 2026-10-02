@@ -8,6 +8,7 @@ CREATE TABLE tickets (
     category VARCHAR(20),
     status VARCHAR(20),
     evaluate INT,
+    evaluate_comment VARCHAR(150),
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
 

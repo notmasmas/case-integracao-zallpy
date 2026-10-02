@@ -1,8 +1,5 @@
-package com.branch_master.ecovolt360.ticket;
+package com.branch_master.ecovolt360.ticket.domain.entity;
 
-import com.branch_master.ecovolt360.ticket.enums.TicketCategory;
-import com.branch_master.ecovolt360.ticket.enums.TicketStatus;
-import com.branch_master.ecovolt360.ticket.dto.TicketBodyDTO;
 import jakarta.persistence.*;
 
 import java.time.ZoneId;
@@ -40,14 +37,20 @@ public class Ticket {
 
     private ZonedDateTime createdAt;
 
+<<<<<<< HEAD:backend/src/main/java/com/branch_master/ecovolt360/ticket/Ticket.java
     public Ticket() {}
 
         public Ticket(UUID userId, TicketBodyDTO ticketDTO) {
         this.projectId = ticketDTO.projectId();
         this.customerId = userId;
+=======
+    public Ticket(UUID customerId, UUID projectId, String title, String description) {
+        this.projectId = projectId;
+        this.customerId = customerId;
+>>>>>>> 2dfbb6cd9966f31d43b7f3f11a2fbbe5e097e73b:backend/src/main/java/com/branch_master/ecovolt360/ticket/domain/entity/Ticket.java
         this.supportId = null;
-        this.title = ticketDTO.title();
-        this.description = ticketDTO.description();
+        this.title = title;
+        this.description = description;
         this.category = null;
         this.status = TicketStatus.PENDING;
         this.createdAt = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));

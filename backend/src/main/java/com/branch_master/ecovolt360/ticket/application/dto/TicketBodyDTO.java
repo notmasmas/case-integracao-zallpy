@@ -1,4 +1,4 @@
-package com.branch_master.ecovolt360.ticket.dto;
+package com.branch_master.ecovolt360.ticket.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

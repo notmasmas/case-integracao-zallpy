@@ -1,10 +1,10 @@
-package com.branch_master.ecovolt360.ticket;
+package com.branch_master.ecovolt360.ticket.presentation.controller;
 
-import com.branch_master.ecovolt360.ticket.dto.TicketBodyDTO;
-import com.branch_master.ecovolt360.ticket.dto.TicketDetailsDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
+import com.branch_master.ecovolt360.ticket.application.service.TicketService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,8 +16,11 @@ import java.util.UUID;
 @RequestMapping("/tickets")
 public class TicketController {
 
-    @Autowired
-    private TicketService ticketService;
+    private final TicketService ticketService;
+
+    public TicketController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
 
     @PostMapping
     @Transactional

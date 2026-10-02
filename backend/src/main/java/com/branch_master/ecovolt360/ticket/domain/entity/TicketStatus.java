@@ -1,4 +1,4 @@
-package com.branch_master.ecovolt360.ticket.enums;
+package com.branch_master.ecovolt360.ticket.domain.entity;
 
 public enum TicketStatus {
     PENDING,

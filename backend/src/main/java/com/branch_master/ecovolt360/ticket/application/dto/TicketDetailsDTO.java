@@ -1,8 +1,8 @@
-package com.branch_master.ecovolt360.ticket.dto;
+package com.branch_master.ecovolt360.ticket.application.dto;
 
-import com.branch_master.ecovolt360.ticket.Ticket;
-import com.branch_master.ecovolt360.ticket.enums.TicketCategory;
-import com.branch_master.ecovolt360.ticket.enums.TicketStatus;
+import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
