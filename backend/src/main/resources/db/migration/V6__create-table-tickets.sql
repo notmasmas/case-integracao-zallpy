@@ -3,7 +3,7 @@ CREATE TABLE tickets (
     customer_id uuid REFERENCES customers(id),
     support_id uuid REFERENCES support(id),
     project_id uuid REFERENCES projects(id),
-    title VARCHAR(20),
+    title VARCHAR(50),
     description VARCHAR(150),
     category VARCHAR(20),
     status VARCHAR(20),
