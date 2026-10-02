@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name="supports")
+@Table(name="support")
 @Getter
 @Setter
 @NoArgsConstructor
