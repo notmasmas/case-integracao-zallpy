@@ -1,6 +1,6 @@
 CREATE TABLE support (
     id uuid,
-    support_id uuid REFERENCES users(id),
+    user_id uuid UNIQUE REFERENCES users(id),
 
     PRIMARY KEY (id)
 )
