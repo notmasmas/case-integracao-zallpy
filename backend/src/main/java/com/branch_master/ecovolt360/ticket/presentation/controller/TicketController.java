@@ -5,6 +5,7 @@ import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
+import com.sun.security.auth.UserPrincipal;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
