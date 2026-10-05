@@ -3,6 +3,7 @@ package com.branch_master.ecovolt360.ticket.presentation.controller;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
+import com.sun.security.auth.UserPrincipal;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class TicketController {
     @PostMapping
     @Transactional
     public ResponseEntity<TicketDetailsDTO> createTicket(@RequestBody @Valid TicketBodyDTO ticket,
-                                                         // @AuthenticationPrincipal UserPrincipal currentUser
+                                                         //@AuthenticationPrincipal UserPrincipal currentUser
                                                          UriComponentsBuilder uriBuilder) {
         // UUID customerId = currentUser.getId();
         UUID customerId = UUID.randomUUID(); // temp
