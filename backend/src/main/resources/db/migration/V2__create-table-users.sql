@@ -6,7 +6,5 @@ CREATE TABLE users (
     address_id uuid REFERENCES addresses(id),
     email VARCHAR(50) UNIQUE,
     password VARCHAR(100),
-    role VARCHAR(50),
-
-    PRIMARY KEY (id)
+    role VARCHAR(50)
 )

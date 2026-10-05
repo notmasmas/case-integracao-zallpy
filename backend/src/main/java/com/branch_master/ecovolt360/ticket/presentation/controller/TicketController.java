@@ -1,5 +1,7 @@
 package com.branch_master.ecovolt360.ticket.presentation.controller;
 
+import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
+import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
@@ -26,14 +28,18 @@ public class TicketController {
     @PostMapping
     @Transactional
     public ResponseEntity<TicketDetailsDTO> createTicket(@RequestBody @Valid TicketBodyDTO ticket,
-                                                         //@AuthenticationPrincipal UserPrincipal currentUser
+                                                         @CurrentUser AuthenticatedUser currentUser,
                                                          UriComponentsBuilder uriBuilder) {
-        // UUID customerId = currentUser.getId();
-        UUID customerId = UUID.randomUUID(); // temp
-
-        TicketDetailsDTO newTicket = ticketService.processTicket(customerId, ticket);
+        TicketDetailsDTO newTicket = ticketService.processTicket(currentUser.userId(), ticket);
         URI uri = uriBuilder.path("/tickets/{id}").buildAndExpand(newTicket.id()).toUri();
 
         return ResponseEntity.created(uri).body(newTicket);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TicketDetailsDTO> getTicket(@PathVariable UUID id,
+                                                      @CurrentUser AuthenticatedUser currentUser) {
+        TicketDetailsDTO ticket = ticketService.getCustomerTicket(currentUser.userId(), id);
+        return ResponseEntity.ok(ticket);
     }
 }
