@@ -1,0 +1,40 @@
+.ticket-status-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-label);
+  white-space: nowrap;
+}
+
+.ticket-status-badge--pending {
+  color: var(--color-status-pending);
+  background-color: var(--color-status-pending-light);
+}
+
+.ticket-status-badge--under_review {
+  color: var(--color-status-under-review);
+  background-color: var(--color-status-under-review-light);
+}
+
+.ticket-status-badge--in_progress {
+  color: var(--color-status-in-progress);
+  background-color: var(--color-status-in-progress-light);
+}
+
+.ticket-status-badge--waiting_customer {
+  color: var(--color-status-waiting-customer);
+  background-color: var(--color-status-waiting-customer-light);
+}
+
+.ticket-status-badge--resolved {
+  color: var(--color-status-resolved);
+  background-color: var(--color-status-resolved-light);
+}
+
+.ticket-status-badge--closed {
+  color: var(--color-status-closed);
+  background-color: var(--color-status-closed-light);
+}
