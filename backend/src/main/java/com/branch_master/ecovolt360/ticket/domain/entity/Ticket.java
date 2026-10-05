@@ -20,16 +20,13 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "customer_id")
+    @Column(name = "customer_id")
     private UUID customerId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "support_id")
+    @Column(name = "support_id")
     private UUID supportId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "project_id")
+    @Column(name = "project_id")
     private UUID projectId;
 
     private String title;
@@ -41,7 +38,16 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
 
+    private Integer evaluate;
+
+    @Column(name = "evaluate_comment")
+    private String evaluateComment;
+
+    @Column(name = "created_at")
     private ZonedDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private ZonedDateTime updatedAt;
 
     public Ticket(UUID customerId, UUID projectId, String title, String description) {
         this.projectId = projectId;
@@ -51,6 +57,9 @@ public class Ticket {
         this.description = description;
         this.category = null;
         this.status = TicketStatus.PENDING;
+        this.evaluate = null;
+        this.evaluateComment = null;
         this.createdAt = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        this.updatedAt = this.createdAt;
     }
 }

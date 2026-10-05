@@ -1,7 +1,4 @@
-export type SupportPanelTicketStatus =
-  | "in_progress"
-  | "waiting_customer"
-  | "resolved";
+import type { TicketStatus } from "../../models/ticketStatus";
 
 export type SupportPanelTicketOwnerType = "current_user" | "third_party";
 
@@ -13,8 +10,7 @@ export const currentMockUser = {
 export type SupportPanelTicket = {
   id: string;
   category: string;
-  status: SupportPanelTicketStatus;
-  statusLabel: string;
+  status: TicketStatus;
   title: string;
   description: string;
   responsible: string;
@@ -28,7 +24,6 @@ export const supportPanelTicketsMock: SupportPanelTicket[] = [
     id: "ID-2026-0015",
     category: "Painel & Inversor",
     status: "in_progress",
-    statusLabel: "EM ANDAMENTO",
     title: "Inversor piscando luz vermelha",
     description:
       "Após a tempestade com raios ontem à noite, a caixinha do painel parou de atualizar.",
@@ -41,7 +36,6 @@ export const supportPanelTicketsMock: SupportPanelTicket[] = [
     id: "ID-2026-0014",
     category: "Monitoramento",
     status: "waiting_customer",
-    statusLabel: "AGUARDANDO CLIENTE",
     title: "Dados de geração desatualizados",
     description:
       "O painel de monitoramento não apresenta os dados de geração desde ontem.",
@@ -54,7 +48,6 @@ export const supportPanelTicketsMock: SupportPanelTicket[] = [
     id: "ID-2026-0012",
     category: "Equipamento",
     status: "resolved",
-    statusLabel: "RESOLVIDO",
     title: "Alerta de comunicação do inversor",
     description:
       "A comunicação foi restabelecida após a atualização da configuração do equipamento.",

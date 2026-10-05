@@ -53,6 +53,18 @@
   --color-warning-light: #fee4e2;
   --color-warning-on-default: #ffffff;
   --color-warning-on-light: var(--color-black);
+  --color-status-pending: #475467;
+  --color-status-pending-light: #f2f4f7;
+  --color-status-under-review: #6941c6;
+  --color-status-under-review-light: #f4ebff;
+  --color-status-in-progress: #175cd3;
+  --color-status-in-progress-light: #eff8ff;
+  --color-status-waiting-customer: #b54708;
+  --color-status-waiting-customer-light: #fffaeb;
+  --color-status-resolved: #5c6b0f;
+  --color-status-resolved-light: var(--color-success-light);
+  --color-status-closed: #ffffff;
+  --color-status-closed-light: #344054;
   --color-text-primary: var(--color-black);
   --color-text-gray-primary: #3f3f3f;
   --color-text-gray-secondary: #b1b1b1;

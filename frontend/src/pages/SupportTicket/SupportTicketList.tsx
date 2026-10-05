@@ -3,11 +3,11 @@ import {
   supportTicketsMock,
   type SupportTicket as SupportTicketData,
 } from "./supportTicket.mock";
+import TicketStatusBadge from "../../components/TicketStatusBadge";
 import "./SupportTicket.css";
 
 const categoryLabels: Record<SupportTicketData["category"], string> = {
   SYSTEM_MONITORING: "Monitoramento do sistema",
-  ENERGY_GENERATION: "Geração de energia",
   EQUIPMENT: "Equipamento",
   INSTALLATION: "Instalação",
   MAINTENANCE: "Manutenção",
@@ -16,14 +16,6 @@ const categoryLabels: Record<SupportTicketData["category"], string> = {
   PROJECT: "Projeto",
   ACCESS: "Acesso",
   OTHER: "Outro",
-};
-
-const statusLabels: Record<SupportTicketData["status"], string> = {
-  under_review: "Em análise",
-  in_progress: "Em andamento",
-  waiting_customer: "Aguardando cliente",
-  resolved: "Resolvido",
-  closed: "Encerrado",
 };
 
 // o backend ja pode retornar a data e o id formatado para o front end apenas renderizar
@@ -84,7 +76,9 @@ function SupportTicketList({
             </Box>
             <Box>{ticket.title}</Box>
             <Box>{categoryLabels[ticket.category]}</Box>
-            <Box>{statusLabels[ticket.status]}</Box>
+            <Box>
+              <TicketStatusBadge status={ticket.status} />
+            </Box>
             <Box>
               <Button className="support-ticket-item__button">
                 Ver detalhes
