@@ -4,6 +4,7 @@ import com.branch_master.ecovolt360.customer.domain.entity.Customer;
 import com.branch_master.ecovolt360.customer.domain.repository.CustomerRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,5 +24,10 @@ public class JpaCustomerRepository implements CustomerRepository {
     @Override
     public Customer save(Customer customer) {
         return repository.save(customer);
+    }
+
+    @Override
+    public Optional<Customer> findByUserId(UUID userId) {
+        return repository.findByUserId(userId);
     }
 }
