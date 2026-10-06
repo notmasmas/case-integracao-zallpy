@@ -1,0 +1,77 @@
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  notify-teams:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Adaptive Card to Teams
+        env:
+          TEAMS_ACADEMY_WEBHOOK_URL: ${{ secrets.TEAMS_ACADEMY_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REVIEWERS_JSON: ${{ toJSON(github.event.pull_request.requested_reviewers) }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TEAMS_ACADEMY_WEBHOOK_URL}" ]; then
+            echo "::error::Secret TEAMS_ACADEMY_WEBHOOK_URL não está configurado."
+            exit 1
+          fi
+
+          reviewers=$(echo "$REVIEWERS_JSON" | jq -r '[.[].login] | join(", ")')
+          if [ -z "$reviewers" ]; then
+            reviewers="Nenhum reviewer definido"
+          fi
+
+          payload=$(jq -n \
+            --arg title     "$PR_TITLE" \
+            --arg author    "$PR_AUTHOR" \
+            --arg number    "$PR_NUMBER" \
+            --arg url       "$PR_URL" \
+            --arg reviewers "$reviewers" \
+            '{
+              type: "message",
+              attachments: [{
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: {
+                  type: "AdaptiveCard",
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  version: "1.4",
+                  body: [
+                    {
+                      type: "TextBlock",
+                      size: "Medium",
+                      weight: "Bolder",
+                      wrap: true,
+                      text: ("Novo PR #" + $number + ": " + $title)
+                    },
+                    {
+                      type: "FactSet",
+                      facts: [
+                        { title: "Reviewers",   value: $reviewers },
+                        { title: "Autor",       value: $author }
+                      ]
+                    }
+                  ],
+                  actions: [
+                    {
+                      type: "Action.OpenUrl",
+                      title: "Abrir PR no GitHub",
+                      url: $url
+                    }
+                  ]
+                }
+              }]
+            }')
+
+          curl -sSf \
+            -H "Content-Type: application/json" \
+            -d "$payload" \
+            "$TEAMS_ACADEMY_WEBHOOK_URL"
