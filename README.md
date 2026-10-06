@@ -68,8 +68,8 @@ Este projeto foi desenvolvido como case integrador pela equipe **Branch Master**
 - [George Abreu de Siqueira](https://github.com/George-Abreu-git)
 - [Guilherme Silveira](https://github.com/guisilvs)
 - [Jullia Ross](https://github.com/JulliaRoss)
-- [Luiz Rosa](https://github.com/EngEleLuiz)
 - [Maria Helena Machado Melo](https://github.com/notmasmas)
+- [Luiz Rosa](https://github.com/EngEleLuiz)
 - [Mariele Leiria](https://github.com/MarieleLeiria)
 
 
