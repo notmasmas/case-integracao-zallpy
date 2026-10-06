@@ -1,0 +1,107 @@
+name: PR Reminder
+
+on:
+  schedule:
+    - cron: '0 12 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send reminders for stale PRs
+        env:
+          TEAMS_ACADEMY_WEBHOOK_URL: ${{ secrets.TEAMS_ACADEMY_WEBHOOK_URL }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${TEAMS_ACADEMY_WEBHOOK_URL}" ]; then
+            echo "::error::Secret TEAMS_ACADEMY_WEBHOOK_URL não está configurado."
+            exit 1
+          fi
+
+          now_epoch=$(date -u +%s)
+
+          prs=$(gh pr list \
+            --repo "$REPO" \
+            --state open \
+            --limit 200 \
+            --json number,title,author,createdAt,url,reviewRequests,isDraft)
+
+          echo "$prs" | jq -c '.[]' | while IFS= read -r pr; do
+            is_draft=$(echo "$pr" | jq -r '.isDraft')
+            if [ "$is_draft" = "true" ]; then
+              continue
+            fi
+
+            created_at=$(echo "$pr" | jq -r '.createdAt')
+            created_epoch=$(date -u -d "$created_at" +%s)
+            days=$(( (now_epoch - created_epoch) / 86400 ))
+
+            if [ "$days" -lt 3 ]; then
+              continue
+            fi
+
+            number=$(echo "$pr" | jq -r '.number')
+            title=$(echo "$pr" | jq -r '.title')
+            author=$(echo "$pr" | jq -r '.author.login')
+            url=$(echo "$pr" | jq -r '.url')
+            reviewers=$(echo "$pr" | jq -r '[.reviewRequests[] | (.login // .name)] | join(", ")')
+            if [ -z "$reviewers" ]; then
+              reviewers="Nenhum reviewer definido"
+            fi
+
+            payload=$(jq -n \
+              --arg title     "$title" \
+              --arg author    "$author" \
+              --arg number    "$number" \
+              --arg url       "$url" \
+              --arg reviewers "$reviewers" \
+              --arg days      "$days" \
+              '{
+                type: "message",
+                attachments: [{
+                  contentType: "application/vnd.microsoft.card.adaptive",
+                  content: {
+                    type: "AdaptiveCard",
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    version: "1.4",
+                    body: [
+                      {
+                        type: "TextBlock",
+                        size: "Medium",
+                        weight: "Bolder",
+                        wrap: true,
+                        text: ("Correção pendente há " + $days + " dias: #" + $number + " " + $title)
+                      },
+                      {
+                        type: "FactSet",
+                        facts: [
+                          { title: "Reviewers",   value: $reviewers },
+                          { title: "Autor",       value: $author }
+                        ]
+                      }
+                    ],
+                    actions: [
+                      {
+                        type: "Action.OpenUrl",
+                        title: "Abrir PR no GitHub",
+                        url: $url
+                      }
+                    ]
+                  }
+                }]
+              }')
+
+            echo "Enviando lembrete para PR #$number (aberto há $days dias)"
+            curl -sSf \
+              -H "Content-Type: application/json" \
+              -d "$payload" \
+              "$TEAMS_ACADEMY_WEBHOOK_URL"
+          done
