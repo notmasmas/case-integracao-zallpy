@@ -52,6 +52,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/customers").permitAll()
                         .requestMatchers("/tickets", "/tickets/**").hasRole("CUSTOMER")
                         .requestMatchers("/support", "/support/**").hasRole("SUPPORT")
+                        .requestMatchers(HttpMethod.POST, "/messages").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.POST, "/messages").hasRole("SUPPORT")
+                        .requestMatchers(HttpMethod.PATCH, "/tickets/{ticketId}/evaluate").hasRole("CUSTOMER")
+
                         .anyRequest().denyAll()
                 )
                 .exceptionHandling(exceptions -> exceptions

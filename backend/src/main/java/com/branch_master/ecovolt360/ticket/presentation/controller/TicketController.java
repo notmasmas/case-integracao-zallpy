@@ -3,9 +3,10 @@ package com.branch_master.ecovolt360.ticket.presentation.controller;
 import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
-import com.sun.security.auth.UserPrincipal;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,10 +38,23 @@ public class TicketController {
         return ResponseEntity.created(uri).body(newTicket);
     }
 
+    @GetMapping
+    public ResponseEntity<List<TicketSummaryDTO>> listTickets(@CurrentUser AuthenticatedUser currentUser) {
+        return ResponseEntity.ok(ticketService.listCustomerTickets(currentUser.userId()));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TicketDetailsDTO> getTicket(@PathVariable UUID id,
                                                       @CurrentUser AuthenticatedUser currentUser) {
         TicketDetailsDTO ticket = ticketService.getCustomerTicket(currentUser.userId(), id);
+        return ResponseEntity.ok(ticket);
+    }
+
+    @PatchMapping("/{id}/evaluate")
+    public ResponseEntity<TicketDetailsDTO> evaluateTicket(@PathVariable UUID id,
+                                                          @RequestBody @Valid TicketBodyEvaluateDTO ticketBodyEvaluateDTO,
+                                                          @CurrentUser AuthenticatedUser currentUser) {
+        TicketDetailsDTO ticket = ticketService.evaluateTicket(currentUser.userId(), id, ticketBodyEvaluateDTO);
         return ResponseEntity.ok(ticket);
     }
 }
