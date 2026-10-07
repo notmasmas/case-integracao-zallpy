@@ -23,8 +23,8 @@ public class MessageService {
         this.ticketRepository = ticketRepository;
     }
 
-    public MessageDTO processMessage(UUID userId, Role role, MessageBodyDTO messageDTO) {
-        Ticket ticket = ticketRepository.findById(messageDTO.ticketId())
+    public MessageDTO processMessage(UUID userId, Role role, UUID ticketId, MessageBodyDTO messageDTO) {
+        Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(TicketNotFoundException::new);
         Message message = messageRepository.save(new Message(
                 ticket.getId(),
