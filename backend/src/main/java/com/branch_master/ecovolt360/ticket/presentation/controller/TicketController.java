@@ -9,7 +9,9 @@ import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/tickets")
+@Validated
 public class TicketController {
 
     private final TicketService ticketService;
@@ -45,8 +48,9 @@ public class TicketController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TicketDetailsDTO> getTicket(@PathVariable UUID id,
+                                                      @RequestParam(defaultValue = "0") @Min(0) int page,
                                                       @CurrentUser AuthenticatedUser currentUser) {
-        TicketDetailsDTO ticket = ticketService.getCustomerTicket(currentUser.userId(), id);
+        TicketDetailsDTO ticket = ticketService.getCustomerTicket(currentUser.userId(), id, page);
         return ResponseEntity.ok(ticket);
     }
 

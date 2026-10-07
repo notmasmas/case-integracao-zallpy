@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 public class TicketService {
 
+    private static final int MESSAGE_PAGE_SIZE = 4;
+
     private final TicketRepository ticketRepository;
     private final CustomerRepository customerRepository;
     private final MessageRepository messageRepository;
@@ -62,12 +64,17 @@ public class TicketService {
                 .toList();
     }
 
-    public TicketDetailsDTO getCustomerTicket(UUID userId, UUID ticketId) {
+    public TicketDetailsDTO getCustomerTicket(UUID userId, UUID ticketId, int page) {
         Customer customer = findCustomer(userId);
         Ticket ticket = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())
                 .orElseThrow(TicketNotFoundException::new);
         List<Message> messages = messageRepository.findByTicketId(ticket.getId());
-        return new TicketDetailsDTO(ticket, toMessageDTOs(messages));
+        int end = messages.size() - page * MESSAGE_PAGE_SIZE;
+        if (end <= 0) {
+            return new TicketDetailsDTO(ticket, List.of(), false);
+        }
+        int start = Math.max(0, end - MESSAGE_PAGE_SIZE);
+        return new TicketDetailsDTO(ticket, toMessageDTOs(messages.subList(start, end)), start > 0);
     }
 
     @Transactional

@@ -35,7 +35,7 @@ public class JpaTicketRepository implements TicketRepository {
 
     @Override
     public List<Ticket> findByCustomerId(UUID customerId) {
-        return repository.findByCustomerId(customerId);
+        return repository.findByCustomerIdOrderByCreatedAtDesc(customerId);
     }
 
     @Override

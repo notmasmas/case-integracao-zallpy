@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findByIdAndCustomerId(UUID id, UUID customerId);
-    List<Ticket> findByCustomerId(UUID customerId);
+    List<Ticket> findByCustomerIdOrderByCreatedAtDesc(UUID customerId);
 
     @Modifying(clearAutomatically = true)
     @Query("""

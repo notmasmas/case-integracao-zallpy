@@ -19,12 +19,17 @@ public record TicketDetailsDTO(
         TicketCategory category,
         TicketStatus status,
         List<MessageDTO> messages,
+        boolean hasOlderMessages,
         Integer evaluate,
         String evaluateComment,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt
 ) {
     public TicketDetailsDTO(Ticket ticket, List<MessageDTO> messages) {
+        this(ticket, messages, false);
+    }
+
+    public TicketDetailsDTO(Ticket ticket, List<MessageDTO> messages, boolean hasOlderMessages) {
         this(
                 ticket.getId(),
                 ticket.getCustomerId(),
@@ -35,6 +40,7 @@ public record TicketDetailsDTO(
                 ticket.getCategory(),
                 ticket.getStatus(),
                 messages,
+                hasOlderMessages,
                 ticket.getEvaluate(),
                 ticket.getEvaluateComment(),
                 ticket.getCreatedAt(),
