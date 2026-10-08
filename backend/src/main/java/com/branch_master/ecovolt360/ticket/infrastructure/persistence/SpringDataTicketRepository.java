@@ -21,9 +21,11 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
             update Ticket t
                set t.evaluate = :evaluation,
                    t.evaluateComment = :comment,
+                   t.isEvaluated = true,
                    t.updatedAt = :updatedAt
              where t.id = :id
                and t.customerId = :customerId
+               and t.isEvaluated = false
                and t.status in (
                    com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.RESOLVED,
                    com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.CLOSED

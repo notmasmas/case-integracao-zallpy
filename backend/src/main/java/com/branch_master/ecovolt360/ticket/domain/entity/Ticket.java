@@ -43,6 +43,9 @@ public class Ticket {
     @Column(name = "evaluate_comment")
     private String evaluateComment;
 
+    @Column(name = "is_evaluated", nullable = false)
+    private boolean isEvaluated;
+
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
@@ -59,6 +62,7 @@ public class Ticket {
         this.status = TicketStatus.PENDING;
         this.evaluate = null;
         this.evaluateComment = null;
+        this.isEvaluated = false;
         this.createdAt = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
         this.updatedAt = this.createdAt;
     }

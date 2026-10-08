@@ -9,6 +9,7 @@ CREATE TABLE tickets (
     status VARCHAR(20),
     evaluate INT,
     evaluate_comment VARCHAR(150),
+    is_evaluated BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
 

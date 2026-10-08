@@ -1,7 +1,7 @@
 -- Chamados e mensagens do cliente email@cadastrado.com com o suporte suporte@email.com (V11).
 -- Cada chamado tem 5 mensagens, alternando cliente e suporte.
 
-INSERT INTO tickets (id, customer_id, support_id, project_id, title, description, category, status, evaluate, evaluate_comment, created_at, updated_at)
+INSERT INTO tickets (id, customer_id, support_id, project_id, title, description, category, status, evaluate, evaluate_comment, is_evaluated, created_at, updated_at)
 SELECT
     '55555555-5555-5555-5555-555555555501',
     c.id,
@@ -13,6 +13,7 @@ SELECT
     'IN_PROGRESS',
     NULL,
     NULL,
+    FALSE,
     TIMESTAMP '2026-10-01 09:00:00',
     TIMESTAMP '2026-10-01 11:20:00'
 FROM customers c
@@ -22,7 +23,7 @@ JOIN users support_user ON support_user.id = s.user_id
 WHERE customer_user.email = 'email@cadastrado.com'
   AND support_user.email = 'suporte@email.com';
 
-INSERT INTO tickets (id, customer_id, support_id, project_id, title, description, category, status, evaluate, evaluate_comment, created_at, updated_at)
+INSERT INTO tickets (id, customer_id, support_id, project_id, title, description, category, status, evaluate, evaluate_comment, is_evaluated, created_at, updated_at)
 SELECT
     '55555555-5555-5555-5555-555555555502',
     c.id,
@@ -34,6 +35,7 @@ SELECT
     'UNDER_REVIEW',
     NULL,
     NULL,
+    FALSE,
     TIMESTAMP '2026-10-02 14:00:00',
     TIMESTAMP '2026-10-02 16:40:00'
 FROM customers c
@@ -43,7 +45,7 @@ JOIN users support_user ON support_user.id = s.user_id
 WHERE customer_user.email = 'email@cadastrado.com'
   AND support_user.email = 'suporte@email.com';
 
-INSERT INTO tickets (id, customer_id, support_id, project_id, title, description, category, status, evaluate, evaluate_comment, created_at, updated_at)
+INSERT INTO tickets (id, customer_id, support_id, project_id, title, description, category, status, evaluate, evaluate_comment, is_evaluated, created_at, updated_at)
 SELECT
     '55555555-5555-5555-5555-555555555503',
     c.id,
@@ -55,6 +57,7 @@ SELECT
     'RESOLVED',
     5,
     'Esclarecimento claro e rápido sobre a compensação.',
+    TRUE,
     TIMESTAMP '2026-09-20 10:00:00',
     TIMESTAMP '2026-09-20 15:10:00'
 FROM customers c

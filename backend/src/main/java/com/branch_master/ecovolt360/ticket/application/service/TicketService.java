@@ -15,6 +15,7 @@ import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyClosedException;
+import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyEvaluatedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotEvaluatedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotFoundException;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
@@ -89,6 +90,9 @@ public class TicketService {
         if (current.getStatus() != TicketStatus.CLOSED && current.getStatus() != TicketStatus.RESOLVED) {
             throw new TicketNotEvaluatedException();
         }
+        if (current.isEvaluated()) {
+            throw new TicketAlreadyEvaluatedException();
+        }
         int updated = ticketRepository.updateEvaluation(
                 ticketId,
                 customer.getId(),
@@ -97,6 +101,11 @@ public class TicketService {
                 ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"))
         );
         if (updated == 0) {
+            Ticket latest = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())
+                    .orElseThrow(TicketNotFoundException::new);
+            if (latest.isEvaluated()) {
+                throw new TicketAlreadyEvaluatedException();
+            }
             throw new TicketNotEvaluatedException();
         }
         Ticket ticket = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())

@@ -22,6 +22,7 @@ public record TicketDetailsDTO(
         boolean hasOlderMessages,
         Integer evaluate,
         String evaluateComment,
+        boolean isEvaluated,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt
 ) {
@@ -43,6 +44,7 @@ public record TicketDetailsDTO(
                 hasOlderMessages,
                 ticket.getEvaluate(),
                 ticket.getEvaluateComment(),
+                ticket.isEvaluated(),
                 ticket.getCreatedAt(),
                 ticket.getUpdatedAt()
         );
