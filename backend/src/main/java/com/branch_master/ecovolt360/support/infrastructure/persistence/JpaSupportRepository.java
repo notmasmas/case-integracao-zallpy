@@ -17,6 +17,11 @@ public class JpaSupportRepository implements SupportRepository {
     }
 
     @Override
+    public Optional<Support> findById(UUID id) {
+        return repository.findById(id);
+    }
+
+    @Override
     public Optional<Support> findByUserId(UUID userId) {
         return repository.findByUserId(userId);
     }

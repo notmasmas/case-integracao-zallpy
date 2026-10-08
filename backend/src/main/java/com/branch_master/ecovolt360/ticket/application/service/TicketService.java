@@ -7,8 +7,10 @@ import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import com.branch_master.ecovolt360.customer.domain.entity.Customer;
 import com.branch_master.ecovolt360.customer.domain.repository.CustomerRepository;
 import com.branch_master.ecovolt360.messages.application.dto.MessageDTO;
+import com.branch_master.ecovolt360.messages.application.dto.MessagePageDTO;
 import com.branch_master.ecovolt360.messages.domain.entity.Message;
 import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
+import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
@@ -38,17 +40,20 @@ public class TicketService {
     private final CustomerRepository customerRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final SupportRepository supportRepository;
 
     public TicketService(
             TicketRepository ticketRepository,
             CustomerRepository customerRepository,
             MessageRepository messageRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            SupportRepository supportRepository
     ) {
         this.ticketRepository = ticketRepository;
         this.customerRepository = customerRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.supportRepository = supportRepository;
     }
 
     public TicketDetailsDTO processTicket(UUID userId, TicketBodyDTO ticketDTO) {
@@ -59,7 +64,7 @@ public class TicketService {
                 ticketDTO.title(),
                 ticketDTO.description()
         ));
-        return new TicketDetailsDTO(newTicket, List.of());
+        return toDetails(newTicket, pageMessages(List.of(), 0));
     }
 
     public List<TicketSummaryDTO> listCustomerTickets(UUID userId) {
@@ -71,22 +76,20 @@ public class TicketService {
 
     public TicketDetailsDTO getCustomerTicket(UUID userId, UUID ticketId, int page) {
         Customer customer = findCustomer(userId);
-        Ticket ticket = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())
-                .orElseThrow(TicketNotFoundException::new);
-        List<Message> messages = messageRepository.findByTicketId(ticket.getId());
-        int end = messages.size() - page * MESSAGE_PAGE_SIZE;
-        if (end <= 0) {
-            return new TicketDetailsDTO(ticket, List.of(), false);
-        }
-        int start = Math.max(0, end - MESSAGE_PAGE_SIZE);
-        return new TicketDetailsDTO(ticket, toMessageDTOs(messages.subList(start, end)), start > 0);
+        Ticket ticket = findCustomerTicket(ticketId, customer.getId());
+        return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), page));
+    }
+
+    public MessagePageDTO listCustomerMessages(UUID userId, UUID ticketId, int page) {
+        Customer customer = findCustomer(userId);
+        Ticket ticket = findCustomerTicket(ticketId, customer.getId());
+        return pageMessages(messageRepository.findByTicketId(ticket.getId()), page);
     }
 
     @Transactional
     public TicketDetailsDTO evaluateTicket(UUID userId, UUID ticketId, TicketBodyEvaluateDTO ticketBodyEvaluateDTO) {
         Customer customer = findCustomer(userId);
-        Ticket current = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())
-                .orElseThrow(TicketNotFoundException::new);
+        Ticket current = findCustomerTicket(ticketId, customer.getId());
         if (current.getStatus() != TicketStatus.CLOSED && current.getStatus() != TicketStatus.RESOLVED) {
             throw new TicketNotEvaluatedException();
         }
@@ -101,17 +104,14 @@ public class TicketService {
                 ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"))
         );
         if (updated == 0) {
-            Ticket latest = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())
-                    .orElseThrow(TicketNotFoundException::new);
+            Ticket latest = findCustomerTicket(ticketId, customer.getId());
             if (latest.isEvaluated()) {
                 throw new TicketAlreadyEvaluatedException();
             }
             throw new TicketNotEvaluatedException();
         }
-        Ticket ticket = ticketRepository.findByIdAndCustomerId(ticketId, customer.getId())
-                .orElseThrow(TicketNotFoundException::new);
-        List<Message> messages = messageRepository.findByTicketId(ticket.getId());
-        return new TicketDetailsDTO(ticket, toMessageDTOs(messages));
+        Ticket ticket = findCustomerTicket(ticketId, customer.getId());
+        return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
     }
 
     @Transactional
@@ -131,8 +131,45 @@ public class TicketService {
         }
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(TicketNotFoundException::new);
-        List<Message> messages = messageRepository.findByTicketId(ticket.getId());
-        return new TicketDetailsDTO(ticket, toMessageDTOs(messages));
+        return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
+    }
+
+    private MessagePageDTO pageMessages(List<Message> messages, int page) {
+        int totalMessages = messages.size();
+        int totalPages = totalMessages == 0 ? 0 : (totalMessages + MESSAGE_PAGE_SIZE - 1) / MESSAGE_PAGE_SIZE;
+        int end = totalMessages - page * MESSAGE_PAGE_SIZE;
+        if (end <= 0) {
+            return new MessagePageDTO(List.of(), page, totalPages, totalMessages);
+        }
+        int start = Math.max(0, end - MESSAGE_PAGE_SIZE);
+        return new MessagePageDTO(toMessageDTOs(messages.subList(start, end)), page, totalPages, totalMessages);
+    }
+
+    private TicketDetailsDTO toDetails(Ticket ticket, MessagePageDTO messagePage) {
+        return new TicketDetailsDTO(
+                ticket,
+                supportName(ticket),
+                messagePage.messages(),
+                messagePage.page(),
+                messagePage.totalPages(),
+                messagePage.totalMessages()
+        );
+    }
+
+    private String supportName(Ticket ticket) {
+        if (ticket.getSupportId() == null) {
+            return "";
+        }
+        return supportRepository.findById(ticket.getSupportId())
+                .map(support -> userRepository.findByIdIn(List.of(support.getUserId())))
+                .filter(users -> !users.isEmpty())
+                .map(users -> users.getFirst().getName())
+                .orElse("");
+    }
+
+    private Ticket findCustomerTicket(UUID ticketId, UUID customerId) {
+        return ticketRepository.findByIdAndCustomerId(ticketId, customerId)
+                .orElseThrow(TicketNotFoundException::new);
     }
 
     private List<MessageDTO> toMessageDTOs(List<Message> messages) {

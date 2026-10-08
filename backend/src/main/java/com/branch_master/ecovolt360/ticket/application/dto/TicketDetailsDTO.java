@@ -11,37 +11,40 @@ import java.util.UUID;
 
 public record TicketDetailsDTO(
         UUID id,
-        UUID customerId,
-        UUID supportId,
-        UUID projectId,
         String title,
         String description,
         TicketCategory category,
         TicketStatus status,
+        String supportName,
         List<MessageDTO> messages,
-        boolean hasOlderMessages,
+        int page,
+        int totalPages,
+        int totalMessages,
         Integer evaluate,
         String evaluateComment,
         boolean isEvaluated,
         ZonedDateTime createdAt,
         ZonedDateTime updatedAt
 ) {
-    public TicketDetailsDTO(Ticket ticket, List<MessageDTO> messages) {
-        this(ticket, messages, false);
-    }
-
-    public TicketDetailsDTO(Ticket ticket, List<MessageDTO> messages, boolean hasOlderMessages) {
+    public TicketDetailsDTO(
+            Ticket ticket,
+            String supportName,
+            List<MessageDTO> messages,
+            int page,
+            int totalPages,
+            int totalMessages
+    ) {
         this(
                 ticket.getId(),
-                ticket.getCustomerId(),
-                ticket.getSupportId(),
-                ticket.getProjectId(),
                 ticket.getTitle(),
                 ticket.getDescription(),
                 ticket.getCategory(),
                 ticket.getStatus(),
+                supportName,
                 messages,
-                hasOlderMessages,
+                page,
+                totalPages,
+                totalMessages,
                 ticket.getEvaluate(),
                 ticket.getEvaluateComment(),
                 ticket.isEvaluated(),
