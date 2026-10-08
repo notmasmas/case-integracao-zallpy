@@ -5,8 +5,10 @@ import com.branch_master.ecovolt360.messages.application.dto.MessageBodyDTO;
 import com.branch_master.ecovolt360.messages.application.dto.MessageDTO;
 import com.branch_master.ecovolt360.messages.domain.entity.Message;
 import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
+import com.branch_master.ecovolt360.ticket.application.exception.TicketClosedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotFoundException;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 import com.branch_master.ecovolt360.ticket.domain.repository.TicketRepository;
 
 import java.time.ZoneId;
@@ -26,6 +28,9 @@ public class MessageService {
     public MessageDTO processMessage(UUID userId, Role role, UUID ticketId, MessageBodyDTO messageDTO) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(TicketNotFoundException::new);
+        if (ticket.getStatus() == TicketStatus.RESOLVED || ticket.getStatus() == TicketStatus.CLOSED) {
+            throw new TicketClosedException();
+        }
         Message message = messageRepository.save(new Message(
                 ticket.getId(),
                 userId,

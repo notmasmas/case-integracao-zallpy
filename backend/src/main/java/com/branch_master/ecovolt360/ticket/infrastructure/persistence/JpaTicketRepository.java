@@ -1,6 +1,7 @@
 package com.branch_master.ecovolt360.ticket.infrastructure.persistence;
 
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 import com.branch_master.ecovolt360.ticket.domain.repository.TicketRepository;
 import org.springframework.stereotype.Repository;
 
@@ -41,5 +42,10 @@ public class JpaTicketRepository implements TicketRepository {
     @Override
     public int updateEvaluation(UUID ticketId, UUID customerId, Integer evaluation, String comment, ZonedDateTime updatedAt) {
         return repository.updateEvaluationAndComment(ticketId, customerId, evaluation, comment, updatedAt);
+    }
+
+    @Override
+    public int updateStatus(UUID ticketId, TicketStatus status, ZonedDateTime updatedAt) {
+        return repository.updateStatus(ticketId, status, updatedAt);
     }
 }

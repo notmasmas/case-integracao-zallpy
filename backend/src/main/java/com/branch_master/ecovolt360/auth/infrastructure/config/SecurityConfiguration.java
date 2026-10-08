@@ -50,9 +50,10 @@ public class SecurityConfiguration {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/customers").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/tickets/{ticketId}/status").hasRole("SUPPORT")
+                        .requestMatchers(HttpMethod.PATCH, "/tickets/{ticketId}/evaluation").hasRole("CUSTOMER")
                         .requestMatchers("/tickets", "/tickets/**").hasRole("CUSTOMER")
                         .requestMatchers("/support", "/support/**").hasRole("SUPPORT")
-                        .requestMatchers(HttpMethod.PATCH, "/tickets/{ticketId}/evaluate").hasRole("CUSTOMER")
 
                         .anyRequest().denyAll()
                 )
