@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../../components/ui/toaster";
 import { useAuth } from "../../../context/AuthContext";
-import { paths, type UserRole } from "../../../routes/routes";
+import { homePath, paths, type UserRole } from "../../../routes/routes";
 
 type LoginPageFormProps = {
   email: string;
@@ -40,7 +40,7 @@ function LoginPageForm() {
         name: response.data.name,
         accessToken: response.data.accessToken,
       });
-      navigate(paths.panel);
+      navigate(homePath(response.data.role));
     } catch (error) {
       const offline = axios.isAxiosError(error) && !error.response;
       toaster.create({

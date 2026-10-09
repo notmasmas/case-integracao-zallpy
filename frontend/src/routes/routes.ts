@@ -1,10 +1,19 @@
 export const paths = {
   login: "/",
-  panel: "/painel",
   registration: "/cadastro",
+  customer: {
+    tickets: "/cliente/chamados",
+  },
+  support: {
+    home: "/suporte",
+  },
 } as const;
 
 export type UserRole = "CUSTOMER" | "SUPPORT";
+
+export function homePath(role: UserRole) {
+  return role === "SUPPORT" ? paths.support.home : paths.customer.tickets;
+}
 
 export type Session = {
   role: UserRole;
