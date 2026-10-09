@@ -12,7 +12,7 @@ public record TicketBodyDTO (
         UUID projectId,
 
         @NotBlank
-        @Size(max=50)
+        @Size(max=20)
         String title,
 
         @NotBlank
