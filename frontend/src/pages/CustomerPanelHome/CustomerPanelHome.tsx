@@ -58,7 +58,7 @@ function CustomerPanelHome() {
         <Box className="support-panel-tickets__filters__header">
           <Box />
           <Box className="support-panel-tickets__filters__action">
-            <button type="button" onClick={() => navigate(paths.tickets)}>
+            <button type="button" onClick={() => navigate(paths.customer.tickets)}>
               Todos os chamados
             </button>
             <BsArrowRight aria-hidden="true" />

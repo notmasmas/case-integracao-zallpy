@@ -1,15 +1,13 @@
 import "./Header.css";
-import type { RequestContext } from "../models/request";
+import { useAuth } from "../context/AuthContext";
 
-type HeaderProps = {
-  requestContext: RequestContext;
-};
+export default function Header() {
+  const { session } = useAuth();
 
-export default function Header({ requestContext }: HeaderProps) {
   return (
     <header className="header-wrapper">
       <p>
-        Olá, seja bem-vindo(a) {requestContext.requestName}!
+        Olá, seja bem-vindo(a) {session?.name}!
         <br />
         Acompanhe seu projeto, consulte suas informações e conte com nosso
         suporte sempre que precisar.
