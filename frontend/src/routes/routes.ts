@@ -1,6 +1,7 @@
 export const paths = {
   login: "/",
   panel: "/painel",
+  tickets: "/tickets",
   registration: "/cadastro",
 } as const;
 

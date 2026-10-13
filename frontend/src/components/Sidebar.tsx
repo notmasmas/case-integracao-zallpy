@@ -23,7 +23,7 @@ export default function Sidebar({ requestContext }: SidebarProps) {
           <NavLink to={paths.panel}>Painel do Cliente</NavLink>
         </li>
         <li>
-          <NavLink to="/tickets">Chamados</NavLink>
+          <NavLink to={paths.tickets}>Chamados</NavLink>
         </li>
         <li>
           <NavLink to="/faq">FAQ</NavLink>

@@ -70,7 +70,7 @@ public class TicketService {
     public List<TicketSummaryDTO> listCustomerTickets(UUID userId) {
         Customer customer = findCustomer(userId);
         return ticketRepository.findByCustomerId(customer.getId()).stream()
-                .map(TicketSummaryDTO::new)
+                .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
                 .toList();
     }
 
