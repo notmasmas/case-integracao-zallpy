@@ -19,9 +19,14 @@ export default function Sidebar() {
       </div>
       <ul className="sidebar-links">
         {isSupport ? (
+          <>
           <li>
-            <NavLink to={paths.support.home}>Fila de chamados</NavLink>
+            <NavLink to={paths.support.home}>Painel de Suporte</NavLink>
           </li>
+          {/* <li>
+            <NavLink to={paths.support.tickets}>Chamados</NavLink>
+          </li> */}
+          </>
         ) : (
           <>
             <li>
@@ -29,6 +34,9 @@ export default function Sidebar() {
             </li>
             <li>
               <NavLink to={paths.customer.tickets}>Chamados</NavLink>
+            </li>
+            <li>
+              <NavLink to="/faq">FAQ</NavLink>
             </li>
           </>
         )}
