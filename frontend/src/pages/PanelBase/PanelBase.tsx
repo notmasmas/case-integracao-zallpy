@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 
 import "./PanelBase.css";
 import SupportPanelHome from "../SupportPanelHome/SupportPanelHome";
+import SupportTicket from "../SupportTicket/SupportTicket";
 import { useAuth } from "../../context/AuthContext";
 import { paths } from "../../routes/routes";
 
@@ -24,7 +25,11 @@ export default function PanelBase() {
       <Header requestContext={requestContext} />
 
       <main className="main-content">
-        <SupportPanelHome />
+        {session.role === "SUPPORT" ? (
+          <SupportPanelHome />
+        ) : (
+          <SupportTicket requestContext={requestContext} />
+        )}
       </main>
     </div>
   );

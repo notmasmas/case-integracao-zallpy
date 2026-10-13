@@ -47,7 +47,7 @@ class JpaUserRepositoryIntegrationTest {
     @Transactional
     void shouldFindExistingUserByEmail() {
         UUID userId = UUID.randomUUID();
-        String email = "integration-" + userId + "@example.com";
+        String email = "it-" + userId + "@e.com";
         String cpf = "00000000000";
         String storedHash = "hash-placeholder-for-persistence-test";
 
