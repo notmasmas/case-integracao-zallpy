@@ -3,7 +3,6 @@ import { FiSearch } from "react-icons/fi";
 import SupportTicketList from "./SupportTicketList";
 import SupportTicketModal from "./SupportTicketModal/SupportTicketModal";
 import { supportTicketsMock } from "./supportTicket.mock";
-import type { RequestContext } from "../../models/request";
 import "./SupportTicket.css";
 import { useState } from "react";
 
@@ -23,11 +22,7 @@ const categoryCollection = createListCollection({
   ],
 });
 
-type SupportTicketProps = {
-  requestContext: RequestContext;
-};
-
-function SupportTicket({ requestContext }: SupportTicketProps) {
+function SupportTicket() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -104,11 +99,7 @@ function SupportTicket({ requestContext }: SupportTicketProps) {
           </button>
         </Box>
       </Box>
-      <SupportTicketModal
-        isOpen={isModalOpen}
-        onClose={onCloseModal}
-        requestContext={requestContext}
-      />
+      <SupportTicketModal isOpen={isModalOpen} onClose={onCloseModal} />
 
       <SupportTicketList
         ticketCategoryFilter={selectedCategory}

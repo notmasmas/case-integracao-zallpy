@@ -1,7 +1,6 @@
-import { Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-
 import "./PanelBase.css";
 import SupportPanelHome from "../SupportPanelHome/SupportPanelHome";
 import SupportTicket from "../SupportTicket/SupportTicket";
@@ -9,20 +8,10 @@ import { useAuth } from "../../context/AuthContext";
 import { paths } from "../../routes/routes";
 
 export default function PanelBase() {
-  const { session } = useAuth();
-
-  if (!session) {
-    return <Navigate to={paths.login} replace />;
-  }
-
-  const requestContext = {
-    requestName: session.name,
-  };
-
   return (
     <div className="template-wrapper">
-      <Sidebar requestContext={requestContext} />
-      <Header requestContext={requestContext} />
+      <Sidebar />
+      <Header />
 
       <main className="main-content">
         {session.role === "SUPPORT" ? (
