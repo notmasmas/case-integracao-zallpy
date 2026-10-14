@@ -1,57 +1,33 @@
 import { Box, Button } from "@chakra-ui/react";
 import {
-  supportTicketsMock,
-  type SupportTicket as SupportTicketData,
-} from "./supportTicket.mock";
+  categoryLabel,
+  ticketMatchesSearch,
+  type CustomerTicket,
+} from "../../api/tickets";
 import TicketStatusBadge from "../../components/TicketStatusBadge";
 import "./SupportTicket.css";
 
-const categoryLabels: Record<SupportTicketData["category"], string> = {
-  SYSTEM_MONITORING: "Monitoramento do sistema",
-  EQUIPMENT: "Equipamento",
-  INSTALLATION: "Instalação",
-  MAINTENANCE: "Manutenção",
-  SCHEDULING: "Agendamento",
-  PAYMENT: "Pagamento",
-  PROJECT: "Projeto",
-  ACCESS: "Acesso",
-  OTHER: "Outro",
-};
-
-// o backend ja pode retornar a data e o id formatado para o front end apenas renderizar
-function formatTicketDate(date: Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(date);
-}
-
-const formatId = (id: string) => {
-  return `ID-${new Date().getFullYear()}-00${id}`;
-};
-
 type SupportTicketListProps = {
+  tickets: CustomerTicket[];
   ticketCategoryFilter: string;
   searchFilter: string;
+  error: string | null;
+  loading: boolean;
 };
 
 function SupportTicketList({
+  tickets,
   ticketCategoryFilter,
   searchFilter,
+  error,
+  loading,
 }: SupportTicketListProps) {
-  const filteredTickets = supportTicketsMock.filter((ticket) => {
-    const normalizedSearch = searchFilter.trim().toLowerCase();
-
+  const filteredTickets = tickets.filter((ticket) => {
     const matchesCategory =
       ticketCategoryFilter === "all" ||
       ticket.category === ticketCategoryFilter;
 
-    const matchesSearch =
-      normalizedSearch === "" ||
-      ticket.title.toLowerCase().includes(normalizedSearch) ||
-      ticket.status.toLowerCase().includes(normalizedSearch);
-
-    return matchesCategory && matchesSearch;
+    return matchesCategory && ticketMatchesSearch(ticket, searchFilter);
   });
 
   return (
@@ -64,28 +40,34 @@ function SupportTicketList({
         <Box> Ações </Box>
       </Box>
       <Box className="support-ticket-list__body">
-        {filteredTickets.map((ticket) => (
-          <Box className="support-ticket-item" key={formatId(ticket.id)}>
-            <Box>
+        {error ? <p>{error}</p> : null}
+        {!error && loading ? <p>Carregando chamados...</p> : null}
+        {!error && !loading && filteredTickets.length === 0 ? (
+          <p>Nenhum chamado encontrado.</p>
+        ) : null}
+        {!error &&
+          filteredTickets.map((ticket) => (
+            <Box className="support-ticket-item" key={ticket.id}>
               <Box>
-                {formatId(ticket.id)}
-                <Box color="var(--color-text-gray-secondary)">
-                  {formatTicketDate(ticket.createdAT)}
+                <Box>
+                  {ticket.id}
+                  <Box color="var(--color-text-gray-secondary)">
+                    {ticket.createdAt}
+                  </Box>
                 </Box>
               </Box>
+              <Box>{ticket.title}</Box>
+              <Box>{categoryLabel(ticket.category)}</Box>
+              <Box>
+                <TicketStatusBadge status={ticket.status} />
+              </Box>
+              <Box>
+                <Button className="support-ticket-item__button">
+                  Ver detalhes
+                </Button>
+              </Box>
             </Box>
-            <Box>{ticket.title}</Box>
-            <Box>{categoryLabels[ticket.category]}</Box>
-            <Box>
-              <TicketStatusBadge status={ticket.status} />
-            </Box>
-            <Box>
-              <Button className="support-ticket-item__button">
-                Ver detalhes
-              </Button>
-            </Box>
-          </Box>
-        ))}
+          ))}
       </Box>
     </Box>
   );

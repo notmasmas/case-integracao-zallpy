@@ -1,0 +1,149 @@
+import { useEffect, useState } from "react";
+import api from "./api";
+import {
+  ticketStatusLabels,
+  type TicketStatus,
+} from "../models/ticketStatus";
+
+export const ticketCategories = [
+  "SYSTEM_MONITORING",
+  "EQUIPMENT",
+  "INSTALLATION",
+  "MAINTENANCE",
+  "SCHEDULING",
+  "PAYMENT",
+  "PROJECT",
+  "ACCESS",
+  "OTHER",
+] as const;
+
+export type TicketCategory = (typeof ticketCategories)[number];
+
+export const categoryLabels: Record<TicketCategory, string> = {
+  SYSTEM_MONITORING: "Monitoramento do sistema",
+  EQUIPMENT: "Equipamento",
+  INSTALLATION: "Instalação",
+  MAINTENANCE: "Manutenção",
+  SCHEDULING: "Agendamento",
+  PAYMENT: "Pagamento",
+  PROJECT: "Projeto",
+  ACCESS: "Acesso",
+  OTHER: "Outro",
+};
+
+const statusByApiValue: Record<string, TicketStatus> = {
+  PENDING: "pending",
+  UNDER_REVIEW: "under_review",
+  IN_PROGRESS: "in_progress",
+  WAITING_CUSTOMER: "waiting_customer",
+  RESOLVED: "resolved",
+  CLOSED: "closed",
+};
+
+export type CustomerTicket = {
+  id: string;
+  title: string;
+  description: string;
+  category: TicketCategory | null;
+  status: TicketStatus;
+  createdAt: string;
+  supportName: string;
+};
+
+type TicketSummaryResponse = {
+  id: string;
+  title: string;
+  description: string;
+  category: string | null;
+  status: string;
+  createdAt: string;
+  supportName: string;
+};
+
+export function categoryLabel(category: TicketCategory | null): string {
+  if (!category || !categoryLabels[category]) {
+    return "Sem categoria";
+  }
+  return categoryLabels[category];
+}
+
+function isTicketCategory(value: string | null): value is TicketCategory {
+  return (
+    value !== null &&
+    (ticketCategories as readonly string[]).includes(value)
+  );
+}
+
+function formatTicketDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(date);
+}
+
+export async function listTickets(): Promise<CustomerTicket[]> {
+  const response = await api.get<TicketSummaryResponse[]>("/tickets");
+  return response.data.map((ticket) => ({
+    id: ticket.id,
+    title: ticket.title,
+    description: ticket.description,
+    category: isTicketCategory(ticket.category) ? ticket.category : null,
+    status: statusByApiValue[ticket.status] ?? "pending",
+    createdAt: formatTicketDate(ticket.createdAt),
+    supportName: ticket.supportName?.trim() ? ticket.supportName : "Não atribuído",
+  }));
+}
+
+export function useCustomerTickets() {
+  const [tickets, setTickets] = useState<CustomerTicket[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    listTickets()
+      .then((data) => {
+        if (!active) {
+          return;
+        }
+        setTickets(data);
+        setError(null);
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+        setTickets([]);
+        setError("Não foi possível carregar os chamados.");
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { tickets, error, loading };
+}
+
+export function ticketMatchesSearch(ticket: CustomerTicket, search: string): boolean {
+  const normalizedSearch = search.trim().toLowerCase();
+  if (normalizedSearch === "") {
+    return true;
+  }
+
+  return (
+    ticket.title.toLowerCase().includes(normalizedSearch) ||
+    ticket.status.toLowerCase().includes(normalizedSearch) ||
+    ticketStatusLabels[ticket.status].toLowerCase().includes(normalizedSearch)
+  );
+}

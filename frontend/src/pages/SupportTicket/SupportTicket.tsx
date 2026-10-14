@@ -2,7 +2,7 @@ import { Box, Portal, Select, createListCollection } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
 import SupportTicketList from "./SupportTicketList";
 import SupportTicketModal from "./SupportTicketModal/SupportTicketModal";
-import { supportTicketsMock } from "./supportTicket.mock";
+import { useCustomerTickets } from "../../api/tickets";
 import "./SupportTicket.css";
 import { useState } from "react";
 
@@ -26,7 +26,8 @@ function SupportTicket() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const ticketResolvedCount = supportTicketsMock.filter(
+  const { tickets, error, loading } = useCustomerTickets();
+  const ticketResolvedCount = tickets.filter(
     (ticket) => ticket.status === "resolved",
   ).length;
 
@@ -102,8 +103,11 @@ function SupportTicket() {
       <SupportTicketModal isOpen={isModalOpen} onClose={onCloseModal} />
 
       <SupportTicketList
+        tickets={tickets}
         ticketCategoryFilter={selectedCategory}
         searchFilter={searchFilter}
+        error={error}
+        loading={loading}
       />
     </Box>
   );

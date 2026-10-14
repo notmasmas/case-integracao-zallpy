@@ -2,12 +2,11 @@ import { Avatar } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import { useAuth } from "../context/AuthContext";
-import { homePath } from "../routes/routes";
+import { paths } from "../routes/routes";
 
 export default function Sidebar() {
   const { session } = useAuth();
-  const destination = session ? homePath(session.role) : "/";
-  const label = session?.role === "SUPPORT" ? "Fila de chamados" : "Chamados";
+  const isSupport = session?.role === "SUPPORT";
 
   return (
     <nav className="sidebar-wrapper">
@@ -19,9 +18,28 @@ export default function Sidebar() {
         <p title={session?.name}>{session?.name}</p>
       </div>
       <ul className="sidebar-links">
-        <li>
-          <NavLink to={destination}>{label}</NavLink>
-        </li>
+        {isSupport ? (
+          <>
+          <li>
+            <NavLink to={paths.support.home}>Painel de Suporte</NavLink>
+          </li>
+          {/* <li>
+            <NavLink to={paths.support.tickets}>Chamados</NavLink>
+          </li> */}
+          </>
+        ) : (
+          <>
+            <li>
+              <NavLink to={paths.customer.home}>Painel do Cliente</NavLink>
+            </li>
+            <li>
+              <NavLink to={paths.customer.tickets}>Chamados</NavLink>
+            </li>
+            <li>
+              <NavLink to="/faq">FAQ</NavLink>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );

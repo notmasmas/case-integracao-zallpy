@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import PanelBase from "./pages/PanelBase/PanelBase";
@@ -9,6 +9,7 @@ import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import RequireRole from "./routes/RequireRole";
 import SupportTicket from "./pages/SupportTicket/SupportTicket";
 import SupportPanelHome from "./pages/SupportPanelHome/SupportPanelHome";
+import CustomerPanelHome from "./pages/CustomerPanelHome/CustomerPanelHome";
 
 function App() {
   return (
@@ -19,12 +20,22 @@ function App() {
           <Route path={paths.registration} element={<RegistrationPage />} />
           <Route element={<RequireRole role="CUSTOMER" />}>
             <Route element={<PanelBase />}>
-              <Route path={paths.customer.tickets} element={<SupportTicket />} />
+              <Route
+                path={paths.customer.home}
+                element={<CustomerPanelHome />}
+              />
+              <Route
+                path={paths.customer.tickets}
+                element={<SupportTicket />}
+              />
             </Route>
           </Route>
           <Route element={<RequireRole role="SUPPORT" />}>
             <Route element={<PanelBase />}>
-              <Route path={paths.support.home} element={<SupportPanelHome />} />
+              <Route
+                path={paths.support.home}
+                element={<SupportPanelHome />}
+              />
             </Route>
           </Route>
         </Routes>

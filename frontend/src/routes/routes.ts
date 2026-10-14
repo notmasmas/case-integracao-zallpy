@@ -2,6 +2,7 @@ export const paths = {
   login: "/",
   registration: "/cadastro",
   customer: {
+    home: "/cliente",
     tickets: "/cliente/chamados",
   },
   support: {
@@ -12,7 +13,7 @@ export const paths = {
 export type UserRole = "CUSTOMER" | "SUPPORT";
 
 export function homePath(role: UserRole) {
-  return role === "SUPPORT" ? paths.support.home : paths.customer.tickets;
+  return role === "SUPPORT" ? paths.support.home : paths.customer.home;
 }
 
 export type Session = {

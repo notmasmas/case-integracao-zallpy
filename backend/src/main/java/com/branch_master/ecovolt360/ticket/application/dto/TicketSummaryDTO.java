@@ -1,7 +1,10 @@
 package com.branch_master.ecovolt360.ticket.application.dto;
 
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record TicketSummaryDTO(
@@ -10,16 +13,24 @@ public record TicketSummaryDTO(
         UUID supportId,
         UUID projectId,
         String title,
-        String description
+        String description,
+        TicketCategory category,
+        TicketStatus status,
+        ZonedDateTime createdAt,
+        String supportName
 ) {
-    public TicketSummaryDTO(Ticket ticket) {
+    public TicketSummaryDTO(Ticket ticket, String supportName) {
         this(
                 ticket.getId(),
                 ticket.getCustomerId(),
                 ticket.getSupportId(),
                 ticket.getProjectId(),
                 ticket.getTitle(),
-                ticket.getDescription()
+                ticket.getDescription(),
+                ticket.getCategory(),
+                ticket.getStatus(),
+                ticket.getCreatedAt(),
+                supportName
         );
     }
 }
