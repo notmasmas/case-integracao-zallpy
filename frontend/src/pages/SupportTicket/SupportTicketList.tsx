@@ -13,6 +13,7 @@ type SupportTicketListProps = {
   searchFilter: string;
   error: string | null;
   loading: boolean;
+  setSelectedTicket: (ticket: CustomerTicket) => void;
 };
 
 function SupportTicketList({
@@ -21,6 +22,7 @@ function SupportTicketList({
   searchFilter,
   error,
   loading,
+  setSelectedTicket
 }: SupportTicketListProps) {
   const filteredTickets = tickets.filter((ticket) => {
     const matchesCategory =
@@ -62,7 +64,7 @@ function SupportTicketList({
                 <TicketStatusBadge status={ticket.status} />
               </Box>
               <Box>
-                <Button className="support-ticket-item__button">
+                <Button className="support-ticket-item__button" onClick={() => setSelectedTicket(ticket)}>
                   Ver detalhes
                 </Button>
               </Box>

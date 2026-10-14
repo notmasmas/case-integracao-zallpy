@@ -1,0 +1,19 @@
+.user__comment__body {
+    width: 100%;
+    background-color: var(--color-background-modal-header);
+    border-radius: var(--radius-md);
+    padding: var(--space-16);
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-16);
+}
+
+.user__comment__name {
+    font-weight: bold;
+}
+
+.user__comment__body__header {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    margin-bottom: var(--space-12);
+}

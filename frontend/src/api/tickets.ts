@@ -60,6 +60,21 @@ type TicketSummaryResponse = {
   supportName: string;
 };
 
+export type TicketMessage = {
+  id: string;
+  senderUserId: string;
+  role: string;
+  content: string;
+  createdAt: string;
+};
+
+export type TicketMessagesPage = {
+  messages: TicketMessage[];
+  page: number;
+  totalPages: number;
+  totalMessages: number;
+};
+
 export function categoryLabel(category: TicketCategory | null): string {
   if (!category || !categoryLabels[category]) {
     return "Sem categoria";
@@ -96,6 +111,37 @@ export async function listTickets(): Promise<CustomerTicket[]> {
     createdAt: formatTicketDate(ticket.createdAt),
     supportName: ticket.supportName?.trim() ? ticket.supportName : "Não atribuído",
   }));
+}
+
+export async function updateTicketStatus(ticketId: string, status: TicketStatus): Promise<void> {
+  const statusByApiKey: Record<TicketStatus, string> = {
+    pending: "PENDING",
+    under_review: "UNDER_REVIEW",
+    in_progress: "IN_PROGRESS",
+    waiting_customer: "WAITING_CUSTOMER",
+    resolved: "RESOLVED",
+    closed: "CLOSED",
+  };
+
+  const apiStatus = statusByApiKey[status];
+  await api.patch(`/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
+}
+
+export async function getTicketMessages(
+  ticketId: string,
+  page: number,
+): Promise<TicketMessagesPage> {
+  const response = await api.get<TicketMessagesPage>(
+    `/tickets/${encodeURIComponent(ticketId)}/messages`,
+    { params: { page } },
+  );
+  response.data.messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  return response.data;
+}
+
+export async function sendTicketMessage(ticketId: string, content: string): Promise<void> {
+  const url = `/tickets/${encodeURIComponent(ticketId)}/messages`;
+  await api.post(url, { content });
 }
 
 export function useCustomerTickets() {

@@ -1,0 +1,175 @@
+h3 {
+  color: var(--color-text-gray-tertiary);
+  margin-bottom: var(--space-12);
+}
+
+*:disabled {
+  cursor: not-allowed;
+}
+
+button:disabled {
+  background-color: var(--color-text-gray-secondary);
+}
+
+.client-ticket-modal {
+  display: flex;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-xl);
+  flex-direction: column;
+  position: absolute;
+  z-index: 1000;
+  align-items: center;
+  gap: var(--space-32);
+  padding: var(--space-32) var(--space-24);
+  top: 55%;
+  left: 50%;
+  transform: translate(-40%, -60%);
+  width: min(680px, calc(100vw - 2rem));
+  height: min(800px, calc(100vh - 2rem));
+  scrollbar-width: none;
+}
+
+/* ====== HEADER ====== */
+
+.client-ticket-modal__header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.client-ticket-modal__title {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: var(--space-16);
+}
+.client-ticket-modal__title button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-gray-secondary);
+  font-size: 1.5rem;
+}
+
+.client-ticket-modal__title h3 {
+  font-size: var(--font-size-heading-sm);
+  font-weight: var(--font-weight-heading-md);
+  color: var(--color-text-primary);
+}
+
+/* ====== MAIN ====== */
+
+.client-ticket-modal__main {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* ====== INFORMAÇÕES ====== */
+
+.client-ticket-modal__informations {
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-white);
+  border: 1px solid var(--color-border-gray);
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+}
+
+.support-ticket-modal__informations__item1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.client-ticket-modal__informations__item1 span {
+  color: var(--color-text-gray-tertiary);
+  font-weight: var(--font-weight-body-medium);
+}
+
+.client-ticket-modal__informations__item2 {
+  display: flex;
+  flex-direction: row;
+  margin-top: var(--space-12);
+  gap: var(--space-24)
+}
+
+.client-ticket-modal__informations__item2__details {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-ticket-modal__informations__item2__details span {
+  font-weight: bold;
+  margin-bottom: var(--space-12);
+}
+
+/* ====== DESCRIÇÃO DO CLIENTE ====== */
+
+.client-ticket-modal__client-description {
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  margin-top: var(--space-16);
+  margin-bottom: var(--space-12);
+}
+
+.client-ticket-modal__client-description__text {
+  background-color: var(--color-background-modal-header);
+  padding: var(--space-16);
+  border-radius: var(--radius-md);
+}
+
+/* ====== ENVIAR COMENTÁRIO ====== */
+
+.client-ticket-modal__send-comment__section {
+  width: 100%;
+}
+
+.client-ticket-modal__send-comment__section h3 {
+  margin-bottom: var(--space-8);
+}
+
+.client-ticket-modal__send-comment__input-section {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.client-ticket-modal__send-input {
+  flex-grow: 1;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-gray);
+  padding: var(--space-14);
+}
+
+.client-ticket-modal__send-button {
+  background-color: var(--color-primary);
+  color: var(--color-surface-white);
+  font-size: 16px;
+  font-weight: bold;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: var(--space-16);
+}
+
+.client-ticket-modal__send-error {
+  color: red;
+  font-size: var(--font-size-body);
+  margin-top: var(--space-8);
+}
