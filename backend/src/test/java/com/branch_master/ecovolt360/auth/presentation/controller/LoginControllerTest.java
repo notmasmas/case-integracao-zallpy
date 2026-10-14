@@ -65,6 +65,7 @@ class LoginControllerTest {
         when(user.getName()).thenReturn("Cliente de teste");
         when(user.getRole()).thenReturn(role);
         when(user.getPassword()).thenReturn("stored-hash");
+        when(user.getTokenVersion()).thenReturn(0);
 
         when(userRepository.findByEmail("cliente@example.com"))
                 .thenReturn(Optional.of(user));
@@ -72,7 +73,7 @@ class LoginControllerTest {
         when(passwordVerifier.matches("senhaTeste", "stored-hash"))
                 .thenReturn(true);
 
-        when(tokenIssuer.issue(userId, role))
+        when(tokenIssuer.issue(userId, role, 0))
                 .thenReturn("test-token");
 
         mockMvc.perform(post("/login")
@@ -92,7 +93,7 @@ class LoginControllerTest {
                 .andExpect(jsonPath("$.password").doesNotExist());
 
         verify(passwordVerifier).matches("senhaTeste", "stored-hash");
-        verify(tokenIssuer).issue(userId, role);
+        verify(tokenIssuer).issue(userId, role, 0);
     }
 
     @Test

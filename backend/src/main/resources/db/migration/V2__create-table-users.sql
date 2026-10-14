@@ -6,5 +6,6 @@ CREATE TABLE users (
     address_id uuid REFERENCES addresses(id),
     email VARCHAR(50) UNIQUE,
     password VARCHAR(100),
-    role VARCHAR(50)
+    role VARCHAR(50),
+    token_version INTEGER NOT NULL DEFAULT 0
 )

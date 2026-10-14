@@ -28,6 +28,10 @@ export function saveSession(session: Session) {
   sessionStorage.setItem(sessionKey, JSON.stringify(session));
 }
 
+export function clearSession() {
+  sessionStorage.removeItem(sessionKey);
+}
+
 export function loadSession(): Session | null {
   const raw = sessionStorage.getItem(sessionKey);
   if (!raw) {

@@ -4,6 +4,8 @@ import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
 import com.branch_master.ecovolt360.auth.application.port.TokenVerifier;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
+import com.branch_master.ecovolt360.auth.domain.entity.User;
+import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
@@ -22,13 +24,16 @@ public class JwtTokenVerifier implements TokenVerifier {
 
     private final byte[] secret;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     public JwtTokenVerifier(
             @Value("${app.jwt.secret}") String secret,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            UserRepository userRepository
     ) {
         this.secret = secret.getBytes(StandardCharsets.UTF_8);
         this.objectMapper = objectMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -50,8 +55,20 @@ public class JwtTokenVerifier implements TokenVerifier {
                 throw new InvalidTokenException();
             }
 
+            JsonNode versionNode = payload.path("ver");
+            if (versionNode.isMissingNode() || !versionNode.isNumber()) {
+                throw new InvalidTokenException();
+            }
+
+            UUID userId = UUID.fromString(payload.path("sub").asString());
+            User user = userRepository.findById(userId)
+                    .orElseThrow(InvalidTokenException::new);
+            if (versionNode.asInt() != user.getTokenVersion()) {
+                throw new InvalidTokenException();
+            }
+
             return new AuthenticatedUser(
-                    UUID.fromString(payload.path("sub").asString()),
+                    userId,
                     Role.valueOf(payload.path("role").asString())
             );
         } catch (InvalidTokenException exception) {
