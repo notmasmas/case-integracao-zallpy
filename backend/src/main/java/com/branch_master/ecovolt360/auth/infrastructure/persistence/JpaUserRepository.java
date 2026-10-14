@@ -27,4 +27,14 @@ public class JpaUserRepository implements UserRepository {
     public List<User> findByIdIn(Collection<UUID> ids) {
         return repository.findAllById(ids);
     }
+
+    @Override
+    public Optional<User> findById(UUID id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public void save(User user) {
+        repository.save(user);
+    }
 }

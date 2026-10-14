@@ -69,3 +69,20 @@ ul {
   height: 100%;
   background-color: var(--primary);
 }
+
+.sidebar-logout {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding-left: 30px;
+  border: 0;
+  background: none;
+  font-size: 18px;
+  font-weight: var(--font-weight-display-semibold);
+  color: var(--color-text-tertiary);
+  line-height: 2em;
+  text-align: left;
+}
