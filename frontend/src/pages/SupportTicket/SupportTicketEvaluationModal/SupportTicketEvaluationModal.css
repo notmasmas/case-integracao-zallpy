@@ -1,0 +1,132 @@
+.ticket-evaluation-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-16);
+  background-color: rgb(0 0 0 / 0.35);
+}
+
+.ticket-evaluation-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  width: min(100%, 32.5rem);
+  padding: var(--space-32) var(--space-40);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-xl);
+}
+
+.ticket-evaluation-modal__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.ticket-evaluation-modal__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  width: 100%;
+}
+
+.ticket-evaluation-modal__title h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-heading-sm);
+  font-weight: var(--font-weight-heading-md);
+}
+
+.ticket-evaluation-modal__title button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-gray-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.ticket-evaluation-modal__title button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ticket-evaluation-modal__subtitle {
+  color: var(--color-text-gray-tertiary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-display-semibold);
+}
+
+.ticket-evaluation-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 100%;
+}
+
+.ticket-evaluation-modal__stars .ticket-stars__button {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 1.5rem;
+}
+
+.ticket-evaluation-comment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.ticket-evaluation-comment label {
+  color: var(--color-text-gray-tertiary);
+  font-size: var(--font-size-body-lead);
+  font-weight: var(--font-weight-label);
+}
+
+.ticket-evaluation-comment textarea {
+  height: 10rem;
+  padding: var(--space-24);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-body);
+  resize: none;
+}
+
+.ticket-evaluation-comment textarea:focus {
+  outline: none;
+  border-color: var(--color-border-gray);
+  box-shadow: 0 0 0 1px var(--color-gray);
+}
+
+.ticket-evaluation-comment__count {
+  align-self: flex-end;
+  color: var(--color-text-gray-secondary);
+  font-size: var(--font-size-caption);
+  line-height: 1;
+}
+
+.ticket-evaluation-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.ticket-evaluation-modal__actions button {
+  padding: var(--space-8) var(--space-16);
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-surface-white);
+  cursor: pointer;
+}
+
+.ticket-evaluation-modal__actions button:disabled {
+  background-color: var(--color-gray);
+  cursor: not-allowed;
+  opacity: 0.6;
+}

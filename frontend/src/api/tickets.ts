@@ -48,6 +48,9 @@ export type CustomerTicket = {
   status: TicketStatus;
   createdAt: string;
   supportName: string;
+  evaluate: number | null;
+  evaluateComment: string | null;
+  isEvaluated: boolean;
 };
 
 type TicketSummaryResponse = {
@@ -58,6 +61,9 @@ type TicketSummaryResponse = {
   status: string;
   createdAt: string;
   supportName: string;
+  evaluate: number | null;
+  evaluateComment: string | null;
+  isEvaluated: boolean;
 };
 
 export function categoryLabel(category: TicketCategory | null): string {
@@ -95,7 +101,21 @@ export async function listTickets(): Promise<CustomerTicket[]> {
     status: statusByApiValue[ticket.status] ?? "pending",
     createdAt: formatTicketDate(ticket.createdAt),
     supportName: ticket.supportName?.trim() ? ticket.supportName : "Não atribuído",
+    evaluate: ticket.evaluate,
+    evaluateComment: ticket.evaluateComment,
+    isEvaluated: ticket.isEvaluated,
   }));
+}
+
+export async function evaluateTicket(
+  ticketId: string,
+  evaluation: number,
+  comment: string | null,
+): Promise<void> {
+  await api.patch(`/tickets/${ticketId}/evaluation`, {
+    evaluation,
+    comment,
+  });
 }
 
 export function useCustomerTickets() {
@@ -132,7 +152,26 @@ export function useCustomerTickets() {
     };
   }, []);
 
-  return { tickets, error, loading };
+  const markTicketEvaluated = (
+    ticketId: string,
+    evaluation: number,
+    comment: string | null,
+  ) => {
+    setTickets((current) =>
+      current.map((ticket) =>
+        ticket.id === ticketId
+          ? {
+              ...ticket,
+              evaluate: evaluation,
+              evaluateComment: comment,
+              isEvaluated: true,
+            }
+          : ticket,
+      ),
+    );
+  };
+
+  return { tickets, error, loading, markTicketEvaluated };
 }
 
 export function ticketMatchesSearch(ticket: CustomerTicket, search: string): boolean {
