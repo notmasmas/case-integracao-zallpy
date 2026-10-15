@@ -1,9 +1,9 @@
 import { Box } from "@chakra-ui/react";
-import { useEffect, useRef, useState, type UIEvent } from "react";
+import { useEffect, useState } from "react";
 import "./TicketDetailsModal.css";
 import { MdClose } from "react-icons/md";
 import TicketStatusBadge from "../../../components/TicketStatusBadge";
-import { FiSend } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiSend } from "react-icons/fi";
 import {
   categoryLabel,
   getTicketMessages,
@@ -25,48 +25,45 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
   const ticketId = ticket?.id;
   const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [messagesError, setMessagesError] = useState<string | null>(null);
-  const [loadMoreError, setLoadMoreError] = useState(false);
-  const [nextPage, setNextPage] = useState(0);
+  const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalMessages, setTotalMessages] = useState(0);
   const [inputError, setInputError] = useState<string | null>(null);
-  const loadingPageRef = useRef(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [activeTicketId, setActiveTicketId] = useState(ticketId);
+
+  if (ticketId !== activeTicketId) {
+    setActiveTicketId(ticketId);
+    setPage(0);
+    setMessages([]);
+    setTotalPages(0);
+    setTotalMessages(0);
+    setMessagesError(null);
+    setInputError(null);
+  }
 
   useEffect(() => {
     if (!ticketId) {
-      setMessages([]);
       setMessagesLoading(false);
-      setLoadingMore(false);
-      setMessagesError(null);
-      setInputError(null);
-      setLoadMoreError(false);
-      setNextPage(0);
-      setTotalPages(0);
       return;
     }
 
     let active = true;
-    loadingPageRef.current = false;
-    setMessages([]);
     setMessagesLoading(true);
-    setLoadingMore(false);
     setMessagesError(null);
-    setInputError(null);
-    setLoadMoreError(false);
-    setNextPage(0);
-    setTotalPages(0);
 
-    getTicketMessages(ticketId, 0)
+    getTicketMessages(ticketId, page)
       .then((data) => {
         if (active) {
           setMessages(data.messages);
-          setNextPage(data.page + 1);
           setTotalPages(data.totalPages);
+          setTotalMessages(data.totalMessages);
         }
       })
       .catch(() => {
         if (active) {
+          setMessages([]);
           setMessagesError("Não foi possível carregar as respostas.");
         }
       })
@@ -79,47 +76,10 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     return () => {
       active = false;
     };
-  }, [ticketId]);
+  }, [ticketId, page, reloadKey]);
 
   if (!ticket) {
     return null;
-  }
-
-  async function loadNextPage() {
-    if (
-      !ticketId ||
-      messagesLoading ||
-      loadingPageRef.current ||
-      nextPage >= totalPages
-    ) {
-      return;
-    }
-
-    loadingPageRef.current = true;
-    setLoadingMore(true);
-    setLoadMoreError(false);
-
-    try {
-      const data = await getTicketMessages(ticketId, nextPage);
-      setMessages((currentMessages) => [...currentMessages, ...data.messages]);
-      setNextPage(data.page + 1);
-      setTotalPages(data.totalPages);
-    } catch {
-      setLoadMoreError(true);
-    } finally {
-      loadingPageRef.current = false;
-      setLoadingMore(false);
-    }
-  }
-
-  function handleMessagesScroll(event: UIEvent<HTMLDivElement>) {
-    const container = event.currentTarget;
-    const distanceFromBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight;
-
-    if (distanceFromBottom <= 48) {
-      void loadNextPage();
-    }
   }
 
   function verifyMessageContentLength(content: string): boolean {
@@ -160,12 +120,9 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     sendTicketMessage(ticketId, content)
       .then(async () => {
         inputElement.value = "";
-        const firstPage = await getTicketMessages(ticketId, 0);
-        setMessages(firstPage.messages);
-        setNextPage(firstPage.page + 1);
-        setTotalPages(firstPage.totalPages);
-        setMessagesError(null);
-        setLoadMoreError(false);
+        setInputError(null);
+        setPage(0);
+        setReloadKey((current) => current + 1);
 
         if (ticket.status === "waiting_customer") {
           await updateTicketStatus(ticketId, "in_progress");
@@ -187,7 +144,7 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
           </button>
         </Box>
       </Box>
-      <Box className="client-ticket-modal__main" onScroll={handleMessagesScroll}>
+      <Box className="client-ticket-modal__main">
         <Box className="client-ticket-modal__informations">
           <Box className="client-ticket-modal__informations__item1">
             <span>Aberto por {session?.name || "Cliente"} • Chamado {ticket.id}</span>
@@ -213,7 +170,7 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
           </Box>
         </Box>
         <Box className="client-ticket-modal__client-comments__section">
-          <h3>Respostas ({messages.length})</h3>
+          <h3>Respostas ({totalMessages})</h3>
           {messagesLoading && <p>Carregando respostas...</p>}
           {!messagesLoading && messagesError && <p>{messagesError}</p>}
           {!messagesLoading && !messagesError && messages.length === 0 && (
@@ -224,11 +181,28 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
             messages.map((message) => (
               <UserComment key={message.id} message={message} />
             ))}
-          {loadingMore && <p>Carregando mais respostas...</p>}
-          {loadMoreError && (
-            <button onClick={() => void loadNextPage()}>
-              Tentar carregar mais respostas
-            </button>
+          {totalPages > 1 && (
+            <Box className="client-ticket-modal__pagination">
+              <button
+                type="button"
+                aria-label="Mensagens mais recentes"
+                disabled={messagesLoading || page === 0}
+                onClick={() => setPage((current) => current - 1)}
+              >
+                <FiChevronLeft aria-hidden="true" />
+              </button>
+              <span>
+                {page + 1} / {totalPages}
+              </span>
+              <button
+                type="button"
+                aria-label="Mensagens mais antigas"
+                disabled={messagesLoading || page >= totalPages - 1}
+                onClick={() => setPage((current) => current + 1)}
+              >
+                <FiChevronRight aria-hidden="true" />
+              </button>
+            </Box>
           )}
         </Box>
       </Box>

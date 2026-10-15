@@ -11,23 +11,37 @@ button:disabled {
   background-color: var(--color-text-gray-secondary);
 }
 
+@keyframes client-ticket-modal-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 8px));
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .client-ticket-modal {
   display: flex;
   background-color: var(--color-background);
   border: 1px solid var(--color-border-gray);
   border-radius: var(--radius-xl);
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   z-index: 1000;
   align-items: center;
   gap: var(--space-32);
   padding: var(--space-32) var(--space-24);
-  top: 55%;
-  left: 50%;
-  transform: translate(-40%, -60%);
-  width: min(680px, calc(100vw - 2rem));
-  height: min(800px, calc(100vh - 2rem));
+  top: 50%;
+  left: calc(50% + var(--sidebar-width) / 2);
+  transform: translate(-50%, -50%);
+  width: min(680px, calc(100vw - var(--sidebar-width) - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
   scrollbar-width: none;
+  animation: client-ticket-modal-in 0.2s ease;
 }
 
 /* ====== HEADER ====== */
@@ -157,6 +171,12 @@ button:disabled {
   padding: var(--space-14);
 }
 
+.client-ticket-modal__send-input:focus {
+  outline: none;
+  border-color: #d4d4d4;
+  box-shadow: 0 0 0 1px #d4d4d4;
+}
+
 .client-ticket-modal__send-button {
   background-color: var(--color-primary);
   color: var(--color-surface-white);
@@ -172,4 +192,32 @@ button:disabled {
   color: red;
   font-size: var(--font-size-body);
   margin-top: var(--space-8);
+}
+
+.client-ticket-modal__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  margin-top: var(--space-16);
+}
+
+.client-ticket-modal__pagination button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  padding: var(--space-4);
+}
+
+.client-ticket-modal__pagination button:disabled {
+  background-color: transparent;
+  opacity: 0.4;
+}
+
+.client-ticket-modal__pagination span {
+  color: var(--color-text-gray-tertiary);
+  font-weight: var(--font-weight-body-medium);
 }

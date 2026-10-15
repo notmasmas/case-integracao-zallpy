@@ -135,7 +135,6 @@ export async function getTicketMessages(
     `/tickets/${encodeURIComponent(ticketId)}/messages`,
     { params: { page } },
   );
-  response.data.messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   return response.data;
 }
 
