@@ -69,6 +69,12 @@
   width: 100%;
 }
 
+.ticket-stars.ticket-evaluation-modal__stars {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .ticket-evaluation-modal__stars .ticket-stars__button {
   width: 1.75rem;
   height: 1.75rem;

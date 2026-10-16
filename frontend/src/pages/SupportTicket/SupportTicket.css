@@ -74,8 +74,8 @@
 }
 
 .ticket-stars__button:disabled {
+  background-color: transparent;
   cursor: not-allowed;
-  opacity: 0.45;
 }
 
 .ticket-stars__button--saved {
