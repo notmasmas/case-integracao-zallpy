@@ -32,7 +32,7 @@ SELECT
     'Inversor desligando sozinho',
     'O inversor desliga no fim da tarde e só volta no dia seguinte.',
     'EQUIPMENT',
-    'UNDER_REVIEW',
+    'RESOLVED',
     NULL,
     NULL,
     FALSE,

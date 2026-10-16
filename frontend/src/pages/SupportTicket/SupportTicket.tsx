@@ -29,7 +29,7 @@ function SupportTicket() {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTicket, setSelectedTicket] = useState<CustomerTicket | null>(null);
-  const { tickets, error, loading } = useCustomerTickets();
+  const { tickets, error, loading, markTicketEvaluated } = useCustomerTickets();
   const ticketResolvedCount = tickets.filter(
     (ticket) => ticket.status === "resolved",
   ).length;
@@ -126,6 +126,7 @@ function SupportTicket() {
         searchFilter={searchFilter}
         error={error}
         loading={loading}
+        onTicketEvaluated={markTicketEvaluated}
         setSelectedTicket={setSelectedTicket}
       />
     </Box>
