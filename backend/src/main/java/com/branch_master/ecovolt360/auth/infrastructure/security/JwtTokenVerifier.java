@@ -38,6 +38,18 @@ public class JwtTokenVerifier implements TokenVerifier {
 
     @Override
     public AuthenticatedUser verify(String token) {
+        VerifiedClaims claims = readVerifiedClaims(token);
+
+        User user = userRepository.findById(claims.userId())
+                .orElseThrow(InvalidTokenException::new);
+        if (claims.tokenVersion() != user.getTokenVersion()) {
+            throw new InvalidTokenException();
+        }
+
+        return new AuthenticatedUser(claims.userId(), claims.role());
+    }
+
+    private VerifiedClaims readVerifiedClaims(String token) {
         String[] parts = token.split("\\.");
         if (parts.length != 3) {
             throw new InvalidTokenException();
@@ -60,16 +72,10 @@ public class JwtTokenVerifier implements TokenVerifier {
                 throw new InvalidTokenException();
             }
 
-            UUID userId = UUID.fromString(payload.path("sub").asString());
-            User user = userRepository.findById(userId)
-                    .orElseThrow(InvalidTokenException::new);
-            if (versionNode.asInt() != user.getTokenVersion()) {
-                throw new InvalidTokenException();
-            }
-
-            return new AuthenticatedUser(
-                    userId,
-                    Role.valueOf(payload.path("role").asString())
+            return new VerifiedClaims(
+                    UUID.fromString(payload.path("sub").asString()),
+                    Role.valueOf(payload.path("role").asString()),
+                    versionNode.asInt()
             );
         } catch (InvalidTokenException exception) {
             throw exception;
@@ -86,5 +92,8 @@ public class JwtTokenVerifier implements TokenVerifier {
         } catch (Exception exception) {
             throw new IllegalStateException("Could not verify access token", exception);
         }
+    }
+
+    private record VerifiedClaims(UUID userId, Role role, int tokenVersion) {
     }
 }
