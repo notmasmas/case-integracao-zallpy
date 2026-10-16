@@ -18,6 +18,7 @@ type SupportTicketListProps = {
   searchFilter: string;
   error: string | null;
   loading: boolean;
+  setSelectedTicket: (ticket: CustomerTicket) => void;
   onTicketEvaluated: (
     ticketId: string,
     evaluation: number,
@@ -158,6 +159,7 @@ function SupportTicketList({
   searchFilter,
   error,
   loading,
+  setSelectedTicket,
   onTicketEvaluated,
 }: SupportTicketListProps) {
   const [pendingEvaluation, setPendingEvaluation] =
@@ -222,7 +224,7 @@ function SupportTicketList({
                     setPendingEvaluation({ ticketId: ticket.id, rating })
                   }
                 />
-                <Button className="support-ticket-item__button">
+                <Button className="support-ticket-item__button" onClick={() => setSelectedTicket(ticket)}>
                   Ver detalhes
                 </Button>
               </Box>
