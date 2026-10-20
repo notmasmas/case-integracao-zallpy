@@ -3,6 +3,7 @@ package com.branch_master.ecovolt360.ticket.application.dto;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -17,7 +18,11 @@ public record TicketSummaryDTO(
         TicketCategory category,
         TicketStatus status,
         ZonedDateTime createdAt,
-        String supportName
+        String supportName,
+        Integer evaluate,
+        String evaluateComment,
+        @JsonProperty("isEvaluated")
+        boolean isEvaluated
 ) {
     public TicketSummaryDTO(Ticket ticket, String supportName) {
         this(
@@ -30,7 +35,10 @@ public record TicketSummaryDTO(
                 ticket.getCategory(),
                 ticket.getStatus(),
                 ticket.getCreatedAt(),
-                supportName
+                supportName,
+                ticket.getEvaluate(),
+                ticket.getEvaluateComment(),
+                ticket.isEvaluated()
         );
     }
 }

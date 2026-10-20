@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/tickets", "/tickets/**").hasRole("CUSTOMER")
                         .requestMatchers("/support", "/support/**").hasRole("SUPPORT")
                         .requestMatchers(HttpMethod.POST, "/logout").authenticated()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().denyAll()
                 )
                 .exceptionHandling(exceptions -> exceptions

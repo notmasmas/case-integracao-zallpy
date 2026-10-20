@@ -3,8 +3,10 @@ import { FiSearch } from "react-icons/fi";
 import SupportTicketList from "./SupportTicketList";
 import SupportTicketModal from "./SupportTicketModal/SupportTicketModal";
 import { useCustomerTickets } from "../../api/tickets";
+import type { CustomerTicket } from "../../api/tickets";
 import "./SupportTicket.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import TicketDetailsModal from "./TicketDetailsModal/TicketDetailsModal";
 
 const categoryCollection = createListCollection({
   items: [
@@ -26,7 +28,8 @@ function SupportTicket() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { tickets, error, loading } = useCustomerTickets();
+  const [selectedTicket, setSelectedTicket] = useState<CustomerTicket | null>(null);
+  const { tickets, error, loading, markTicketEvaluated } = useCustomerTickets();
   const ticketResolvedCount = tickets.filter(
     (ticket) => ticket.status === "resolved",
   ).length;
@@ -43,9 +46,24 @@ function SupportTicket() {
   const onOpenModal = (): void => {
     setIsModalOpen(true);
   };
+  const onCloseDetailsModal = (): void => {
+    setSelectedTicket(null);
+  };
+
+  useEffect(() => {
+      if (isModalOpen || selectedTicket !== null) {
+        document.body.classList.add("modal-open");
+      } else {
+        document.body.classList.remove("modal-open");
+      }
+    }, [isModalOpen, selectedTicket])
 
   return (
     <Box className="support-ticket-page">
+        {(selectedTicket !== null || isModalOpen) && (
+          <div className="modal-backdrop" onClick={onCloseDetailsModal} />
+      )}
+        <TicketDetailsModal ticket={selectedTicket} onClose={onCloseDetailsModal} />
       <Box className="support-ticket-page__header">
         <h1 className="support-ticket-page__title">Meus chamados de suporte</h1>
         <span className="support-ticket-page__subtitle">
@@ -108,6 +126,8 @@ function SupportTicket() {
         searchFilter={searchFilter}
         error={error}
         loading={loading}
+        onTicketEvaluated={markTicketEvaluated}
+        setSelectedTicket={setSelectedTicket}
       />
     </Box>
   );

@@ -48,6 +48,9 @@ export type CustomerTicket = {
   status: TicketStatus;
   createdAt: string;
   supportName: string;
+  evaluate: number | null;
+  evaluateComment: string | null;
+  isEvaluated: boolean;
 };
 
 type TicketSummaryResponse = {
@@ -58,7 +61,27 @@ type TicketSummaryResponse = {
   status: string;
   createdAt: string;
   supportName: string;
+  evaluate: number | null;
+  evaluateComment: string | null;
+  isEvaluated: boolean;
 };
+
+export type TicketMessage = {
+  id: string;
+  senderUserId: string;
+  role: string;
+  content: string;
+  createdAt: string;
+};
+
+export type TicketMessagesPage = {
+  messages: TicketMessage[];
+  page: number;
+  totalPages: number;
+  totalMessages: number;
+};
+
+
 
 export function categoryLabel(category: TicketCategory | null): string {
   if (!category || !categoryLabels[category]) {
@@ -95,7 +118,51 @@ export async function listTickets(): Promise<CustomerTicket[]> {
     status: statusByApiValue[ticket.status] ?? "pending",
     createdAt: formatTicketDate(ticket.createdAt),
     supportName: ticket.supportName?.trim() ? ticket.supportName : "Não atribuído",
+    evaluate: ticket.evaluate,
+    evaluateComment: ticket.evaluateComment,
+    isEvaluated: ticket.isEvaluated,
   }));
+}
+
+export async function evaluateTicket(
+  ticketId: string,
+  evaluation: number,
+  comment: string | null,
+): Promise<void> {
+  await api.patch(`/tickets/${ticketId}/evaluation`, {
+    evaluation,
+    comment,
+  });
+}
+
+export async function updateTicketStatus(ticketId: string, status: TicketStatus): Promise<void> {
+  const statusByApiKey: Record<TicketStatus, string> = {
+    pending: "PENDING",
+    under_review: "UNDER_REVIEW",
+    in_progress: "IN_PROGRESS",
+    waiting_customer: "WAITING_CUSTOMER",
+    resolved: "RESOLVED",
+    closed: "CLOSED",
+  };
+
+  const apiStatus = statusByApiKey[status];
+  await api.patch(`/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
+}
+
+export async function getTicketMessages(
+  ticketId: string,
+  page: number,
+): Promise<TicketMessagesPage> {
+  const response = await api.get<TicketMessagesPage>(
+    `/tickets/${encodeURIComponent(ticketId)}/messages`,
+    { params: { page } },
+  );
+  return response.data;
+}
+
+export async function sendTicketMessage(ticketId: string, content: string): Promise<void> {
+  const url = `/tickets/${encodeURIComponent(ticketId)}/messages`;
+  await api.post(url, { content });
 }
 
 export function useCustomerTickets() {
@@ -132,7 +199,26 @@ export function useCustomerTickets() {
     };
   }, []);
 
-  return { tickets, error, loading };
+  const markTicketEvaluated = (
+    ticketId: string,
+    evaluation: number,
+    comment: string | null,
+  ) => {
+    setTickets((current) =>
+      current.map((ticket) =>
+        ticket.id === ticketId
+          ? {
+              ...ticket,
+              evaluate: evaluation,
+              evaluateComment: comment,
+              isEvaluated: true,
+            }
+          : ticket,
+      ),
+    );
+  };
+
+  return { tickets, error, loading, markTicketEvaluated };
 }
 
 export function ticketMatchesSearch(ticket: CustomerTicket, search: string): boolean {
