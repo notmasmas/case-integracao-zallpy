@@ -1,11 +1,12 @@
 import { Avatar } from "@chakra-ui/react";
+import { FiLogOut } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import { useAuth } from "../context/AuthContext";
 import { paths } from "../routes/routes";
 
 export default function Sidebar() {
-  const { session } = useAuth();
+  const { session, logout } = useAuth();
   const isSupport = session?.role === "SUPPORT";
 
   return (
@@ -41,6 +42,10 @@ export default function Sidebar() {
           </>
         )}
       </ul>
+      <button type="button" className="sidebar-logout" onClick={() => void logout()}>
+        Sair
+        <FiLogOut aria-hidden="true" />
+      </button>
     </nav>
   );
 }

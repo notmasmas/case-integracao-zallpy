@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface TokenIssuer {
 
-    String issue(UUID userId, Role role);
+    String issue(UUID userId, Role role, int tokenVersion);
 }

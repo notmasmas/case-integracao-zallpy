@@ -31,11 +31,12 @@ public class JwtTokenIssuer implements TokenIssuer {
     }
 
     @Override
-    public String issue(UUID userId, Role role) {
+    public String issue(UUID userId, Role role, int tokenVersion) {
         Instant now = Instant.now();
         String header = base64Url("{\"alg\":\"HS256\",\"typ\":\"JWT\"}".getBytes(StandardCharsets.UTF_8));
         String payload = base64Url(("{\"sub\":\"" + userId + "\",\"role\":\"" + role.name()
-                + "\",\"iat\":" + now.getEpochSecond()
+                + "\",\"ver\":" + tokenVersion
+                + ",\"iat\":" + now.getEpochSecond()
                 + ",\"exp\":" + now.plusSeconds(expirationMinutes * 60).getEpochSecond() + "}")
                 .getBytes(StandardCharsets.UTF_8));
         String content = header + "." + payload;

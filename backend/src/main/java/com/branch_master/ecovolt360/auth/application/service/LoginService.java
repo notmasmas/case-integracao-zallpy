@@ -2,10 +2,14 @@ package com.branch_master.ecovolt360.auth.application.service;
 
 import com.branch_master.ecovolt360.auth.application.dto.LoginResult;
 import com.branch_master.ecovolt360.auth.application.exception.InvalidCredentialsException;
+import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
 import com.branch_master.ecovolt360.auth.application.port.PasswordVerifier;
 import com.branch_master.ecovolt360.auth.application.port.TokenIssuer;
 import com.branch_master.ecovolt360.auth.domain.entity.User;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 public class LoginService {
 
@@ -34,7 +38,11 @@ public class LoginService {
             throw new InvalidCredentialsException();
         }
 
-        String token = tokenIssuer.issue(user.getId(), user.getRole());
+        String token = tokenIssuer.issue(
+                user.getId(),
+                user.getRole(),
+                user.getTokenVersion()
+        );
 
         return new LoginResult(
                 user.getId(),
@@ -42,5 +50,13 @@ public class LoginService {
                 user.getRole(),
                 token
         );
+    }
+
+    @Transactional
+    public void logout(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(InvalidTokenException::new);
+        user.incrementTokenVersion();
+        userRepository.save(user);
     }
 }

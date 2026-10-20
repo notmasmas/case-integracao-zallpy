@@ -33,6 +33,9 @@ public class  User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "token_version", nullable = false)
+    private int tokenVersion = 0;
+
     public UUID getId() {
         return id;
     }
@@ -48,6 +51,13 @@ public class  User {
     }
     public Role getRole() {
         return role;
+    }
+    public int getTokenVersion() {
+        return tokenVersion;
+    }
+
+    public void incrementTokenVersion() {
+        this.tokenVersion++;
     }
 
     protected  User() {

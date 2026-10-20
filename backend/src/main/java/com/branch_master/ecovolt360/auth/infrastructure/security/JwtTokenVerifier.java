@@ -4,6 +4,8 @@ import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
 import com.branch_master.ecovolt360.auth.application.port.TokenVerifier;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
+import com.branch_master.ecovolt360.auth.domain.entity.User;
+import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
@@ -22,17 +24,32 @@ public class JwtTokenVerifier implements TokenVerifier {
 
     private final byte[] secret;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     public JwtTokenVerifier(
             @Value("${app.jwt.secret}") String secret,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            UserRepository userRepository
     ) {
         this.secret = secret.getBytes(StandardCharsets.UTF_8);
         this.objectMapper = objectMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
     public AuthenticatedUser verify(String token) {
+        VerifiedClaims claims = readVerifiedClaims(token);
+
+        User user = userRepository.findById(claims.userId())
+                .orElseThrow(InvalidTokenException::new);
+        if (claims.tokenVersion() != user.getTokenVersion()) {
+            throw new InvalidTokenException();
+        }
+
+        return new AuthenticatedUser(claims.userId(), claims.role());
+    }
+
+    private VerifiedClaims readVerifiedClaims(String token) {
         String[] parts = token.split("\\.");
         if (parts.length != 3) {
             throw new InvalidTokenException();
@@ -50,9 +67,15 @@ public class JwtTokenVerifier implements TokenVerifier {
                 throw new InvalidTokenException();
             }
 
-            return new AuthenticatedUser(
+            JsonNode versionNode = payload.path("ver");
+            if (versionNode.isMissingNode() || !versionNode.isNumber()) {
+                throw new InvalidTokenException();
+            }
+
+            return new VerifiedClaims(
                     UUID.fromString(payload.path("sub").asString()),
-                    Role.valueOf(payload.path("role").asString())
+                    Role.valueOf(payload.path("role").asString()),
+                    versionNode.asInt()
             );
         } catch (InvalidTokenException exception) {
             throw exception;
@@ -69,5 +92,8 @@ public class JwtTokenVerifier implements TokenVerifier {
         } catch (Exception exception) {
             throw new IllegalStateException("Could not verify access token", exception);
         }
+    }
+
+    private record VerifiedClaims(UUID userId, Role role, int tokenVersion) {
     }
 }
