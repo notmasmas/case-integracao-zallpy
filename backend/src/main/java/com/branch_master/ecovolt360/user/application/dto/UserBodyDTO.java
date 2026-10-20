@@ -19,8 +19,9 @@ public record UserBodyDTO (
         @Size(max=30)
         String email,
 
-        @NotBlank
-        @Size(max=100)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(min = 8, max = 25, message = "A senha deve ter entre 8 e 25 caracteres.")
+        @Pattern(regexp = "^(?=.*\\p{L})(?=.*\\d).+$", message = "A senha deve conter letras e números.")
         String password,
 
         @NotBlank
