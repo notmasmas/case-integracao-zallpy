@@ -4,7 +4,7 @@
 
 # EcoVolt360 | Portal do Cliente
 
-Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o projeto EcoVolt360.
+Este repositório refere-se ao desenvolvimento do **Portal do Cliente** para o projeto EcoVolt360.
 
 
 
@@ -32,7 +32,7 @@ Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o 
 
   Além disso, o desenvolvimento do portal soluciona a falta de conhecimento de dados que afetam a tomada de decisões da EcoVolt
 
-- **Por que?** Este módulo resolve os problemas de canais e suporte porque centraliza a comunicação empresa-cliente e informações úteis em um só lugar de fácil acesso ao consumidor, tornando o processo desde o pré ao pós venda mais transparente e diminuindo a necessidade de contato ao suporte para informações que estão disponíveis de imediato.
+- **Por quê?** Este módulo resolve os problemas de canais e suporte porque centraliza a comunicação empresa-cliente e informações úteis em um só lugar de fácil acesso ao consumidor, tornando o processo desde o pré ao pós-venda mais transparente e diminuindo a necessidade de contato ao suporte para informações que estão disponíveis de imediato.
 
   A coleta de dados no portal permite que a empresa faça decisões baseadas em valores reais e consolide dados em informações que orientam o negócio.
 
@@ -49,16 +49,27 @@ Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o 
 
 **Client:** React + TypeScript
 
-**Server:** Java/Spring Boot
+**Servidor:** Java/Spring Boot
 
 
-## Instalação
+## Instalação e execução
 
-#### frontend
+#### Frontend
 ```bash
   cd frontend
   npm install
   npm run dev
+```
+
+#### Banco de dados
+```bash
+  docker compose up
+```
+
+#### Backend
+```bash
+  cd backend
+  ./mvnw spring-boot:run
 ```
     
 ## Equipe
@@ -66,11 +77,10 @@ Este respositório refere-se ao desenvolvimento do **Portal do Cliente** para o 
 Este projeto foi desenvolvido como case integrador pela equipe **Branch Master**, formada por membros do programa Zallpy Academy.
 
 - [George Abreu de Siqueira](https://github.com/George-Abreu-git)
-- [Guilherme Silveira](https://github.com/guisilvs)
 - [Jullia Ross](https://github.com/JulliaRoss)
 - [Maria Helena Machado Melo](https://github.com/notmasmas)
-- [Luiz Rosa](https://github.com/EngEleLuiz)
 - [Mariele Leiria](https://github.com/MarieleLeiria)
+- [Luiz Rosa](https://github.com/EngEleLuiz)
 
 
 ![Logo Branch Master](https://i.imgur.com/DsOq7mj.png)
