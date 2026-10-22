@@ -10,7 +10,5 @@ public class Ecovolt360Application {
 
 		SpringApplication.run(Ecovolt360Application.class, args);
 
-//		User user1 = new User();
-
 	}
 }
