@@ -40,6 +40,11 @@ public class JpaTicketRepository implements TicketRepository {
     }
 
     @Override
+    public List<Ticket> findBySupportId(UUID supportId) {
+        return repository.findBySupportIdOrderByCreatedAtDesc(supportId);
+    }
+
+    @Override
     public int updateEvaluation(UUID ticketId, UUID customerId, Integer evaluation, String comment, ZonedDateTime updatedAt) {
         return repository.updateEvaluationAndComment(ticketId, customerId, evaluation, comment, updatedAt);
     }

@@ -54,7 +54,7 @@ Uma rota nova só fica protegida se o path estiver na `SecurityConfiguration`. F
 
 ```java
 @RequestMapping("/tickets")
-public class TicketController {
+public class CustomerTicketController {
     public ResponseEntity<TicketDetailsDTO> createTicket(
             @RequestBody @Valid TicketBodyDTO ticket,
             @CurrentUser AuthenticatedUser currentUser,
