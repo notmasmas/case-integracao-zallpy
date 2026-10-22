@@ -13,6 +13,7 @@ public interface TicketRepository {
     Optional<Ticket> findById(UUID ticketId);
     Optional<Ticket> findByIdAndCustomerId(UUID ticketId, UUID customerId);
     List<Ticket> findByCustomerId(UUID customerId);
+    List<Ticket> findBySupportId(UUID supportId);
     int updateEvaluation(UUID ticketId, UUID customerId, Integer evaluation, String comment, ZonedDateTime updatedAt);
     int updateStatus(UUID ticketId, TicketStatus status, ZonedDateTime updatedAt);
 }

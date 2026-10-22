@@ -15,6 +15,7 @@ import java.util.UUID;
 public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findByIdAndCustomerId(UUID id, UUID customerId);
     List<Ticket> findByCustomerIdOrderByCreatedAtDesc(UUID customerId);
+    List<Ticket> findBySupportIdOrderByCreatedAtDesc(UUID supportId);
 
     @Modifying(clearAutomatically = true)
     @Query("""
