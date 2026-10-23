@@ -1,9 +1,12 @@
 import { Box } from "@chakra-ui/react";
 import TicketStatusBadge from "../../components/TicketStatusBadge";
 import { categoryLabel, useAllTickets} from "../../api/tickets";
+import { BsArrowRight } from "react-icons/bs";
+import { statusByApiValue } from "../../api/tickets";
 
 function TicketsQueue() {
   const { tickets, error, loading } = useAllTickets();
+  
   return (
     <Box className="support-panel-tickets">
       <Box className="support-panel-tickets__header">
@@ -40,9 +43,17 @@ function TicketsQueue() {
               </Box>
               <Box className="support-panel-tickets__list__left">
                 <Box className="support-panel-tickets__list__responsible">
-                  <p>
-                    <span>Atribuído:</span> {ticket.supportName}
-                  </p>
+                  {ticket.status === statusByApiValue.PENDING ? (
+                    <Box className="support-panel-tickets__list__action">
+                      <button type="button">Atender chamado
+                      </button>
+                        <BsArrowRight aria-hidden="true" />
+                    </Box>
+                  ) : (
+                    <p>
+                      <span>Atribuído:</span> {ticket.supportName}
+                    </p>
+                  )}
                   <Box className="support-panel-tickets__list__date">
                     <p>{ticket.createdAt}</p>
                   </Box>
