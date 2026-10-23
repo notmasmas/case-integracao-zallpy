@@ -127,8 +127,9 @@
 
 .support-panel-tickets__filters__action {
   display: flex;
-  flex-direction: row;
-  gap: var(--space-8);
+  width: 100%;
+  justify-content: flex-end;
+  gap: var(--space-4);
   align-items: center;
   color: var(--color-text-gray-primary);
   font-weight: var(--font-weight-body-medium);

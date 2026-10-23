@@ -41,6 +41,7 @@ public class CustomerTicketController {
         return ResponseEntity.created(uri).body(newTicket);
     }
 
+
     @GetMapping
     public ResponseEntity<List<TicketSummaryDTO>> listTickets(@CurrentUser AuthenticatedUser currentUser) {
         return ResponseEntity.ok(ticketService.listCustomerTickets(currentUser.userId()));

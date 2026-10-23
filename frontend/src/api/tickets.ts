@@ -108,9 +108,8 @@ function formatTicketDate(value: string): string {
   }).format(date);
 }
 
-export async function listTickets(): Promise<CustomerTicket[]> {
-  const response = await api.get<TicketSummaryResponse[]>("/tickets");
-  return response.data.map((ticket) => ({
+function toCustomerTicket(ticket: TicketSummaryResponse): CustomerTicket {
+  return {
     id: ticket.id,
     title: ticket.title,
     description: ticket.description,
@@ -121,8 +120,19 @@ export async function listTickets(): Promise<CustomerTicket[]> {
     evaluate: ticket.evaluate,
     evaluateComment: ticket.evaluateComment,
     isEvaluated: ticket.isEvaluated,
-  }));
+  };
 }
+
+export async function listTickets(): Promise<CustomerTicket[]> {
+  const response = await api.get<TicketSummaryResponse[]>("support/tickets/all");
+  return response.data.map(toCustomerTicket);
+}
+
+export async function listSupportTickets(): Promise<CustomerTicket[]> {
+  const response = await api.get<TicketSummaryResponse[]>("/support/tickets");
+  return response.data.map(toCustomerTicket);
+}
+
 
 export async function evaluateTicket(
   ticketId: string,
@@ -146,7 +156,7 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
   };
 
   const apiStatus = statusByApiKey[status];
-  await api.patch(`/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
+  await api.patch(`/support/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
 }
 
 export async function getTicketMessages(
@@ -164,6 +174,8 @@ export async function sendTicketMessage(ticketId: string, content: string): Prom
   const url = `/tickets/${encodeURIComponent(ticketId)}/messages`;
   await api.post(url, { content });
 }
+
+
 
 export function useCustomerTickets() {
   const [tickets, setTickets] = useState<CustomerTicket[]>([]);
@@ -219,6 +231,80 @@ export function useCustomerTickets() {
   };
 
   return { tickets, error, loading, markTicketEvaluated };
+}
+
+export function useAllTickets() {
+  const [tickets, setTickets] = useState<CustomerTicket[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    listTickets()
+      .then((data) => {
+        if (!active) {
+          return;
+        }
+        setTickets(data);
+        setError(null);
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+        setTickets([]);
+        setError("Não foi possível carregar os chamados.");
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { tickets, error, loading };
+}
+
+export function useSupportTickets() {
+  const [tickets, setTickets] = useState<CustomerTicket[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    listSupportTickets()
+      .then((data) => {
+        if (!active) {
+          return;
+        }
+        setTickets(data);
+        setError(null);
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+        setTickets([]);
+        setError("Não foi possível carregar os chamados.");
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { tickets, error, loading };
 }
 
 export function ticketMatchesSearch(ticket: CustomerTicket, search: string): boolean {

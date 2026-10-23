@@ -33,6 +33,11 @@ public class SupportTicketController {
         return ResponseEntity.ok(ticketService.listSupportTickets(currentUser.userId()));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<TicketSummaryDTO>> listAllTickets() {
+        return ResponseEntity.ok(ticketService.listAllTickets());
+    }
+
     @PatchMapping("/{ticketId}/status")
     public ResponseEntity<TicketDetailsDTO> updateStatus(@PathVariable UUID ticketId,
                                                           @RequestBody @Valid TicketBodyStatusDTO ticketBodyStatusDTO,

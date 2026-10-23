@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface TicketRepository {
     Ticket save(Ticket ticket);
     Optional<Ticket> findById(UUID ticketId);
+    List<Ticket> findAll();
     Optional<Ticket> findByIdAndCustomerId(UUID ticketId, UUID customerId);
     List<Ticket> findByCustomerId(UUID customerId);
     List<Ticket> findBySupportId(UUID supportId);
