@@ -25,6 +25,11 @@ public class JpaTicketRepository implements TicketRepository {
     }
 
     @Override
+    public List<Ticket> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
     public Optional<Ticket> findById(UUID ticketId) {
         return repository.findById(ticketId);
     }
@@ -37,6 +42,11 @@ public class JpaTicketRepository implements TicketRepository {
     @Override
     public List<Ticket> findByCustomerId(UUID customerId) {
         return repository.findByCustomerIdOrderByCreatedAtDesc(customerId);
+    }
+
+    @Override
+    public List<Ticket> findBySupportId(UUID supportId) {
+        return repository.findBySupportIdOrderByCreatedAtDesc(supportId);
     }
 
     @Override

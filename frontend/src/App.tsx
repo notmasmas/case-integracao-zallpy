@@ -10,6 +10,7 @@ import RequireRole from "./routes/RequireRole";
 import SupportTicket from "./pages/SupportTicket/SupportTicket";
 import SupportPanelHome from "./pages/SupportPanelHome/SupportPanelHome";
 import CustomerPanelHome from "./pages/CustomerPanelHome/CustomerPanelHome";
+import TicketsQueue from "./pages/TicketsQueue/TicketsQueue";
 
 function App() {
   return (
@@ -35,6 +36,10 @@ function App() {
               <Route
                 path={paths.support.home}
                 element={<SupportPanelHome />}
+              />
+              <Route
+                path={paths.support.tickets}
+                element={<TicketsQueue />}
               />
             </Route>
           </Route>

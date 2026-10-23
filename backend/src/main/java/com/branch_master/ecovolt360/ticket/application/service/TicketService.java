@@ -10,6 +10,7 @@ import com.branch_master.ecovolt360.messages.application.dto.MessageDTO;
 import com.branch_master.ecovolt360.messages.application.dto.MessagePageDTO;
 import com.branch_master.ecovolt360.messages.domain.entity.Message;
 import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
+import com.branch_master.ecovolt360.support.domain.entity.Support;
 import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
@@ -67,9 +68,22 @@ public class TicketService {
         return toDetails(newTicket, pageMessages(List.of(), 0));
     }
 
+    public List<TicketSummaryDTO> listAllTickets() {
+        return ticketRepository.findAll().stream()
+                .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
+                .toList();
+    }
+
     public List<TicketSummaryDTO> listCustomerTickets(UUID userId) {
         Customer customer = findCustomer(userId);
         return ticketRepository.findByCustomerId(customer.getId()).stream()
+                .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
+                .toList();
+    }
+
+    public List<TicketSummaryDTO> listSupportTickets(UUID userId) {
+        Support support = findSupport(userId);
+        return ticketRepository.findBySupportId(support.getId()).stream()
                 .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
                 .toList();
     }
@@ -116,6 +130,7 @@ public class TicketService {
 
     @Transactional
     public TicketDetailsDTO updateStatus(UUID userId, UUID ticketId, TicketBodyStatusDTO ticketBodyStatusDTO) {
+        findSupport(userId);
         Ticket current = ticketRepository.findById(ticketId)
                 .orElseThrow(TicketNotFoundException::new);
         if (current.getStatus() == TicketStatus.CLOSED) {
@@ -191,6 +206,11 @@ public class TicketService {
 
     private Customer findCustomer(UUID userId) {
         return customerRepository.findByUserId(userId)
+                .orElseThrow(ForbiddenException::new);
+    }
+
+    private Support findSupport(UUID userId) {
+        return supportRepository.findByUserId(userId)
                 .orElseThrow(ForbiddenException::new);
     }
 

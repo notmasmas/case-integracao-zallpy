@@ -4,7 +4,6 @@ import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
@@ -23,11 +22,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/tickets")
 @Validated
-public class TicketController {
+public class CustomerTicketController {
 
     private final TicketService ticketService;
 
-    public TicketController(TicketService ticketService) {
+    public CustomerTicketController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
 
@@ -41,6 +40,7 @@ public class TicketController {
 
         return ResponseEntity.created(uri).body(newTicket);
     }
+
 
     @GetMapping
     public ResponseEntity<List<TicketSummaryDTO>> listTickets(@CurrentUser AuthenticatedUser currentUser) {
@@ -60,14 +60,6 @@ public class TicketController {
                                                           @RequestBody @Valid TicketBodyEvaluateDTO ticketBodyEvaluateDTO,
                                                           @CurrentUser AuthenticatedUser currentUser) {
         TicketDetailsDTO ticket = ticketService.evaluateTicket(currentUser.userId(), id, ticketBodyEvaluateDTO);
-        return ResponseEntity.ok(ticket);
-    }
-
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<TicketDetailsDTO> updateStatus(@PathVariable UUID id,
-                                                          @RequestBody @Valid TicketBodyStatusDTO ticketBodyStatusDTO,
-                                                          @CurrentUser AuthenticatedUser currentUser) {
-        TicketDetailsDTO ticket = ticketService.updateStatus(currentUser.userId(), id, ticketBodyStatusDTO);
         return ResponseEntity.ok(ticket);
     }
 }
