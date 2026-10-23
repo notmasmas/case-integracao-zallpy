@@ -31,7 +31,7 @@ export const categoryLabels: Record<TicketCategory, string> = {
   OTHER: "Outro",
 };
 
-const statusByApiValue: Record<string, TicketStatus> = {
+export const statusByApiValue: Record<string, TicketStatus> = {
   PENDING: "pending",
   UNDER_REVIEW: "under_review",
   IN_PROGRESS: "in_progress",
