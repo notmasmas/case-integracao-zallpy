@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import "./UserComment.css";
-import type { TicketMessage } from "../../../../api/tickets";
+import type { TicketMessage } from "../../../api/tickets";
 
 const roleLabels: Record<string, string> = {
     CUSTOMER: "Cliente",

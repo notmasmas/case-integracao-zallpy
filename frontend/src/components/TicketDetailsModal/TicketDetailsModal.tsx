@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import "./TicketDetailsModal.css";
 import { MdClose } from "react-icons/md";
-import TicketStatusBadge from "../../../components/TicketStatusBadge";
+import TicketStatusBadge from "../TicketStatusBadge";
 import { FiChevronLeft, FiChevronRight, FiSend } from "react-icons/fi";
 import {
   categoryLabel,
@@ -10,8 +10,8 @@ import {
   sendTicketMessage,
   type CustomerTicket,
   type TicketMessage,
-} from "../../../api/tickets";
-import { useAuth } from "../../../context/AuthContext";
+} from "../../api/tickets";
+import { useAuth } from "../../context/AuthContext";
 import UserComment from "./UserComment/UserComment";
 
 type TicketDetailsModalProps = {

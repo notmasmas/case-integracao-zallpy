@@ -159,6 +159,10 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
   await api.patch(`/support/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
 }
 
+export async function updateTicketCategory(ticketId: string, category: TicketCategory): Promise <void> {
+    await api.patch(`/tickets/${encodeURIComponent(ticketId)}/category`, category);
+}
+
 export async function getTicketMessages(
   ticketId: string,
   page: number,
