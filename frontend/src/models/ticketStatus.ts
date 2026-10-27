@@ -24,7 +24,7 @@ export type Ticket = {
   updatedAt: string;
 };
 
-export type TickectDetails = {
+export type TicketDetails = {
   id: string;
   ticket: Ticket;
   project: Project;

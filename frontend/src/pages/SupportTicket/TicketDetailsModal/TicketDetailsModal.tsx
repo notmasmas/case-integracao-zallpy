@@ -8,6 +8,7 @@ import {
   categoryLabel,
   getTicketMessages,
   sendTicketMessage,
+  updateTicketStatus,
   type CustomerTicket,
   type TicketMessage,
 } from "../../../api/tickets";
@@ -117,11 +118,16 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     }
 
     sendTicketMessage(ticketId, content)
-      .then(() => {
+      .then(async () => {
         inputElement.value = "";
         setInputError(null);
         setPage(0);
         setReloadKey((current) => current + 1);
+
+        if (ticket.status === "waiting_customer") {
+          await updateTicketStatus(ticketId, "in_progress");
+          ticket.status = "in_progress";
+        }
       })
       .catch(() => {
         setMessagesError("Não foi possível enviar ou atualizar as respostas.");
