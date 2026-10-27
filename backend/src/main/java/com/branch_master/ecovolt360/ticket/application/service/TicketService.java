@@ -127,22 +127,25 @@ public class TicketService {
 
     @Transactional
     public TicketDetailsDTO updateStatus(UUID userId, UUID ticketId, TicketBodyStatusDTO ticketBodyStatusDTO) {
-        findSupport(userId);
-        Ticket current = ticketRepository.findById(ticketId)
-                .orElseThrow(TicketNotFoundException::new);
+        Support support = findSupport(userId);
+        Ticket current = findSupportTicket(ticketId, support.getId());
         if (current.getStatus() == TicketStatus.CLOSED) {
             throw new TicketAlreadyClosedException();
         }
         int updated = ticketRepository.updateStatus(
                 ticketId,
                 ticketBodyStatusDTO.status(),
-                ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"))
+                ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")),
+                support.getId()
         );
         if (updated == 0) {
-            throw new TicketAlreadyClosedException();
+            Ticket latest = findSupportTicket(ticketId, support.getId());
+            if (latest.getStatus() == TicketStatus.CLOSED) {
+                throw new TicketAlreadyClosedException();
+            }
+            throw new TicketNotFoundException();
         }
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(TicketNotFoundException::new);
+        Ticket ticket = findSupportTicket(ticketId, support.getId());
         return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
     }
 
@@ -197,6 +200,11 @@ public class TicketService {
 
     private Ticket findCustomerTicket(UUID ticketId, UUID customerId) {
         return ticketRepository.findByIdAndCustomerId(ticketId, customerId)
+                .orElseThrow(TicketNotFoundException::new);
+    }
+
+    private Ticket findSupportTicket(UUID ticketId, UUID supportId) {
+        return ticketRepository.findByIdAndSupportId(ticketId, supportId)
                 .orElseThrow(TicketNotFoundException::new);
     }
 

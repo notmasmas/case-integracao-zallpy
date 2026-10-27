@@ -14,6 +14,7 @@ public interface TicketRepository {
     Optional<Ticket> findById(UUID ticketId);
     List<Ticket> findAll();
     Optional<Ticket> findByIdAndCustomerId(UUID ticketId, UUID customerId);
+    Optional<Ticket> findByIdAndSupportId(UUID ticketId, UUID supportId);
     List<Ticket> findByCustomerId(UUID customerId);
     List<Ticket> findBySupportId(UUID supportId);
     int updateEvaluation(UUID ticketId, UUID customerId, Integer evaluation, String comment, ZonedDateTime updatedAt);
