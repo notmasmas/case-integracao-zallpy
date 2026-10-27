@@ -128,6 +128,11 @@ export async function listTickets(): Promise<CustomerTicket[]> {
   return response.data.map(toCustomerTicket);
 }
 
+export async function listCustomerTickets(): Promise<CustomerTicket[]> {
+  const response = await api.get<TicketSummaryResponse[]>("/tickets");
+  return response.data.map(toCustomerTicket);
+}
+
 export async function listSupportTickets(): Promise<CustomerTicket[]> {
   const response = await api.get<TicketSummaryResponse[]>("/support/tickets");
   return response.data.map(toCustomerTicket);
@@ -189,7 +194,7 @@ export function useCustomerTickets() {
   useEffect(() => {
     let active = true;
 
-    listTickets()
+    listCustomerTickets()
       .then((data) => {
         if (!active) {
           return;

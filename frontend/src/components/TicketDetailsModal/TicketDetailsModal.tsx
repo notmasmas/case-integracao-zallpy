@@ -4,15 +4,22 @@ import "./TicketDetailsModal.css";
 import { MdClose } from "react-icons/md";
 import TicketStatusBadge from "../TicketStatusBadge";
 import { FiChevronLeft, FiChevronRight, FiSend } from "react-icons/fi";
+import CategoryDropdown from "./CategoryDropdown";
+import StatusDropdown from "./StatusDropdown";
 import {
   categoryLabel,
   getTicketMessages,
   sendTicketMessage,
+  updateTicketCategory,
+  updateTicketStatus,
   type CustomerTicket,
+  type TicketCategory,
   type TicketMessage,
 } from "../../api/tickets";
 import { useAuth } from "../../context/AuthContext";
 import UserComment from "./UserComment/UserComment";
+import type { TicketStatus } from "../../models/ticketStatus";
+import { toaster } from "../ui/toaster";
 
 type TicketDetailsModalProps = {
   ticket: CustomerTicket | null;
@@ -31,6 +38,8 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
   const [inputError, setInputError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [activeTicketId, setActiveTicketId] = useState(ticketId);
+  const [selectedCategory, setSelectedCategory] = useState<TicketCategory | null>(ticket?.category ?? null);
+  const [selectedStatus, setSelectedStatus] = useState<TicketStatus>(ticket?.status ?? "pending");
 
   if (ticketId !== activeTicketId) {
     setActiveTicketId(ticketId);
@@ -40,6 +49,8 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     setTotalMessages(0);
     setMessagesError(null);
     setInputError(null);
+    setSelectedCategory(ticket?.category ?? null);
+    setSelectedStatus(ticket?.status ?? "pending");
   }
 
   useEffect(() => {
@@ -128,6 +139,42 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
       });
   }
 
+  async function handleCategoryChange(category: TicketCategory | null) {
+    setSelectedCategory(category);
+    if (!ticketId || !category) {
+      return;
+    }
+
+    try {
+      await updateTicketCategory(ticketId, category);
+    } catch {
+      setSelectedCategory(ticket.category);
+      toaster.create({
+        type: "error",
+        title: "Não foi possível atualizar a categoria",
+        description: "Tente novamente.",
+      });
+    }
+  }
+
+  async function handleStatusChange(status: TicketStatus) {
+    setSelectedStatus(status);
+    if (!ticketId) {
+      return;
+    }
+
+    try {
+      await updateTicketStatus(ticketId, status);
+    } catch {
+      setSelectedStatus(ticket.status);
+      toaster.create({
+        type: "error",
+        title: "Não foi possível atualizar o status",
+        description: "Tente novamente.",
+      });
+    }
+  }
+
   return (
     <Box className="client-ticket-modal">
       <Box className="client-ticket-modal__header">
@@ -150,11 +197,19 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
             </Box>
             <Box className="client-ticket-modal__informations__item2__details">
               <h3>Categoria:</h3>
-              <span>{categoryLabel(ticket.category) || "Categoria não atribuida"}</span>
+              {session?.role === "SUPPORT" ? (
+                <CategoryDropdown selectedCategory={selectedCategory} setSelectedCategory={handleCategoryChange} />
+              ) : (
+                <span>{selectedCategory ? categoryLabel(selectedCategory) : "Categoria não atribuída"}</span>
+              )}
             </Box>
           </Box>
           <Box>
-            <TicketStatusBadge status={ticket.status} />
+            {session?.role === "SUPPORT" ? (
+              <StatusDropdown status={selectedStatus} onChange={handleStatusChange} />
+            ) : (
+              <TicketStatusBadge status={ticket.status} />
+            )}
           </Box>
         </Box>
         <Box className="client-ticket-modal__client-description">

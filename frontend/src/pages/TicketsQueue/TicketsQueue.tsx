@@ -1,11 +1,36 @@
+import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import TicketStatusBadge from "../../components/TicketStatusBadge";
 import { categoryLabel, useAllTickets} from "../../api/tickets";
+import type { CustomerTicket } from "../../api/tickets";
+import TicketDetailsModal from "../../components/TicketDetailsModal/TicketDetailsModal";
+import "./TicketsQueue.css";
 
 function TicketsQueue() {
   const { tickets, error, loading } = useAllTickets();
+  const [selectedTicket, setSelectedTicket] = useState<CustomerTicket | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const onCloseModal = (): void => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+      if (isModalOpen || selectedTicket !== null) {
+        document.body.classList.add("modal-open");
+      } else {
+        document.body.classList.remove("modal-open");
+      }
+    }, [isModalOpen, selectedTicket])
+
   return (
     <Box className="support-panel-tickets">
+        {(selectedTicket !== null || isModalOpen) && (
+          <div className="modal-backdrop" onClick={onCloseModal} />
+      )}
+
+      <TicketDetailsModal ticket={selectedTicket} onClose={() => setSelectedTicket(null)} />
+        
       <Box className="support-panel-tickets__header">
         <p>Sua fila de chamados</p>
         <span>
@@ -20,7 +45,7 @@ function TicketsQueue() {
       ) : null}
       {!error &&
         tickets.map((ticket) => (
-          <Box className="support-panel-tickets__list" key={ticket.id}>
+          <Box className="support-panel-tickets__list" key={ticket.id} onClick={() => setSelectedTicket(ticket)}>
               <Box className="support-panel-tickets__list__right">
                 <Box className="support-panel-tickets__list__data">
                   <p className="support-panel-ticket-id">{ticket.id}</p>
