@@ -10,6 +10,7 @@ import {
   categoryLabel,
   getTicketMessages,
   sendTicketMessage,
+  updateTicketCategory,
   updateTicketStatus,
   updateTicketCategory,
   type CustomerTicket,
