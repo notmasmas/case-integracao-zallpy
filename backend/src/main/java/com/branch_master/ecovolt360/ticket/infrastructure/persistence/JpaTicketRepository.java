@@ -35,6 +35,11 @@ public class JpaTicketRepository implements TicketRepository {
     }
 
     @Override
+    public Optional<Ticket> findByIdAndSupportId(UUID ticketId, UUID supportId) {
+        return repository.findByIdAndSupportId(ticketId, supportId);
+    }
+
+    @Override
     public List<Ticket> findByCustomerId(UUID customerId) {
         return repository.findByCustomerIdOrderByCreatedAtDesc(customerId);
     }
@@ -50,7 +55,7 @@ public class JpaTicketRepository implements TicketRepository {
     }
 
     @Override
-    public int updateStatus(UUID ticketId, TicketStatus status, ZonedDateTime updatedAt) {
-        return repository.updateStatus(ticketId, status, updatedAt);
+    public int updateStatus(UUID ticketId, TicketStatus status, ZonedDateTime updatedAt, UUID supportId) {
+        return repository.updateStatus(ticketId, status, updatedAt, supportId);
     }
 }

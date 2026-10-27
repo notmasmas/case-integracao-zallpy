@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findByIdAndCustomerId(UUID id, UUID customerId);
+    Optional<Ticket> findByIdAndSupportId(UUID id, UUID supportId);
     List<Ticket> findByCustomerIdOrderByCreatedAtDesc(UUID customerId);
     List<Ticket> findBySupportIdOrderByCreatedAtDesc(UUID supportId);
 
@@ -47,10 +48,12 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
                    t.updatedAt = :updatedAt
              where t.id = :id
                and t.status <> com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.CLOSED
+               and t.supportId = :supportId
             """)
     int updateStatus(
             @Param("id") UUID id,
             @Param("status") TicketStatus status,
-            @Param("updatedAt") ZonedDateTime updatedAt
+            @Param("updatedAt") ZonedDateTime updatedAt,
+            @Param("supportId") UUID supportId
     );
 }
