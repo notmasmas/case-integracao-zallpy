@@ -5,7 +5,8 @@ import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyCl
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyEvaluatedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotEvaluatedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotFoundException;
-import com.branch_master.ecovolt360.ticket.presentation.controller.TicketController;
+import com.branch_master.ecovolt360.ticket.presentation.controller.CustomerTicketController;
+import com.branch_master.ecovolt360.ticket.presentation.controller.SupportTicketController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = TicketController.class)
+@RestControllerAdvice(assignableTypes = {CustomerTicketController.class, SupportTicketController.class})
 public class TicketExceptionHandler {
 
     @ExceptionHandler(TicketNotFoundException.class)

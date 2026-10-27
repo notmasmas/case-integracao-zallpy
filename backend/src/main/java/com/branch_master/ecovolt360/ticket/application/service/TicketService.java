@@ -10,6 +10,7 @@ import com.branch_master.ecovolt360.messages.application.dto.MessageDTO;
 import com.branch_master.ecovolt360.messages.application.dto.MessagePageDTO;
 import com.branch_master.ecovolt360.messages.domain.entity.Message;
 import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
+import com.branch_master.ecovolt360.support.domain.entity.Support;
 import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
@@ -74,6 +75,13 @@ public class TicketService {
                 .toList();
     }
 
+    public List<TicketSummaryDTO> listSupportTickets(UUID userId) {
+        Support support = findSupport(userId);
+        return ticketRepository.findBySupportId(support.getId()).stream()
+                .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
+                .toList();
+    }
+
     public TicketDetailsDTO getCustomerTicket(UUID userId, UUID ticketId, int page) {
         Customer customer = findCustomer(userId);
         Ticket ticket = findCustomerTicket(ticketId, customer.getId());
@@ -116,21 +124,25 @@ public class TicketService {
 
     @Transactional
     public TicketDetailsDTO updateStatus(UUID userId, UUID ticketId, TicketBodyStatusDTO ticketBodyStatusDTO) {
-        Ticket current = ticketRepository.findById(ticketId)
-                .orElseThrow(TicketNotFoundException::new);
+        Support support = findSupport(userId);
+        Ticket current = findSupportTicket(ticketId, support.getId());
         if (current.getStatus() == TicketStatus.CLOSED) {
             throw new TicketAlreadyClosedException();
         }
         int updated = ticketRepository.updateStatus(
                 ticketId,
                 ticketBodyStatusDTO.status(),
-                ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"))
+                ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")),
+                support.getId()
         );
         if (updated == 0) {
-            throw new TicketAlreadyClosedException();
+            Ticket latest = findSupportTicket(ticketId, support.getId());
+            if (latest.getStatus() == TicketStatus.CLOSED) {
+                throw new TicketAlreadyClosedException();
+            }
+            throw new TicketNotFoundException();
         }
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(TicketNotFoundException::new);
+        Ticket ticket = findSupportTicket(ticketId, support.getId());
         return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
     }
 
@@ -172,6 +184,11 @@ public class TicketService {
                 .orElseThrow(TicketNotFoundException::new);
     }
 
+    private Ticket findSupportTicket(UUID ticketId, UUID supportId) {
+        return ticketRepository.findByIdAndSupportId(ticketId, supportId)
+                .orElseThrow(TicketNotFoundException::new);
+    }
+
     private List<MessageDTO> toMessageDTOs(List<Message> messages) {
         if (messages.isEmpty()) {
             return List.of();
@@ -191,6 +208,11 @@ public class TicketService {
 
     private Customer findCustomer(UUID userId) {
         return customerRepository.findByUserId(userId)
+                .orElseThrow(ForbiddenException::new);
+    }
+
+    private Support findSupport(UUID userId) {
+        return supportRepository.findByUserId(userId)
                 .orElseThrow(ForbiddenException::new);
     }
 
