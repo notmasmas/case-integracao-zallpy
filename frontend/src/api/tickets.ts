@@ -128,6 +128,11 @@ export async function listTickets(): Promise<CustomerTicket[]> {
   return response.data.map(toCustomerTicket);
 }
 
+export async function listCustomerTickets(): Promise<CustomerTicket[]> {
+  const response = await api.get<TicketSummaryResponse[]>("/tickets");
+  return response.data.map(toCustomerTicket);
+}
+
 export async function listSupportTickets(): Promise<CustomerTicket[]> {
   const response = await api.get<TicketSummaryResponse[]>("/support/tickets");
   return response.data.map(toCustomerTicket);
@@ -159,6 +164,10 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
   await api.patch(`/support/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
 }
 
+export async function updateTicketCategory(ticketId: string, category: TicketCategory): Promise <void> {
+    await api.patch(`/tickets/${encodeURIComponent(ticketId)}/category`, category);
+}
+
 export async function getTicketMessages(
   ticketId: string,
   page: number,
@@ -185,7 +194,7 @@ export function useCustomerTickets() {
   useEffect(() => {
     let active = true;
 
-    listTickets()
+    listCustomerTickets()
       .then((data) => {
         if (!active) {
           return;

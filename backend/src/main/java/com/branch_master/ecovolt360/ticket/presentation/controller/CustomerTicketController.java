@@ -2,6 +2,7 @@ package com.branch_master.ecovolt360.ticket.presentation.controller;
 
 import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyCategoryDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
@@ -58,17 +59,24 @@ public class CustomerTicketController {
 
     @PatchMapping("/{id}/evaluation")
     public ResponseEntity<TicketDetailsDTO> evaluateTicket(@PathVariable UUID id,
-                                                          @RequestBody @Valid TicketBodyEvaluateDTO ticketBodyEvaluateDTO,
-                                                          @CurrentUser AuthenticatedUser currentUser) {
+                                                           @RequestBody @Valid TicketBodyEvaluateDTO ticketBodyEvaluateDTO,
+                                                           @CurrentUser AuthenticatedUser currentUser) {
         TicketDetailsDTO ticket = ticketService.evaluateTicket(currentUser.userId(), id, ticketBodyEvaluateDTO);
         return ResponseEntity.ok(ticket);
     }
 
-        @PatchMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<TicketDetailsDTO> updateStatus(@PathVariable UUID id,
                                                           @RequestBody @Valid TicketBodyStatusDTO ticketBodyStatusDTO,
                                                           @CurrentUser AuthenticatedUser currentUser) {
         TicketDetailsDTO ticket = ticketService.updateStatus(currentUser.userId(), id, ticketBodyStatusDTO);
+        return ResponseEntity.ok(ticket);
+    }
+
+    @PatchMapping("/{id}/category")
+    public ResponseEntity<TicketDetailsDTO> updateCategory(@PathVariable UUID id,
+                                                           @RequestBody @Valid TicketBodyCategoryDTO ticketBodyCategoryDTO) {
+        TicketDetailsDTO ticket = ticketService.updateCategory(id, ticketBodyCategoryDTO);
         return ResponseEntity.ok(ticket);
     }
 }
