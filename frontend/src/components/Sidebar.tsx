@@ -24,9 +24,9 @@ export default function Sidebar() {
           <li>
             <NavLink to={paths.support.home}>Painel de Suporte</NavLink>
           </li>
-          {/* <li>
+          <li>
             <NavLink to={paths.support.tickets}>Chamados</NavLink>
-          </li> */}
+          </li> 
           </>
         ) : (
           <>

@@ -68,6 +68,12 @@ public class TicketService {
         return toDetails(newTicket, pageMessages(List.of(), 0));
     }
 
+    public List<TicketSummaryDTO> listAllTickets() {
+        return ticketRepository.findAll().stream()
+                .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
+                .toList();
+    }
+
     public List<TicketSummaryDTO> listCustomerTickets(UUID userId) {
         Customer customer = findCustomer(userId);
         return ticketRepository.findByCustomerId(customer.getId()).stream()
