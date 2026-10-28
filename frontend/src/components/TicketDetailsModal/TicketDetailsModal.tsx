@@ -12,7 +12,6 @@ import {
   sendTicketMessage,
   updateTicketCategory,
   updateTicketStatus,
-  updateTicketCategory,
   type CustomerTicket,
   type TicketCategory,
   type TicketMessage,
