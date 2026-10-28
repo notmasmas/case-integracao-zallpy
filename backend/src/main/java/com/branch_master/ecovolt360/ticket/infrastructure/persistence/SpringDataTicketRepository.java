@@ -1,6 +1,7 @@
 package com.branch_master.ecovolt360.ticket.infrastructure.persistence;
 
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
+import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -56,4 +57,23 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
             @Param("updatedAt") ZonedDateTime updatedAt,
             @Param("supportId") UUID supportId
     );
+
+        @Modifying(clearAutomatically = true)
+        @Query("""
+                update Ticket t
+                set t.supportId = :supportId,
+                t.category = :category,
+                t.updatedAt = :updatedAt
+                where t.id = :ticketId
+                """)
+        int assign(
+                @Param("ticketId") UUID ticketId,
+                @Param("supportId") UUID supportId,
+                @Param("category") TicketCategory category,
+                @Param("updatedAt") ZonedDateTime updatedAt
+        );
+
+
+
+
 }

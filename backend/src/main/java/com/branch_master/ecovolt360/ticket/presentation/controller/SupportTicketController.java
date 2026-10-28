@@ -41,3 +41,4 @@ public class SupportTicketController {
         return ResponseEntity.ok(ticket);
     }
 }
+
