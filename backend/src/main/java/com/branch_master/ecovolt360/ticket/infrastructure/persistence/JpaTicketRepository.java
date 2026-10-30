@@ -60,16 +60,15 @@ public class JpaTicketRepository implements TicketRepository {
         return repository.updateStatus(ticketId, status, updatedAt, supportId);
     }
 
-    @Override 
-    public int assign(UUID ticketId, UUID suporteId, TicketCategory category, ZonedDateTime updateAt){
-        
+    @Override
+    public int assign(UUID ticketId, UUID supportId, TicketCategory category, ZonedDateTime updatedAt) {
         return repository.assign(
-            ticketId,
-            suporteId,
-            category,
-            updateAt
-            
-        ); 
-
+                ticketId,
+                supportId,
+                category,
+                updatedAt,
+                TicketStatus.RESOLVED,
+                TicketStatus.CLOSED
+        );
     }
 }

@@ -3,6 +3,7 @@ package com.branch_master.ecovolt360.messages.infrastructure.config;
 import com.branch_master.ecovolt360.customer.domain.repository.CustomerRepository;
 import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
 import com.branch_master.ecovolt360.messages.application.service.MessageService;
+import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
 import com.branch_master.ecovolt360.ticket.domain.repository.TicketRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,9 @@ public class MessageConfiguration {
     public MessageService messageService(
             MessageRepository messageRepository,
             TicketRepository ticketRepository,
-            CustomerRepository customerRepository
+            CustomerRepository customerRepository,
+            SupportRepository supportRepository
     ) {
-        return new MessageService(messageRepository, ticketRepository, customerRepository);
+        return new MessageService(messageRepository, ticketRepository, customerRepository, supportRepository);
     }
 }
