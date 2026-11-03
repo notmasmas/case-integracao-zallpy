@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { paths } from "./routes/routes";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import RequireRole from "./routes/RequireRole";
+import RequireSession from "./routes/RequireSession";
 import SupportTicket from "./pages/SupportTicket/SupportTicket";
 import SupportPanelHome from "./pages/SupportPanelHome/SupportPanelHome";
 import CustomerPanelHome from "./pages/CustomerPanelHome/CustomerPanelHome";
@@ -19,28 +20,30 @@ function App() {
         <Routes>
           <Route path={paths.login} element={<Login />} />
           <Route path={paths.registration} element={<RegistrationPage />} />
-          <Route element={<RequireRole role="CUSTOMER" />}>
-            <Route element={<PanelBase />}>
-              <Route
-                path={paths.customer.home}
-                element={<CustomerPanelHome />}
-              />
-              <Route
-                path={paths.customer.tickets}
-                element={<SupportTicket />}
-              />
+          <Route element={<RequireSession />}>
+            <Route element={<RequireRole role="CUSTOMER" />}>
+              <Route element={<PanelBase />}>
+                <Route
+                  path={paths.customer.home}
+                  element={<CustomerPanelHome />}
+                />
+                <Route
+                  path={paths.customer.tickets}
+                  element={<SupportTicket />}
+                />
+              </Route>
             </Route>
-          </Route>
-          <Route element={<RequireRole role="SUPPORT" />}>
-            <Route element={<PanelBase />}>
-              <Route
-                path={paths.support.home}
-                element={<SupportPanelHome />}
-              />
-              <Route
-                path={paths.support.tickets}
-                element={<TicketsQueue />}
-              />
+            <Route element={<RequireRole role="SUPPORT" />}>
+              <Route element={<PanelBase />}>
+                <Route
+                  path={paths.support.home}
+                  element={<SupportPanelHome />}
+                />
+                <Route
+                  path={paths.support.tickets}
+                  element={<TicketsQueue />}
+                />
+              </Route>
             </Route>
           </Route>
         </Routes>

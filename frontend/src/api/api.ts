@@ -1,5 +1,11 @@
 import axios from "axios";
-import { clearSession, loadSession } from "../routes/routes";
+import {
+  clearSession,
+  expiredSessionLoginPath,
+  expiredSessionSearch,
+  loadSession,
+  paths,
+} from "../routes/routes";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -9,6 +15,12 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const url = config.url ?? "";
+  const isLogin = url === "/login" || url.endsWith("/login");
+  if (isLogin) {
+    return config;
+  }
+
   const session = loadSession();
   if (session?.accessToken) {
     config.headers.Authorization = `Bearer ${session.accessToken}`;
@@ -29,8 +41,12 @@ api.interceptors.response.use(
     }
 
     clearSession();
-    if (window.location.pathname !== "/") {
-      window.location.assign("/");
+    const params = new URLSearchParams(window.location.search);
+    const alreadyNotified =
+      window.location.pathname === paths.login &&
+      params.get(expiredSessionSearch.key) === expiredSessionSearch.value;
+    if (!alreadyNotified) {
+      window.location.assign(expiredSessionLoginPath());
     }
     return Promise.reject(error);
   },

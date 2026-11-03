@@ -1,5 +1,6 @@
 package com.branch_master.ecovolt360.auth.presentation.controller;
 
+import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.application.port.PasswordVerifier;
 import com.branch_master.ecovolt360.auth.application.port.TokenIssuer;
 import com.branch_master.ecovolt360.auth.application.service.LoginService;
@@ -7,6 +8,8 @@ import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import com.branch_master.ecovolt360.auth.domain.entity.User;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import com.branch_master.ecovolt360.auth.presentation.exception.AuthExceptionHandler;
+import com.branch_master.ecovolt360.auth.presentation.security.CurrentUserArgumentResolver;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +18,17 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,8 +58,14 @@ class LoginControllerTest {
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
+                .setCustomArgumentResolvers(new CurrentUserArgumentResolver())
                 .setControllerAdvice(new AuthExceptionHandler())
                 .build();
+    }
+
+    @AfterEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
     }
 
     @ParameterizedTest
@@ -94,6 +107,21 @@ class LoginControllerTest {
 
         verify(passwordVerifier).matches("senhaTeste", "stored-hash");
         verify(tokenIssuer).issue(userId, role, 0);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Role.class)
+    void shouldReturnRoleForCurrentSession(Role role) throws Exception {
+        AuthenticatedUser currentUser = new AuthenticatedUser(UUID.randomUUID(), role);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(currentUser, null, List.of())
+        );
+
+        mockMvc.perform(get("/session"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.role").value(role.name()))
+                .andExpect(jsonPath("$.name").doesNotExist())
+                .andExpect(jsonPath("$.accessToken").doesNotExist());
     }
 
     @Test
