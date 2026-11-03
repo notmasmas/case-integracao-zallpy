@@ -71,4 +71,15 @@ public class JpaTicketRepository implements TicketRepository {
                 TicketStatus.CLOSED
         );
     }
+
+    @Override
+    public int touchUpdatedAt(UUID ticketId, UUID supportId, ZonedDateTime updatedAt) {
+        return repository.touchUpdatedAt(
+                ticketId,
+                supportId,
+                updatedAt,
+                TicketStatus.RESOLVED,
+                TicketStatus.CLOSED
+        );
+    }
 }

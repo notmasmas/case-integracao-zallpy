@@ -62,23 +62,21 @@ public class MessageService {
     public MessageDTO processSupportMessage(UUID userId, Role role, UUID ticketId, MessageBodyDTO messageDTO) {
         Support support = supportRepository.findByUserId(userId)
                 .orElseThrow(ForbiddenException::new);
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(TicketNotFoundException::new);
-        if (ticket.getSupportId() == null || !ticket.getSupportId().equals(support.getId())) {
-            throw new TicketNotAssignedToSupportException();
-        }
-        if (ticket.getStatus() == TicketStatus.RESOLVED || ticket.getStatus() == TicketStatus.CLOSED) {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        if (ticketRepository.touchUpdatedAt(ticketId, support.getId(), now) == 0) {
+            Ticket ticket = ticketRepository.findById(ticketId)
+                    .orElseThrow(TicketNotFoundException::new);
+            if (ticket.getSupportId() == null || !ticket.getSupportId().equals(support.getId())) {
+                throw new TicketNotAssignedToSupportException();
+            }
             throw new TicketClosedException();
         }
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
         Message message = messageRepository.save(new Message(
-                ticket.getId(),
+                ticketId,
                 userId,
                 messageDTO.content(),
                 now
         ));
-        ticket.setUpdatedAt(now);
-        ticketRepository.save(ticket);
         return new MessageDTO(message, role);
     }
 }

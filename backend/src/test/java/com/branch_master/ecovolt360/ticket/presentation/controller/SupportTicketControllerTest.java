@@ -36,7 +36,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -243,12 +242,10 @@ class SupportTicketControllerTest {
 
     @Test
     void shouldCreateMessageOnAssignedTicket() throws Exception {
-        Ticket ticket = ticket(support.getId(), TicketStatus.IN_PROGRESS);
-        ZonedDateTime previousUpdate = ticket.getUpdatedAt();
         UUID messageId = UUID.randomUUID();
 
         when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.touchUpdatedAt(eq(ticketId), eq(support.getId()), any(ZonedDateTime.class))).thenReturn(1);
         when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> {
             Message message = invocation.getArgument(0);
             message.setId(messageId);
@@ -264,10 +261,12 @@ class SupportTicketControllerTest {
                 .andExpect(jsonPath("$.role").value("SUPPORT"))
                 .andExpect(jsonPath("$.content").value("Vamos verificar o inversor hoje."));
 
-        ArgumentCaptor<Ticket> savedTicket = ArgumentCaptor.forClass(Ticket.class);
-        verify(ticketRepository).save(savedTicket.capture());
-        assertNotNull(savedTicket.getValue().getUpdatedAt());
-        assertEquals(true, !savedTicket.getValue().getUpdatedAt().isBefore(previousUpdate));
+        ArgumentCaptor<ZonedDateTime> touchedAt = ArgumentCaptor.forClass(ZonedDateTime.class);
+        verify(ticketRepository).touchUpdatedAt(eq(ticketId), eq(support.getId()), touchedAt.capture());
+        ArgumentCaptor<Message> savedMessage = ArgumentCaptor.forClass(Message.class);
+        verify(messageRepository).save(savedMessage.capture());
+        assertEquals(touchedAt.getValue(), savedMessage.getValue().getCreatedAt());
+        verify(ticketRepository, never()).save(any(Ticket.class));
     }
 
     @Test
@@ -352,8 +351,7 @@ class SupportTicketControllerTest {
     @Test
     void shouldAccept150CharactersIgnoringSurroundingSpaces() throws Exception {
         when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.findById(ticketId))
-                .thenReturn(Optional.of(ticket(support.getId(), TicketStatus.IN_PROGRESS)));
+        when(ticketRepository.touchUpdatedAt(eq(ticketId), eq(support.getId()), any(ZonedDateTime.class))).thenReturn(1);
         when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)

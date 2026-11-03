@@ -225,52 +225,18 @@ public class TicketService {
             UUID ticketId,
             TicketBodyAssignDTO dto
     ) {
-        
         Support support = findSupport(userId);
-
-        
-        ZonedDateTime now = ZonedDateTime.now(
-                ZoneId.of("America/Sao_Paulo")
-        );
-
-        
-        int updated = ticketRepository.assign(
-                ticketId,
-                support.getId(),
-                dto.category(),
-                now
-        );
-
-        
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        int updated = ticketRepository.assign(ticketId, support.getId(), dto.category(), now);
         if (updated == 0) {
-
             Ticket latest = ticketRepository.findById(ticketId)
                     .orElseThrow(TicketNotFoundException::new);
-
-            
-            if (latest.getStatus() == TicketStatus.RESOLVED
-                    || latest.getStatus() == TicketStatus.CLOSED) {
+            if (latest.getStatus() == TicketStatus.RESOLVED || latest.getStatus() == TicketStatus.CLOSED) {
                 throw new TicketClosedException();
             }
-
-            
             throw new TicketAlreadyAssignedException();
         }
-
-        
-        Ticket ticket = findSupportTicket(
-                ticketId,
-                support.getId()
-        );
-
-        
-        return toDetails(
-                ticket,
-                pageMessages(
-                        messageRepository.findByTicketId(ticket.getId()),
-                        0
-                )
-        );
+        Ticket ticket = findSupportTicket(ticketId, support.getId());
+        return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
     }
-
 }

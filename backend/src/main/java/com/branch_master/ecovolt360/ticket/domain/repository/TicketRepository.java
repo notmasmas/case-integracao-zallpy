@@ -4,7 +4,6 @@ import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +19,5 @@ public interface TicketRepository {
     int updateEvaluation(UUID ticketId, UUID customerId, Integer evaluation, String comment, ZonedDateTime updatedAt);
     int updateStatus(UUID ticketId, TicketStatus status, ZonedDateTime updatedAt, UUID supportId);
     int assign(UUID ticketId, UUID supportId, TicketCategory category, ZonedDateTime updatedAt);
+    int touchUpdatedAt(UUID ticketId, UUID supportId, ZonedDateTime updatedAt);
 }
