@@ -19,5 +19,7 @@ public interface TicketRepository {
     List<Ticket> findBySupportId(UUID supportId);
     int updateEvaluation(UUID ticketId, UUID customerId, Integer evaluation, String comment, ZonedDateTime updatedAt);
     int updateStatus(UUID ticketId, TicketStatus status, ZonedDateTime updatedAt, UUID supportId);
+    int assign(UUID ticketId, UUID supportId, TicketCategory category, ZonedDateTime updatedAt);
+    int touchUpdatedAt(UUID ticketId, UUID supportId, ZonedDateTime updatedAt);
     int updateCategory(UUID ticketId, TicketCategory category, ZonedDateTime updatedAt);
 }

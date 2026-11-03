@@ -13,15 +13,17 @@ import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository
 import com.branch_master.ecovolt360.support.domain.entity.Support;
 import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
 import com.branch_master.ecovolt360.ticket.application.dto.*;
+import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyAssignedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyClosedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyEvaluatedException;
+import com.branch_master.ecovolt360.ticket.application.exception.TicketClosedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotEvaluatedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketNotFoundException;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 import com.branch_master.ecovolt360.ticket.domain.repository.TicketRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -235,4 +237,24 @@ public class TicketService {
                 .orElseThrow(ForbiddenException::new);
     }
 
+    @Transactional
+    public TicketDetailsDTO assignTicket(
+            UUID userId,
+            UUID ticketId,
+            TicketBodyAssignDTO dto
+    ) {
+        Support support = findSupport(userId);
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        int updated = ticketRepository.assign(ticketId, support.getId(), dto.category(), now);
+        if (updated == 0) {
+            Ticket latest = ticketRepository.findById(ticketId)
+                    .orElseThrow(TicketNotFoundException::new);
+            if (latest.getStatus() == TicketStatus.RESOLVED || latest.getStatus() == TicketStatus.CLOSED) {
+                throw new TicketClosedException();
+            }
+            throw new TicketAlreadyAssignedException();
+        }
+        Ticket ticket = findSupportTicket(ticketId, support.getId());
+        return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
+    }
 }

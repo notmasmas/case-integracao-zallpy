@@ -60,13 +60,49 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
 
     @Modifying(clearAutomatically = true)
     @Query("""
-        update Ticket t
-        set t.category = :category,
-        t.updatedAt = :updatedAt
-        where t.id = :id
-    """)
-    int updateCategory(@Param("id") UUID id,
-                          @Param("category") TicketCategory category,
-                          @Param("updatedAt") ZonedDateTime updatedAt
+            update Ticket t
+               set t.supportId = :supportId,
+                   t.category = :category,
+                   t.updatedAt = :updatedAt
+             where t.id = :ticketId
+               and (t.supportId is null or t.supportId = :supportId)
+               and t.status not in (:resolved, :closed)
+            """)
+    int assign(
+            @Param("ticketId") UUID ticketId,
+            @Param("supportId") UUID supportId,
+            @Param("category") TicketCategory category,
+            @Param("updatedAt") ZonedDateTime updatedAt,
+            @Param("resolved") TicketStatus resolved,
+            @Param("closed") TicketStatus closed
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
+               set t.updatedAt = :updatedAt
+             where t.id = :ticketId
+               and t.supportId = :supportId
+               and t.status not in (:resolved, :closed)
+            """)
+    int touchUpdatedAt(
+            @Param("ticketId") UUID ticketId,
+            @Param("supportId") UUID supportId,
+            @Param("updatedAt") ZonedDateTime updatedAt,
+            @Param("resolved") TicketStatus resolved,
+            @Param("closed") TicketStatus closed
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
+               set t.category = :category,
+                   t.updatedAt = :updatedAt
+             where t.id = :id
+            """)
+    int updateCategory(
+            @Param("id") UUID id,
+            @Param("category") TicketCategory category,
+            @Param("updatedAt") ZonedDateTime updatedAt
     );
 }

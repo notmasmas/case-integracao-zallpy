@@ -8,4 +8,10 @@ public record MessageBodyDTO(
         @Size(max = 150)
         String content
 ) {
+        public MessageBodyDTO{
+                content = content == null
+                        ? null
+                        : content.strip();
+        }
+
 }
