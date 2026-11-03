@@ -1,4 +1,4 @@
-package com.branch_master.ecovolt360.customer.presentation.controller;
+package com.branch_master.ecovolt360.customer.controller;
 
 import com.branch_master.ecovolt360.customer.application.dto.CustomerBodyDTO;
 import com.branch_master.ecovolt360.customer.application.dto.CustomerDetailsDTO;

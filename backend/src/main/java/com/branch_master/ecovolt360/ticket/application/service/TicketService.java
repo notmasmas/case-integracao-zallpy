@@ -12,12 +12,7 @@ import com.branch_master.ecovolt360.messages.domain.entity.Message;
 import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
 import com.branch_master.ecovolt360.support.domain.entity.Support;
 import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyAssignDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.*;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyAssignedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyClosedException;
 import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyEvaluatedException;
@@ -27,6 +22,7 @@ import com.branch_master.ecovolt360.ticket.application.exception.TicketNotFoundE
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
 import com.branch_master.ecovolt360.ticket.domain.repository.TicketRepository;
+import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
@@ -69,6 +65,12 @@ public class TicketService {
                 ticketDTO.description()
         ));
         return toDetails(newTicket, pageMessages(List.of(), 0));
+    }
+
+    public List<TicketSummaryDTO> listAllTickets() {
+        return ticketRepository.findAll().stream()
+                .map(ticket -> new TicketSummaryDTO(ticket, supportName(ticket)))
+                .toList();
     }
 
     public List<TicketSummaryDTO> listCustomerTickets(UUID userId) {
@@ -146,6 +148,22 @@ public class TicketService {
             throw new TicketNotFoundException();
         }
         Ticket ticket = findSupportTicket(ticketId, support.getId());
+        return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
+    }
+
+    public TicketDetailsDTO updateCategory(UUID ticketId, @Valid TicketBodyCategoryDTO ticketBodyCategoryDTO) {
+        int updated = ticketRepository.updateCategory(
+                ticketId,
+                ticketBodyCategoryDTO.category(),
+                ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"))
+        );
+
+        if (updated == 0) {
+            throw new TicketNotFoundException();
+        }
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(TicketNotFoundException::new);
+
         return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
     }
 

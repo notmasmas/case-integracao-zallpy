@@ -92,4 +92,17 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
             @Param("resolved") TicketStatus resolved,
             @Param("closed") TicketStatus closed
     );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
+               set t.category = :category,
+                   t.updatedAt = :updatedAt
+             where t.id = :id
+            """)
+    int updateCategory(
+            @Param("id") UUID id,
+            @Param("category") TicketCategory category,
+            @Param("updatedAt") ZonedDateTime updatedAt
+    );
 }

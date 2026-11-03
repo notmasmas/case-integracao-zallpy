@@ -26,6 +26,11 @@ public class JpaTicketRepository implements TicketRepository {
     }
 
     @Override
+    public List<Ticket> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
     public Optional<Ticket> findById(UUID ticketId) {
         return repository.findById(ticketId);
     }
@@ -81,5 +86,10 @@ public class JpaTicketRepository implements TicketRepository {
                 TicketStatus.RESOLVED,
                 TicketStatus.CLOSED
         );
+    }
+
+    @Override
+    public int updateCategory(UUID ticketId, TicketCategory category, ZonedDateTime updatedAt) {
+        return repository.updateCategory(ticketId, category, updatedAt);
     }
 }

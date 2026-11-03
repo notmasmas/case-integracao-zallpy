@@ -7,6 +7,7 @@ export const paths = {
   },
   support: {
     home: "/suporte",
+    tickets: "/suporte/chamados",
   },
 } as const;
 

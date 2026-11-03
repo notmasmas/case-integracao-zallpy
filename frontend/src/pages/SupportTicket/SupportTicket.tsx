@@ -6,7 +6,7 @@ import { useCustomerTickets } from "../../api/tickets";
 import type { CustomerTicket } from "../../api/tickets";
 import "./SupportTicket.css";
 import { useState, useEffect } from "react";
-import TicketDetailsModal from "./TicketDetailsModal/TicketDetailsModal";
+import TicketDetailsModal from "../../components/TicketDetailsModal/TicketDetailsModal";
 
 const categoryCollection = createListCollection({
   items: [
