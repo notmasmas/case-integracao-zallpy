@@ -8,9 +8,11 @@ import CategoryDropdown from "./CategoryDropdown";
 import StatusDropdown from "./StatusDropdown";
 import {
   categoryLabel,
+  assignTicket,
   getTicketMessages,
+  resumeTicketAfterCustomerReply,
+  sendSupportTicketMessage,
   sendTicketMessage,
-  updateTicketCategory,
   updateTicketStatus,
   type CustomerTicket,
   type TicketCategory,
@@ -24,9 +26,10 @@ import { toaster } from "../ui/toaster";
 type TicketDetailsModalProps = {
   ticket: CustomerTicket | null;
   onClose: () => void;
+  onTicketUpdated?: (ticket: CustomerTicket) => void;
 };
 
-function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
+function TicketDetailsModal({ ticket, onClose, onTicketUpdated }: TicketDetailsModalProps) {
   const { session } = useAuth();
   const ticketId = ticket?.id;
   const [messages, setMessages] = useState<TicketMessage[]>([]);
@@ -40,6 +43,9 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
   const [activeTicketId, setActiveTicketId] = useState(ticketId);
   const [selectedCategory, setSelectedCategory] = useState<TicketCategory | null>(ticket?.category ?? null);
   const [selectedStatus, setSelectedStatus] = useState<TicketStatus>(ticket?.status ?? "pending");
+  const [assignedSupportName, setAssignedSupportName] = useState(ticket?.supportName ?? "");
+  const [isAssigning, setIsAssigning] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   if (ticketId !== activeTicketId) {
     setActiveTicketId(ticketId);
@@ -51,6 +57,9 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     setInputError(null);
     setSelectedCategory(ticket?.category ?? null);
     setSelectedStatus(ticket?.status ?? "pending");
+    setAssignedSupportName(ticket?.supportName ?? "");
+    setIsAssigning(false);
+    setIsUpdatingStatus(false);
   }
 
   useEffect(() => {
@@ -63,7 +72,7 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     setMessagesLoading(true);
     setMessagesError(null);
 
-    getTicketMessages(ticketId, page)
+    getTicketMessages(ticketId, page, session?.role ?? "CUSTOMER")
       .then((data) => {
         if (active) {
           setMessages(data.messages);
@@ -86,11 +95,31 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
     return () => {
       active = false;
     };
-  }, [ticketId, page, reloadKey]);
+  }, [ticketId, page, reloadKey, session?.role]);
 
   if (!ticket) {
     return null;
   }
+
+  const hasAssignedSupport =
+    assignedSupportName.trim() !== "" && assignedSupportName !== "Não atribuído";
+  const isAssignedToAnotherSupport =
+    session?.role === "SUPPORT" &&
+    hasAssignedSupport &&
+    (ticket.isAssignedToCurrentSupport === undefined
+      ? assignedSupportName !== session.name
+      : !ticket.isAssignedToCurrentSupport);
+  const canEditAsSupport =
+    session?.role === "SUPPORT" && !isAssignedToAnotherSupport;
+  const canChangeCategory =
+    canEditAsSupport &&
+    ticket.status !== "resolved" &&
+    ticket.status !== "closed";
+  const canReply =
+    session?.role === "CUSTOMER" ||
+    (session?.role === "SUPPORT" &&
+      hasAssignedSupport &&
+      !isAssignedToAnotherSupport);
 
   function verifyMessageContentLength(content: string): boolean {
 
@@ -127,16 +156,22 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
       return;
     }
 
-    sendTicketMessage(ticketId, content)
+    const sendMessage =
+      session?.role === "SUPPORT" ? sendSupportTicketMessage : sendTicketMessage;
+    sendMessage(ticketId, content)
       .then(async () => {
         inputElement.value = "";
         setInputError(null);
         setPage(0);
         setReloadKey((current) => current + 1);
 
-        if (ticket.status === "waiting_customer") {
-          await updateTicketStatus(ticketId, "in_progress");
-          ticket.status = "in_progress";
+        if (
+          session?.role === "CUSTOMER" &&
+          ticket.status === "waiting_customer"
+        ) {
+          const updatedStatus = await resumeTicketAfterCustomerReply(ticketId);
+          setSelectedStatus(updatedStatus);
+          onTicketUpdated?.({ ...ticket, status: updatedStatus });
         }
       })
       .catch(() => {
@@ -145,31 +180,50 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
   }
 
   async function handleCategoryChange(category: TicketCategory | null) {
-    setSelectedCategory(category);
-    if (!ticketId || !category) {
+    if (!ticketId || !category || isAssigning) {
+      setSelectedCategory(ticket?.category ?? null);
       return;
     }
 
+    setSelectedCategory(category);
+    setIsAssigning(true);
     try {
-      await updateTicketCategory(ticketId, category);
+      const assignment = await assignTicket(ticketId, category);
+      const supportName = assignment.supportName.trim()
+        ? assignment.supportName
+        : "Não atribuído";
+      const updatedTicket = {
+        ...ticket,
+        category: assignment.category,
+        supportName,
+        isAssignedToCurrentSupport: true,
+      };
+      setSelectedCategory(assignment.category);
+      setAssignedSupportName(supportName);
+      onTicketUpdated?.(updatedTicket);
     } catch {
       setSelectedCategory(ticket.category);
       toaster.create({
         type: "error",
-        title: "Não foi possível atualizar a categoria",
+        title: "Não foi possível atribuir o chamado ou atualizar a categoria",
         description: "Tente novamente.",
       });
+    } finally {
+      setIsAssigning(false);
     }
   }
 
   async function handleStatusChange(status: TicketStatus) {
     setSelectedStatus(status);
-    if (!ticketId) {
+    if (!ticketId || isUpdatingStatus) {
       return;
     }
 
+    setIsUpdatingStatus(true);
     try {
-      await updateTicketStatus(ticketId, status);
+      const updatedStatus = await updateTicketStatus(ticketId, status);
+      setSelectedStatus(updatedStatus);
+      onTicketUpdated?.({ ...ticket, status: updatedStatus });
     } catch {
       setSelectedStatus(ticket.status);
       toaster.create({
@@ -177,6 +231,8 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
         title: "Não foi possível atualizar o status",
         description: "Tente novamente.",
       });
+    } finally {
+      setIsUpdatingStatus(false);
     }
   }
 
@@ -198,20 +254,28 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
           <Box className="client-ticket-modal__informations__item2">
             <Box className="client-ticket-modal__informations__item2__details">
               <h3>Atendente responsável:</h3>
-              <span>{ticket.supportName || "Suporte não atribuido"}</span>
+              <span>{assignedSupportName || "Suporte não atribuído"}</span>
             </Box>
             <Box className="client-ticket-modal__informations__item2__details">
               <h3>Categoria:</h3>
-              {session?.role === "SUPPORT" ? (
-                <CategoryDropdown selectedCategory={selectedCategory} setSelectedCategory={handleCategoryChange} />
+              {canChangeCategory ? (
+                <CategoryDropdown
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={handleCategoryChange}
+                  disabled={isAssigning}
+                />
               ) : (
                 <span>{selectedCategory ? categoryLabel(selectedCategory) : "Categoria não atribuída"}</span>
               )}
             </Box>
           </Box>
           <Box>
-            {session?.role === "SUPPORT" ? (
-              <StatusDropdown status={selectedStatus} onChange={handleStatusChange} />
+            {canEditAsSupport && hasAssignedSupport ? (
+              <StatusDropdown
+                status={selectedStatus}
+                onChange={handleStatusChange}
+                disabled={isUpdatingStatus}
+              />
             ) : (
               <TicketStatusBadge status={ticket.status} />
             )}
@@ -263,7 +327,13 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
       <Box className="client-ticket-modal__send-comment__section">
         <h3>Adicionar resposta no chamado</h3>
         <Box className="client-ticket-modal__send-comment__input-section">
-          {
+          {!canReply ? (
+            <p>
+              {isAssignedToAnotherSupport
+                ? "Somente o suporte responsável pode interagir com este chamado."
+                : "Selecione uma categoria para assumir o chamado antes de responder."}
+            </p>
+          ) : (
             ticket.status === "resolved" || ticket.status === "closed" ?
             "Este chamado foi encerrado e não aceita novas mensagens."
             : (
@@ -274,7 +344,7 @@ function TicketDetailsModal({ ticket, onClose }: TicketDetailsModalProps) {
              </button>
              </>
             )
-          }
+          )}
         </Box>
         {inputError && <p className="client-ticket-modal__send-error">{inputError}</p>}
       </Box>

@@ -4,6 +4,7 @@ import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.messages.application.dto.MessageBodyDTO;
 import com.branch_master.ecovolt360.messages.application.dto.MessageDTO;
+import com.branch_master.ecovolt360.messages.application.dto.MessagePageDTO;
 import com.branch_master.ecovolt360.messages.application.service.MessageService;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyAssignDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
@@ -11,6 +12,7 @@ import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -27,6 +31,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/support/tickets")
+@Validated
 public class SupportTicketController {
 
     private final TicketService ticketService;
@@ -61,6 +66,12 @@ public class SupportTicketController {
                                                           @CurrentUser AuthenticatedUser currentUser) {
         TicketDetailsDTO ticket = ticketService.assignTicket(currentUser.userId(), ticketId, ticketBodyAssignDTO);
         return ResponseEntity.ok(ticket);
+    }
+
+    @GetMapping("/{ticketId}/messages")
+    public ResponseEntity<MessagePageDTO> listMessages(@PathVariable UUID ticketId,
+                                                       @RequestParam(defaultValue = "0") @Min(0) int page) {
+        return ResponseEntity.ok(ticketService.listSupportMessages(ticketId, page));
     }
 
     @PostMapping("/{ticketId}/messages")
