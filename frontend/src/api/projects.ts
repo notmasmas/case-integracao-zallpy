@@ -27,8 +27,7 @@ const projectStatusLabels: Record<string, string> = {
   IN_PROGRESS: "Em andamento",
   INSTALLED: "Instalado",
   COMPLETED: "Concluído",
-  CANCELED: "Cancelado",
-  CANCELLED: "Cancelado",
+  CANCELLED: "Cancelado"
 };
 
 export function projectStatusLabel(status: string | null): string {

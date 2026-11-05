@@ -99,11 +99,6 @@ function CustomerProjectsModal({
             <MdClose aria-hidden="true" />
           </button>
         </Box>
-        {error ? (
-          <p className="customer-projects-modal__message" role="alert">
-            {error}
-          </p>
-        ) : null}
         {!error && loading ? (
           <p className="customer-projects-modal__message" role="status">
             Carregando projetos...

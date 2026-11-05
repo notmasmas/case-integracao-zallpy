@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toaster } from "../../components/ui/toaster";
 import { useNavigate } from "react-router-dom";
 import { BsArrowRight, BsArrowDown } from "react-icons/bs";
 import TicketStatusBadge from "../../components/TicketStatusBadge";
@@ -23,6 +24,16 @@ function CustomerPanelHome() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const selectedProject =
     projects.find((project) => project.id === selectedProjectId) ?? projects[0];
+
+  useEffect(() => {
+    if (projectsError) {
+      toaster.create({
+        title: "Erro ao carregar projetos",
+        description: projectsError,
+        type: "error",
+      });
+    }
+  }, [projectsError]);
 
   return (
     <Box className="support-panel-home">

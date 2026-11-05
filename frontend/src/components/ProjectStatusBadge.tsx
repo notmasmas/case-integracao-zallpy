@@ -31,7 +31,6 @@ function ProjectStatusBadge({ status }: ProjectStatusBadgeProps) {
       modifier='--completed';
       break;
     case('CANCELLED'):
-    case('CANCELED'):
       modifier='--cancelled';
       break;
     default:
