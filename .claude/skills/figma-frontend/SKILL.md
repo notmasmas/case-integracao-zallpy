@@ -14,6 +14,7 @@ Figma → frontend:
 - [ ] Carregar a skill figma:figma-design-to-code
 - [ ] Ver o design (sessão, contexto, screenshot)
 - [ ] Mapear design → projeto (onde mora, o que reaproveita)
+- [ ] Perguntar ao usuário o que não estiver claro (rota, login, regras, interações)
 - [ ] Implementar
 - [ ] Validar (build + lint) e comparar com o screenshot
 ```
@@ -54,7 +55,24 @@ Antes de escrever código, decida e diga ao usuário em poucas linhas:
 - **De onde vêm os dados.** Se existe endpoint em `src/api/`, use-o. Se não existe, crie um `*.mock.ts` colocalizado, como o `AGENTS.md` descreve, em vez de deixar dados fixos no JSX.
 - **Tokens.** Para cada cor/fonte do Figma, use o token equivalente do `index.css`. Se não houver equivalente, adicione um token novo com nome no mesmo padrão e mencione isso no resumo final, em vez de espalhar hex pelo CSS.
 
-Se o design for ambíguo (estados de hover/erro/vazio que não aparecem, comportamento de botão, texto placeholder), siga o padrão de telas parecidas do projeto e liste as suposições no final. Pergunte ao usuário só quando a decisão mudar o que será construído (por exemplo, se a tela precisa de rota própria ou é um modal).
+### Quando perguntar antes de implementar
+
+O Figma mostra a aparência, mas quase nunca mostra onde a tela se encaixa no fluxo nem o que acontece quando o usuário interage. Chutar essas respostas gera rota no lugar errado, tela acessível a quem não devia ou regra de negócio inventada, coisas caras de desfazer e difíceis de perceber numa revisão. Por isso, se depois de ler o `AGENTS.md`, o código e o Figma você ainda não souber responder algum destes pontos com segurança, **pare e pergunte ao usuário antes de escrever código**:
+
+- **Rota:** qual é o caminho da página (ex.: `/cliente/faturas`) ou se ela é um modal/aba dentro de uma página existente.
+- **Posição em relação ao login:** se é pública (antes do login, como `/` e `/cadastro`) ou autenticada (depois do login) e, nesse caso, para qual papel: `CUSTOMER`, `SUPPORT` ou ambos. Isso também define se ela aparece na `Sidebar`.
+- **Navegação:** de onde o usuário chega na tela e para onde vai depois de cada ação (salvar, cancelar, voltar).
+- **Regras de negócio:** validações de campos, campos obrigatórios, quem pode ver ou editar o quê, o que acontece em caso de erro, limites e formatos.
+- **Interações:** o que cada botão, link, filtro ou dropdown faz; se uma ação chama a API (e qual endpoint) ou é só visual por enquanto; confirmações, toasts e estados de carregamento.
+- **Dados:** se os dados vêm de um endpoint que já existe, de um endpoint que ainda vai existir (mock) ou são fixos.
+
+Como perguntar:
+
+- Junte todas as dúvidas numa única rodada (use `AskUserQuestion` se estiver disponível), em vez de interromper várias vezes. Cada pergunta deve fazer sentido sozinha e citar a tela ou o elemento do Figma a que se refere.
+- Sempre que der, ofereça opções concretas e recomende a que parece mais provável pelo padrão do projeto (ex.: "Rota `/cliente/faturas`, autenticada para `CUSTOMER`, com item na Sidebar (recomendado)").
+- Não pergunte o que o `AGENTS.md`, o código ou o próprio Figma já respondem. Perguntas desnecessárias também atrapalham.
+
+Lacunas puramente visuais (hover, foco, estado vazio, texto de placeholder que não aparece no Figma) não precisam de pergunta: siga o padrão de telas parecidas do projeto e liste essas suposições no resumo final.
 
 ## 5. Implementar
 
