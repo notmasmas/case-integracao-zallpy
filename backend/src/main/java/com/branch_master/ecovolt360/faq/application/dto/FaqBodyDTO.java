@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record FaqBodyDTO (
         @NotNull
-        @NotBlank
         FaqCategory category,
 
         @NotBlank
