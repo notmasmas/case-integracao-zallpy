@@ -22,6 +22,7 @@ public class Faq {
     @Column(name="answer")
     private String answer;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="category")
     private FaqCategory category;
 

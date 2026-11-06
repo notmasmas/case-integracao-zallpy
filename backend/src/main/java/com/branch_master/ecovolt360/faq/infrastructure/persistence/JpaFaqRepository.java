@@ -15,7 +15,7 @@ public class JpaFaqRepository implements FaqRepository {
     public JpaFaqRepository(SpringDataFaqRepository repository) {this.repository = repository;}
 
     @Override
-    public List<Faq> findByFaqId(UUID faqId){
-        return repository.findByFaqIdOrderByTitleAsc(faqId);
+    public List<Faq> findAll(){
+        return repository.findAllByOrderByTitleAsc();
     }
 }

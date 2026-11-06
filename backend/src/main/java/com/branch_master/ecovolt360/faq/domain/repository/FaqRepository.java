@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FaqRepository {
-    List<Faq> findByFaqId(UUID id, String title, String answer, FaqCategory category);
+    List<Faq> findAll();
 }
