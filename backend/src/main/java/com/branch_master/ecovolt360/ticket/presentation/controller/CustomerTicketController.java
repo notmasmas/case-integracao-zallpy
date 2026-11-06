@@ -5,14 +5,13 @@ import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyCategoryDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -66,10 +65,9 @@ public class CustomerTicketController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<TicketDetailsDTO> updateStatus(@PathVariable UUID id,
-                                                          @RequestBody @Valid TicketBodyStatusDTO ticketBodyStatusDTO,
-                                                          @CurrentUser AuthenticatedUser currentUser) {
-        TicketDetailsDTO ticket = ticketService.updateStatus(currentUser.userId(), id, ticketBodyStatusDTO);
+    public ResponseEntity<TicketDetailsDTO> resumeAfterCustomerReply(@PathVariable UUID id,
+                                                                      @CurrentUser AuthenticatedUser currentUser) {
+        TicketDetailsDTO ticket = ticketService.resumeAfterCustomerReply(currentUser.userId(), id);
         return ResponseEntity.ok(ticket);
     }
 

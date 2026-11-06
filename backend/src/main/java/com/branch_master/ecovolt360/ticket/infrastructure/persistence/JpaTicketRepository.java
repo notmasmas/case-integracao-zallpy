@@ -66,6 +66,34 @@ public class JpaTicketRepository implements TicketRepository {
     }
 
     @Override
+    public int resumeAfterCustomerReply(UUID ticketId, UUID customerId, ZonedDateTime updatedAt) {
+        return repository.resumeAfterCustomerReply(ticketId, customerId, updatedAt);
+    }
+
+    @Override
+    public int assign(UUID ticketId, UUID supportId, TicketCategory category, ZonedDateTime updatedAt) {
+        return repository.assign(
+                ticketId,
+                supportId,
+                category,
+                updatedAt,
+                TicketStatus.RESOLVED,
+                TicketStatus.CLOSED
+        );
+    }
+
+    @Override
+    public int touchUpdatedAt(UUID ticketId, UUID supportId, ZonedDateTime updatedAt) {
+        return repository.touchUpdatedAt(
+                ticketId,
+                supportId,
+                updatedAt,
+                TicketStatus.RESOLVED,
+                TicketStatus.CLOSED
+        );
+    }
+
+    @Override
     public int updateCategory(UUID ticketId, TicketCategory category, ZonedDateTime updatedAt) {
         return repository.updateCategory(ticketId, category, updatedAt);
     }

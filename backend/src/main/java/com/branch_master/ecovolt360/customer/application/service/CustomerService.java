@@ -14,7 +14,7 @@ import com.branch_master.ecovolt360.user.application.dto.UserBodyDTO;
 import com.branch_master.ecovolt360.user.application.port.PasswordHasher;
 import com.branch_master.ecovolt360.user.domain.entity.User;
 import com.branch_master.ecovolt360.user.domain.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 public class CustomerService {
 
