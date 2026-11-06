@@ -61,6 +61,21 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
     @Modifying(clearAutomatically = true)
     @Query("""
             update Ticket t
+               set t.status = com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.IN_PROGRESS,
+                   t.updatedAt = :updatedAt
+             where t.id = :id
+               and t.customerId = :customerId
+               and t.status = com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.WAITING_CUSTOMER
+            """)
+    int resumeAfterCustomerReply(
+            @Param("id") UUID id,
+            @Param("customerId") UUID customerId,
+            @Param("updatedAt") ZonedDateTime updatedAt
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
                set t.supportId = :supportId,
                    t.category = :category,
                    t.updatedAt = :updatedAt
