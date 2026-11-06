@@ -73,6 +73,10 @@
   --color-border-black: var(--color-black);
   --color-background-gray: #f5f5f5;
   --color-surface-white: #ffffff;
+  --color-accent-green: #6cd43b;
+  --color-text-on-dark: #f0f4f1;
+  --color-text-on-dark-muted: #a0c4aa;
+  --color-text-on-primary: #1e4030;
 
   --page-padding-inline: clamp(1rem, 5vw, 4rem);
   --page-padding-block: clamp(1.5rem, 4vw, 4rem);

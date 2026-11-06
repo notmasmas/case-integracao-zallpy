@@ -1,0 +1,198 @@
+/* Mobile-first: base styles target small screens; 64rem is the main breakpoint. */
+
+.page {
+  min-height: 100vh;
+  gap: var(--space-40);
+  padding-block: var(--space-24);
+  padding-inline: var(--space-16);
+  color: var(--color-surface-white);
+  background:
+    url("../../assets/landing/hero-overlay.svg") center / 100% 100% no-repeat,
+    url("../../assets/landing/hero-background.png") center / cover no-repeat;
+  background-color: var(--color-black);
+}
+
+/* Header */
+
+.header {
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.brand {
+  color: var(--color-surface-white);
+}
+
+.brandName {
+  font-size: 1.375rem;
+  font-weight: var(--font-weight-display-bold);
+  line-height: 1.625rem;
+}
+
+.brandTag {
+  color: var(--color-accent-green);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-body-regular);
+  line-height: 0.9375rem;
+  letter-spacing: 0.09375rem;
+  text-transform: uppercase;
+}
+
+.actions {
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.nav {
+  flex-wrap: wrap;
+  column-gap: var(--space-20);
+  row-gap: var(--space-4);
+}
+
+.navLink {
+  position: relative;
+  color: var(--color-text-on-dark);
+  font-size: var(--font-size-body-lead);
+  font-weight: var(--font-weight-body-medium);
+}
+
+/* Accent line under the section currently in view. */
+.navLink::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 0.1875rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.navLink[aria-current="location"]::after {
+  transform: scaleX(1);
+}
+
+.enterButton {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  font-size: var(--font-size-body-lead);
+  font-weight: var(--font-weight-label);
+  line-height: 1.5rem;
+}
+
+/* Hero */
+
+.hero {
+  flex: 1;
+  justify-content: center;
+  max-width: 40rem;
+}
+
+.eyebrowBar {
+  background-color: var(--color-accent-green);
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-label);
+  letter-spacing: 0.125rem;
+  text-transform: uppercase;
+}
+
+.title {
+  color: var(--color-surface-white);
+  font-family: var(--font-family-instrument-serif);
+  font-size: clamp(2.75rem, 10vw, 4rem);
+  font-weight: 400;
+  line-height: 0.9375;
+  letter-spacing: 0.01em;
+}
+
+.subtitle {
+  max-width: 28.75rem;
+  color: var(--color-text-on-dark-muted);
+  font-size: clamp(1rem, 4vw, 1.25rem);
+  line-height: 1.375rem;
+}
+
+/* Benefits */
+
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-24);
+  list-style: none;
+}
+
+.benefit {
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.divider {
+  display: none;
+}
+
+/* Sized here (not via Chakra props): the global unlayered `img { height: auto }`
+   in index.css would override Chakra's layered sizing. */
+.benefitIcon {
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: cover;
+}
+
+.benefitText {
+  color: var(--color-surface-white);
+  font-size: clamp(1rem, 4vw, 1.25rem);
+  font-weight: var(--font-weight-body-medium);
+  line-height: 1.125rem;
+}
+
+@media (min-width: 64rem) {
+  .page {
+    gap: var(--space-48);
+    padding-block: 1.375rem var(--space-48);
+    padding-inline: var(--space-32);
+  }
+
+  .header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .actions {
+    flex-wrap: nowrap;
+    gap: clamp(var(--space-32), 6vw, 6rem);
+    margin-top: var(--space-48);
+    padding-inline-end: clamp(0rem, 4vw, 6.5rem);
+  }
+
+  .nav {
+    flex-wrap: nowrap;
+    column-gap: clamp(var(--space-24), 3vw, var(--space-48));
+  }
+
+  .hero,
+  .benefits {
+    padding-inline-start: clamp(0rem, 6.5vw, 5.875rem);
+  }
+
+  .benefits {
+    display: flex;
+    justify-content: space-between;
+    padding-inline-end: clamp(0rem, 3vw, var(--space-48));
+  }
+
+  .divider {
+    display: block;
+    flex-shrink: 0;
+    margin-inline-end: var(--space-16);
+    transform: rotate(90deg);
+  }
+}
