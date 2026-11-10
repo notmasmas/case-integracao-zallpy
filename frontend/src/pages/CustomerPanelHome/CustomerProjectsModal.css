@@ -1,0 +1,190 @@
+.customer-projects-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-16);
+  background-color: rgb(0 0 0 / 35%);
+}
+
+body.customer-projects-modal-open {
+  overflow: hidden;
+}
+
+.customer-projects-modal {
+  display: flex;
+  box-sizing: border-box;
+  width: min(100%, 64rem);
+  min-width: 0;
+  max-height: min(80vh, 42rem);
+  flex-direction: column;
+  gap: var(--space-24);
+  overflow: hidden;
+  padding: var(--space-24);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-white);
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 18%);
+}
+
+.customer-projects-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.customer-projects-modal__header h2 {
+  color: var(--color-text-gray-primary);
+  font-size: var(--font-size-heading-md);
+  font-weight: var(--font-weight-heading-md);
+}
+
+.customer-projects-modal__header p {
+  margin-top: var(--space-4);
+  color: var(--color-text-gray-tertiary);
+  font-size: var(--font-size-body);
+}
+
+.customer-projects-modal__close {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-gray-tertiary);
+  font-size: 1.5rem;
+}
+
+.customer-projects-modal__close:hover {
+  background: var(--color-background-gray);
+  color: var(--color-text-gray-primary);
+}
+
+.customer-projects-modal__list {
+  display: flex;
+  min-width: 0;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--space-8);
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.customer-projects-modal__project {
+  display: grid;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-12) var(--space-16);
+  padding: var(--space-16);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.customer-projects-modal__project:hover,
+.customer-projects-modal__project[aria-current="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.customer-projects-modal button:hover {
+  transform: none;
+}
+
+.customer-projects-modal__project-heading {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: var(--space-8);
+}
+
+.customer-projects-modal__project-name {
+  min-width: 0;
+  color: var(--color-text-gray-primary);
+  font-size: var(--font-size-body-lead);
+  font-weight: var(--font-weight-body-medium);
+  overflow-wrap: anywhere;
+}
+
+.customer-projects-modal__project-id {
+  min-width: 0;
+  color: var(--color-text-gray-tertiary);
+  font-size: var(--font-size-body);
+  overflow-wrap: anywhere;
+}
+
+.customer-projects-modal__project-details {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.customer-projects-modal__project-location {
+  min-width: 0;
+  color: var(--color-text-gray-tertiary);
+  font-size: var(--font-size-body);
+  overflow-wrap: anywhere;
+}
+
+.customer-projects-modal__project-location strong {
+  color: var(--color-text-gray-primary);
+  font-weight: var(--font-weight-body-medium);
+}
+
+.customer-projects-modal__project-installation {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: var(--space-8);
+  color: var(--color-text-gray-tertiary);
+  font-size: var(--font-size-body);
+  text-align: right;
+}
+
+.customer-projects-modal__project-installation strong {
+  color: var(--color-text-gray-primary);
+  font-weight: var(--font-weight-body-medium);
+}
+
+.customer-projects-modal__message {
+  color: var(--color-text-gray-primary);
+  font-size: var(--font-size-body-lead);
+}
+
+.customer-projects-modal__message[role="alert"] {
+  color: var(--color-status-waiting-customer);
+}
+
+@media (max-width: 32rem) {
+  .customer-projects-modal {
+    padding: var(--space-16);
+  }
+
+  .customer-projects-modal__project {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-projects-modal__project-heading {
+    flex-wrap: wrap;
+  }
+
+  .customer-projects-modal__project-details {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .customer-projects-modal__project-installation {
+    text-align: left;
+  }
+}

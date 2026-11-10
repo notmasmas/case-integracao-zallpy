@@ -5,6 +5,7 @@ import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import com.branch_master.ecovolt360.auth.presentation.exception.AccessExceptionHandler;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUserArgumentResolver;
+import com.branch_master.ecovolt360.customer.domain.entity.Customer;
 import com.branch_master.ecovolt360.customer.domain.repository.CustomerRepository;
 import com.branch_master.ecovolt360.messages.application.service.MessageService;
 import com.branch_master.ecovolt360.messages.domain.entity.Message;
@@ -12,6 +13,7 @@ import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository
 import com.branch_master.ecovolt360.support.domain.entity.Support;
 import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
+import com.branch_master.ecovolt360.ticket.presentation.controller.CustomerTicketController;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
@@ -41,6 +43,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -140,6 +143,68 @@ class SupportTicketControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(ticketId.toString()))
                 .andExpect(jsonPath("$.category").value("EQUIPMENT"));
+    }
+
+    @Test
+    void shouldListMessagesForSupportTicket() throws Exception {
+        when(ticketRepository.findById(ticketId))
+                .thenReturn(Optional.of(ticket(UUID.randomUUID(), TicketStatus.PENDING)));
+        when(messageRepository.findByTicketId(ticketId)).thenReturn(List.of());
+
+        mockMvc.perform(get("/support/tickets/{ticketId}/messages", ticketId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.messages").isEmpty())
+                .andExpect(jsonPath("$.totalMessages").value(0));
+    }
+
+    @Test
+    void shouldResumeWaitingTicketWhenCustomerReplies() throws Exception {
+        UUID customerUserId = UUID.randomUUID();
+        Customer customer = new Customer(customerUserId);
+        customer.setId(UUID.randomUUID());
+        Ticket waitingTicket = ticket(support.getId(), TicketStatus.WAITING_CUSTOMER);
+        Ticket resumedTicket = ticket(support.getId(), TicketStatus.IN_PROGRESS);
+
+        when(customerRepository.findByUserId(customerUserId)).thenReturn(Optional.of(customer));
+        when(ticketRepository.findByIdAndCustomerId(ticketId, customer.getId()))
+                .thenReturn(Optional.of(waitingTicket), Optional.of(resumedTicket));
+        when(ticketRepository.resumeAfterCustomerReply(eq(ticketId), eq(customer.getId()), any(ZonedDateTime.class)))
+                .thenReturn(1);
+        when(messageRepository.findByTicketId(ticketId)).thenReturn(List.of());
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        new AuthenticatedUser(customerUserId, Role.CUSTOMER),
+                        null,
+                        List.of()
+                )
+        );
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new CustomerTicketController(new TicketService(
+                        ticketRepository,
+                        customerRepository,
+                        messageRepository,
+                        userRepository,
+                        supportRepository
+                )))
+                .setControllerAdvice(new TicketExceptionHandler(), new AccessExceptionHandler())
+                .setCustomArgumentResolvers(new CurrentUserArgumentResolver())
+                .build();
+
+        mockMvc.perform(patch("/tickets/{id}/status", ticketId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
+
+        verify(ticketRepository).resumeAfterCustomerReply(
+                eq(ticketId),
+                eq(customer.getId()),
+                any(ZonedDateTime.class)
+        );
+        verify(ticketRepository, never()).updateStatus(
+                eq(ticketId),
+                any(TicketStatus.class),
+                any(ZonedDateTime.class),
+                any(UUID.class)
+        );
     }
 
     @Test

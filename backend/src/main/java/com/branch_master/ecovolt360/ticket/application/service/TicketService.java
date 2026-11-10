@@ -99,6 +99,12 @@ public class TicketService {
         return pageMessages(messageRepository.findByTicketId(ticket.getId()), page);
     }
 
+    public MessagePageDTO listSupportMessages(UUID ticketId, int page) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(TicketNotFoundException::new);
+        return pageMessages(messageRepository.findByTicketId(ticket.getId()), page);
+    }
+
     @Transactional
     public TicketDetailsDTO evaluateTicket(UUID userId, UUID ticketId, TicketBodyEvaluateDTO ticketBodyEvaluateDTO) {
         Customer customer = findCustomer(userId);
@@ -149,6 +155,21 @@ public class TicketService {
         }
         Ticket ticket = findSupportTicket(ticketId, support.getId());
         return toDetails(ticket, pageMessages(messageRepository.findByTicketId(ticket.getId()), 0));
+    }
+
+    @Transactional
+    public TicketDetailsDTO resumeAfterCustomerReply(UUID userId, UUID ticketId) {
+        Customer customer = findCustomer(userId);
+        Ticket current = findCustomerTicket(ticketId, customer.getId());
+        if (current.getStatus() == TicketStatus.WAITING_CUSTOMER) {
+            ticketRepository.resumeAfterCustomerReply(
+                    ticketId,
+                    customer.getId(),
+                    ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"))
+            );
+            current = findCustomerTicket(ticketId, customer.getId());
+        }
+        return toDetails(current, pageMessages(messageRepository.findByTicketId(current.getId()), 0));
     }
 
     public TicketDetailsDTO updateCategory(UUID ticketId, @Valid TicketBodyCategoryDTO ticketBodyCategoryDTO) {

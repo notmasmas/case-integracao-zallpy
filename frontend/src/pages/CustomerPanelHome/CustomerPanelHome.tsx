@@ -1,28 +1,53 @@
 import { Box } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { toaster } from "../../components/ui/toaster";
 import { useNavigate } from "react-router-dom";
-import { BsArrowRight } from "react-icons/bs";
+import { BsArrowRight, BsArrowDown } from "react-icons/bs";
 import TicketStatusBadge from "../../components/TicketStatusBadge";
 import { categoryLabel, useCustomerTickets } from "../../api/tickets";
+import { useCustomerProjects } from "../../api/projects";
 import { paths } from "../../routes/routes";
 import { customerSummaryMock } from "./customerPanelData.mock";
+import CustomerProjectsModal from "./CustomerProjectsModal";
 import "../SupportPanelHome/SupportPanelHome.css";
 import "./CustomerPanelHome.css";
 
 function CustomerPanelHome() {
   const navigate = useNavigate();
   const { tickets, error, loading } = useCustomerTickets();
+  const {
+    projects,
+    error: projectsError,
+    loading: projectsLoading,
+  } = useCustomerProjects();
+  const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const selectedProject =
+    projects.find((project) => project.id === selectedProjectId) ?? projects[0];
+
+  useEffect(() => {
+    if (projectsError) {
+      toaster.create({
+        title: "Erro ao carregar projetos",
+        description: projectsError,
+        type: "error",
+      });
+    }
+  }, [projectsError]);
 
   return (
     <Box className="support-panel-home">
       <Box className="customer-panel-summary">
-        {/* <p className="customer-panel-summary__projects">
-          Ver todos os projetos (1)
-          <LuChevronDown
-            className="customer-panel-summary__projects-icon"
-            aria-hidden="true"
-          />
-        </p>
-        */}
+        <Box className="customer-panel-summary__header">
+          <button
+            className="customer-panel-summary__projects-button"
+            type="button"
+            onClick={() => setIsProjectsModalOpen(true)}
+          >
+            Ver todos os projetos ({projects.length})
+            <BsArrowDown />
+          </button>
+        </Box>
         <Box className="customer-panel-summary__cards">
           {customerSummaryMock.map((item) => {
             const Icon = item.icon;
@@ -50,6 +75,18 @@ function CustomerPanelHome() {
           })}
         </Box>
       </Box>
+      <CustomerProjectsModal
+        isOpen={isProjectsModalOpen}
+        projects={projects}
+        loading={projectsLoading}
+        error={projectsError}
+        selectedProjectId={selectedProject?.id ?? null}
+        onSelect={(projectId) => {
+          setSelectedProjectId(projectId);
+          setIsProjectsModalOpen(false);
+        }}
+        onClose={() => setIsProjectsModalOpen(false)}
+      />
       <Box className="support-panel-tickets">
         <Box className="support-panel-tickets__header">
           <p>Seus chamados</p>

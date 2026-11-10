@@ -29,7 +29,13 @@ function SupportTicket() {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTicket, setSelectedTicket] = useState<CustomerTicket | null>(null);
-  const { tickets, error, loading, markTicketEvaluated } = useCustomerTickets();
+  const {
+    tickets,
+    error,
+    loading,
+    markTicketEvaluated,
+    updateTicket,
+  } = useCustomerTickets();
   const ticketResolvedCount = tickets.filter(
     (ticket) => ticket.status === "resolved",
   ).length;
@@ -49,6 +55,10 @@ function SupportTicket() {
   const onCloseDetailsModal = (): void => {
     setSelectedTicket(null);
   };
+  const onTicketUpdated = (updatedTicket: CustomerTicket): void => {
+    updateTicket(updatedTicket);
+    setSelectedTicket(updatedTicket);
+  };
 
   useEffect(() => {
       if (isModalOpen || selectedTicket !== null) {
@@ -63,7 +73,11 @@ function SupportTicket() {
         {(selectedTicket !== null || isModalOpen) && (
           <div className="modal-backdrop" onClick={onCloseDetailsModal} />
       )}
-        <TicketDetailsModal ticket={selectedTicket} onClose={onCloseDetailsModal} />
+        <TicketDetailsModal
+          ticket={selectedTicket}
+          onClose={onCloseDetailsModal}
+          onTicketUpdated={onTicketUpdated}
+        />
       <Box className="support-ticket-page__header">
         <h1 className="support-ticket-page__title">Meus chamados de suporte</h1>
         <span className="support-ticket-page__subtitle">

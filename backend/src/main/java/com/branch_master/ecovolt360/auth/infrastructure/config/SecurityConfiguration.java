@@ -51,6 +51,7 @@ public class SecurityConfiguration {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/customers").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/faqs").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/support/tickets/{ticketId}/status").hasRole("SUPPORT")
                         .requestMatchers(HttpMethod.PATCH, "/tickets/{ticketId}/evaluation").hasRole("CUSTOMER")
                         .requestMatchers("/tickets", "/tickets/**").hasRole("CUSTOMER")
@@ -58,6 +59,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/session").authenticated()
                         .requestMatchers(HttpMethod.POST, "/logout").authenticated()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/projects").hasRole("CUSTOMER")
                         .anyRequest().denyAll()
                 )
                 .exceptionHandling(exceptions -> exceptions

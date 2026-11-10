@@ -5,7 +5,6 @@ import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyCategoryDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyEvaluateDTO;
-import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
 import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
@@ -66,10 +65,9 @@ public class CustomerTicketController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<TicketDetailsDTO> updateStatus(@PathVariable UUID id,
-                                                          @RequestBody @Valid TicketBodyStatusDTO ticketBodyStatusDTO,
-                                                          @CurrentUser AuthenticatedUser currentUser) {
-        TicketDetailsDTO ticket = ticketService.updateStatus(currentUser.userId(), id, ticketBodyStatusDTO);
+    public ResponseEntity<TicketDetailsDTO> resumeAfterCustomerReply(@PathVariable UUID id,
+                                                                      @CurrentUser AuthenticatedUser currentUser) {
+        TicketDetailsDTO ticket = ticketService.resumeAfterCustomerReply(currentUser.userId(), id);
         return ResponseEntity.ok(ticket);
     }
 
