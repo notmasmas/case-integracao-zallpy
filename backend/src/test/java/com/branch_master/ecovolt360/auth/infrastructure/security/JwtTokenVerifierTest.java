@@ -16,6 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -77,5 +78,58 @@ class JwtTokenVerifierTest {
     @Test
     void shouldRejectMalformedToken() {
         assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify("a.b.c"));
+    }
+
+    @Test
+    void shouldReturnAuthenticatedUserWhenTokenAndVersionMatch() {
+        UUID userId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+        String token = tokenIssuer.issue(userId, Role.SUPPORT, 3);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(3);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        var authenticated = tokenVerifier.verify(token);
+
+        assertEquals(userId, authenticated.userId());
+        assertEquals(Role.SUPPORT, authenticated.role());
+    }
+
+    @Test
+    void shouldRejectExpiredToken() {
+        JwtTokenIssuer expiredIssuer = new JwtTokenIssuer(SECRET, 0);
+        UUID userId = UUID.randomUUID();
+        String token = expiredIssuer.issue(userId, Role.CUSTOMER, 0);
+
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(token));
+    }
+
+    @Test
+    void shouldRejectTokenWithInvalidSignature() {
+        UUID userId = UUID.randomUUID();
+        String token = tokenIssuer.issue(userId, Role.CUSTOMER, 0);
+        String tampered = token.substring(0, token.length() - 2) + "aa";
+
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(tampered));
+    }
+
+    @Test
+    void shouldRejectTokenWithoutThreeParts() {
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify("only-two.parts"));
+    }
+
+    @Test
+    void shouldRejectTokenWithoutVersionClaim() {
+        String header = java.util.Base64.getUrlEncoder().withoutPadding()
+                .encodeToString("{\"alg\":\"HS256\",\"typ\":\"JWT\"}".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String payload = java.util.Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(("{\"sub\":\"" + UUID.randomUUID()
+                        + "\",\"role\":\"CUSTOMER\",\"iat\":1,\"exp\":9999999999}")
+                        .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        JwtTokenIssuer signer = new JwtTokenIssuer(SECRET, 60);
+        String valid = signer.issue(UUID.randomUUID(), Role.CUSTOMER, 0);
+        String signature = valid.substring(valid.lastIndexOf('.') + 1);
+        String tokenWithoutVersion = header + "." + payload + "." + signature;
+
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(tokenWithoutVersion));
     }
 }
