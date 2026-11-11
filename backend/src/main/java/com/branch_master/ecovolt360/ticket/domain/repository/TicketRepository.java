@@ -1,5 +1,6 @@
 package com.branch_master.ecovolt360.ticket.domain.repository;
 
+import com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
@@ -23,4 +24,5 @@ public interface TicketRepository {
     int assign(UUID ticketId, UUID supportId, TicketCategory category, ZonedDateTime updatedAt);
     int touchUpdatedAt(UUID ticketId, UUID supportId, ZonedDateTime updatedAt);
     int updateCategory(UUID ticketId, TicketCategory category, ZonedDateTime updatedAt);
+    MetricsDTO findMetricsBySupportId(UUID supportId);
 }
