@@ -124,7 +124,7 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
 
     @Query(""" 
         select new com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO(
-            round(avg(t.evaluate), 2),
+            round(avg(t.evaluate), 1),
             count(t.evaluate),
             sum(case when t.evaluate = 1 then 1 else 0 end),
             sum(case when t.evaluate = 2 then 1 else 0 end),
