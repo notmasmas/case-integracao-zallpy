@@ -17,16 +17,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -174,6 +178,55 @@ class LoginControllerTest {
 
         verify(passwordVerifier).matches("senhaErrada", "stored-hash");
         verifyNoInteractions(tokenIssuer);
+    }
+
+    @Test
+    void shouldReturnServiceUnavailableWithoutInternalDetailsWhenDatabaseIsDown() throws Exception {
+        when(userRepository.findByEmail("cliente@example.com"))
+                .thenThrow(new DataAccessResourceFailureException(
+                        "Unable to acquire JDBC Connection [HikariPool-1 - Connection is not available, "
+                                + "request timed out after 30003ms (total=0, active=0, idle=0, waiting=0)] "
+                                + "Connection to localhost:5433 refused"
+                ));
+
+        mockMvc.perform(post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "email": "cliente@example.com",
+                                  "password": "senhaTeste"
+                                }
+                                """))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.code").value("SERVICE_UNAVAILABLE"))
+                .andExpect(jsonPath("$.message")
+                        .value("Não foi possível realizar o login no momento. "
+                                + "Tente novamente ou entre em contato com o suporte se o problema persistir."))
+                .andExpect(jsonPath("$.trace").doesNotExist())
+                .andExpect(jsonPath("$.accessToken").doesNotExist())
+                .andExpect(content().string(not(containsString("Hikari"))))
+                .andExpect(content().string(not(containsString("JDBC"))))
+                .andExpect(content().string(not(containsString("5433"))))
+                .andExpect(content().string(not(containsString("com.branch_master"))));
+
+        verifyNoInteractions(passwordVerifier, tokenIssuer);
+    }
+
+    @Test
+    void shouldReturnServiceUnavailableWhenLogoutCannotOpenTransaction() throws Exception {
+        UUID userId = UUID.randomUUID();
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        new AuthenticatedUser(userId, Role.CUSTOMER), null, List.of())
+        );
+        when(userRepository.findById(userId))
+                .thenThrow(new CannotCreateTransactionException(
+                        "Could not open JPA EntityManager for transaction"));
+
+        mockMvc.perform(post("/logout"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.code").value("SERVICE_UNAVAILABLE"))
+                .andExpect(content().string(not(containsString("EntityManager"))));
     }
 
     @Test
