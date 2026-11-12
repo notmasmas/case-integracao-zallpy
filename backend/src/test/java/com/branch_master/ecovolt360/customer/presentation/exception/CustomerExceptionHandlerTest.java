@@ -5,7 +5,7 @@ import com.branch_master.ecovolt360.customer.application.exception.CpfAlreadyReg
 import com.branch_master.ecovolt360.customer.application.exception.CpfNotFoundException;
 import com.branch_master.ecovolt360.customer.application.exception.EmailAlreadyInUseException;
 import com.branch_master.ecovolt360.customer.application.service.CustomerService;
-import com.branch_master.ecovolt360.customer.controller.CustomerController;
+import com.branch_master.ecovolt360.customer.presentation.controller.CustomerController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
