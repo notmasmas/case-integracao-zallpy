@@ -13,6 +13,9 @@ import {
   type UserRole,
 } from "../../../routes/routes";
 
+// Texto oficial do CA8 (falha no serviço de autenticação). Não sugere erro de credencial.
+const LOGIN_FAILED_MESSAGE = "Não foi possível realizar o login";
+
 type LoginPageFormProps = {
   email: string;
   password: string;
@@ -24,6 +27,7 @@ function LoginPageForm() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -41,6 +45,9 @@ function LoginPageForm() {
   }, []);
 
   const handleSubmit = async (formData: LoginPageFormProps): Promise<void> => {
+    if (isSubmitting) {
+      return;
+    }
     if (!formData.email.trim() || !formData.password.trim()) {
       toaster.create({
         title: "Login inválido",
@@ -49,6 +56,7 @@ function LoginPageForm() {
       });
       return;
     }
+    setIsSubmitting(true);
     try {
       const response = await api.post<{
         role: UserRole;
@@ -62,14 +70,27 @@ function LoginPageForm() {
       });
       navigate(homePath(response.data.role));
     } catch (error) {
-      const offline = axios.isAxiosError(error) && !error.response;
+      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+      // 400 e 401: a API respondeu e recusou as credenciais.
+      const credentialsRejected = status === 400 || status === 401;
+
+      if (credentialsRejected) {
+        toaster.create({
+          title: "Login inválido",
+          description: "E-mail ou senha inválidos.",
+          type: "error",
+        });
+        return;
+      }
+
+      // 5xx, sem resposta (back-end fora) ou qualquer outra falha: não é erro de credencial.
       toaster.create({
-        title: "Login inválido",
-        description: offline
-          ? "Não foi possível conectar ao servidor."
-          : "E-mail ou senha inválidos.",
+        title: "Erro ao entrar",
+        description: LOGIN_FAILED_MESSAGE,
         type: "error",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -134,6 +155,8 @@ function LoginPageForm() {
             form="login-form"
             type="submit"
             className="login-form__submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
           >
             Entrar
           </Button>
