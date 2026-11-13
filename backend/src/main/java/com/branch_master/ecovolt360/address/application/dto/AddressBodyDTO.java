@@ -5,30 +5,30 @@ import jakarta.validation.constraints.Size;
 
 public record AddressBodyDTO (
 
-        @NotBlank
-        @Size(max=10)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=10, message = "Máximo de 10 caracteres.")
         String cep,
 
-        @NotBlank
-        @Size(max=2)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=2, message = "Máximo de 2 caracteres.")
         String state,
 
-        @NotBlank
-        @Size(max=100)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=100, message = "Máximo de 100 caracteres.")
         String city,
 
-        @NotBlank
-        @Size(max=100)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=100, message = "Máximo de 100 caracteres.")
         String neighborhood,
 
-        @NotBlank
-        @Size(max=100)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=100, message = "Máximo de 100 caracteres.")
         String street,
 
-        @NotBlank
-        @Size(max=20)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=20, message = "Máximo de 20 caracteres.")
         String number,
 
-        @Size(max=100)
+        @Size(max=100, message = "Máximo de 100 caracteres.")
         String complement) {
 }
