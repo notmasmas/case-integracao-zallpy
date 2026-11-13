@@ -13,7 +13,7 @@ import {
   type UserRole,
 } from "../../../routes/routes";
 
-// Texto oficial do CA8 (falha no serviço de autenticação). Não sugere erro de credencial.
+// Texto oficial do CA8 que é falha no serviço de autenticação
 const LOGIN_FAILED_MESSAGE = "Não foi possível realizar o login";
 
 type LoginPageFormProps = {
@@ -83,7 +83,7 @@ function LoginPageForm() {
         return;
       }
 
-      // 5xx, sem resposta (back-end fora) ou qualquer outra falha: não é erro de credencial.
+      // 5xx, sem resposta ou qualquer outra falha não é erro de credencial!!
       toaster.create({
         title: "Erro ao entrar",
         description: LOGIN_FAILED_MESSAGE,
