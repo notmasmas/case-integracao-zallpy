@@ -5,7 +5,7 @@ import com.branch_master.ecovolt360.customer.application.exception.CpfAlreadyReg
 import com.branch_master.ecovolt360.customer.application.exception.CpfNotFoundException;
 import com.branch_master.ecovolt360.customer.application.exception.EmailAlreadyInUseException;
 import com.branch_master.ecovolt360.customer.application.service.CustomerService;
-import com.branch_master.ecovolt360.customer.controller.CustomerController;
+import com.branch_master.ecovolt360.customer.presentation.controller.CustomerController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,6 +85,35 @@ class CustomerExceptionHandlerTest {
                 .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
                 .andExpect(jsonPath("$.message").value("Verifique os campos informados."))
                 .andExpect(jsonPath("$['fieldErrors']['user.password']").exists());
+    }
+
+    @Test
+    void shouldReturnFieldErrorsWithFriendlyMessagesWithoutTechnicalDetails() throws Exception {
+        String invalid = validBody()
+                .replace("98765432100", "123")
+                .replace("cliente@email.com", "abc")
+                .replace("Cliente de teste", "");
+
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalid))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$['fieldErrors']['user.cpf']").value("O CPF deve conter 11 dígitos, apenas números."))
+                .andExpect(jsonPath("$['fieldErrors']['user.email']").value("Informe um e-mail válido."))
+                .andExpect(jsonPath("$['fieldErrors']['user.name']").value("Campo obrigatório."))
+                .andExpect(jsonPath("$.trace").doesNotExist())
+                .andExpect(jsonPath("$.errors").doesNotExist());
+    }
+
+    @Test
+    void shouldReturnApiErrorWhenBodyIsNotValidJson() throws Exception {
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ isto nao e json"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_REQUEST_BODY"))
+                .andExpect(jsonPath("$.trace").doesNotExist());
     }
 
     private static String validBody() {
