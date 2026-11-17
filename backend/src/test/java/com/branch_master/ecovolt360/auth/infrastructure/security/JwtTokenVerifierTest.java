@@ -1,6 +1,7 @@
 package com.branch_master.ecovolt360.auth.infrastructure.security;
 
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
+import com.branch_master.ecovolt360.auth.application.exception.SessionExpiredException;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import com.branch_master.ecovolt360.auth.domain.entity.User;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
@@ -13,13 +14,20 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -131,5 +139,41 @@ class JwtTokenVerifierTest {
         String tokenWithoutVersion = header + "." + payload + "." + signature;
 
         assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(tokenWithoutVersion));
+    }
+
+    private static final Instant NOW = Instant.parse("2026-11-17T12:00:00Z");
+
+    private JwtTokenVerifier verifierAt(Instant instant) {
+        return new JwtTokenVerifier(
+                SECRET, new ObjectMapper(), userRepository, 15, Clock.fixed(instant, ZoneOffset.UTC));
+    }
+
+    @Test
+    void shouldAcceptSessionThatIsStillActive() {
+        UUID userId = UUID.randomUUID();
+        String token = tokenIssuer.issue(userId, Role.CUSTOMER, 0);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(0);
+        when(user.isIdleFor(Duration.ofMinutes(15), NOW)).thenReturn(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        var authenticated = verifierAt(NOW).verify(token);
+
+        assertEquals(userId, authenticated.userId());
+        verify(userRepository, never()).registerActivity(any(), any());
+    }
+
+    @Test
+    void shouldRejectWithSessionExpiredWhenIdleForTooLong() {
+        UUID userId = UUID.randomUUID();
+        String token = tokenIssuer.issue(userId, Role.SUPPORT, 0);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(0);
+        when(user.isIdleFor(Duration.ofMinutes(15), NOW)).thenReturn(true);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(SessionExpiredException.class, () -> verifierAt(NOW).verify(token));
+
+        verify(userRepository, never()).registerActivity(any(), any());
     }
 }

@@ -2,10 +2,12 @@ package com.branch_master.ecovolt360.auth.infrastructure.security;
 
 import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
+import com.branch_master.ecovolt360.auth.application.exception.SessionExpiredException;
 import com.branch_master.ecovolt360.auth.application.port.TokenVerifier;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import com.branch_master.ecovolt360.auth.domain.entity.User;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
@@ -15,6 +17,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.UUID;
@@ -25,15 +29,26 @@ public class JwtTokenVerifier implements TokenVerifier {
     private final byte[] secret;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
+    private final Duration inactivityLimit;
+    private final Clock clock;
 
+    public JwtTokenVerifier(String secret, ObjectMapper objectMapper, UserRepository userRepository) {
+        this(secret, objectMapper, userRepository, 15, Clock.systemUTC());
+    }
+
+    @Autowired
     public JwtTokenVerifier(
             @Value("${app.jwt.secret}") String secret,
             ObjectMapper objectMapper,
-            UserRepository userRepository
+            UserRepository userRepository,
+            @Value("${app.session.inactivity-minutes:15}") long inactivityMinutes,
+            Clock clock
     ) {
         this.secret = secret.getBytes(StandardCharsets.UTF_8);
         this.objectMapper = objectMapper;
         this.userRepository = userRepository;
+        this.inactivityLimit = Duration.ofMinutes(inactivityMinutes);
+        this.clock = clock;
     }
 
     @Override
@@ -44,6 +59,12 @@ public class JwtTokenVerifier implements TokenVerifier {
                 .orElseThrow(InvalidTokenException::new);
         if (claims.tokenVersion() != user.getTokenVersion()) {
             throw new InvalidTokenException();
+        }
+
+        // Sessão sem atividade há 15 minutos (ou mais) não é mais válida. A atividade só é
+        // renovada de forma explícita, via POST /session/activity.
+        if (user.isIdleFor(inactivityLimit, clock.instant())) {
+            throw new SessionExpiredException();
         }
 
         return new AuthenticatedUser(claims.userId(), claims.role());

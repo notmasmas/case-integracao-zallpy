@@ -2,6 +2,7 @@ package com.branch_master.ecovolt360.auth.infrastructure.security;
 
 import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
+import com.branch_master.ecovolt360.auth.application.exception.SessionExpiredException;
 import com.branch_master.ecovolt360.auth.application.port.TokenVerifier;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import jakarta.servlet.FilterChain;
@@ -22,6 +23,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import org.mockito.ArgumentCaptor;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -106,5 +110,20 @@ class JwtAuthenticationFilterTest {
         verify(filterChain, never()).doFilter(any(), any());
         verify(authenticationEntryPoint).commence(eq(request), eq(response), any(BadCredentialsException.class));
         assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    @Test
+    void shouldPropagateSessionExpiredCauseToEntryPoint() throws Exception {
+        when(tokenVerifier.verify("idle-token")).thenThrow(new SessionExpiredException());
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer idle-token");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, filterChain);
+
+        ArgumentCaptor<BadCredentialsException> captor = ArgumentCaptor.forClass(BadCredentialsException.class);
+        verify(authenticationEntryPoint).commence(eq(request), eq(response), captor.capture());
+        assertInstanceOf(SessionExpiredException.class, captor.getValue().getCause());
+        verify(filterChain, never()).doFilter(any(), any());
     }
 }
