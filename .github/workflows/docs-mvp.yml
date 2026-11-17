@@ -1,0 +1,40 @@
+
+name: Living Docs MVP
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  check-docs-label:
+    name: Verificar PR elegível
+    if: >-
+      ${{
+        github.event.pull_request.merged == true &&
+        contains(github.event.pull_request.labels.*.name, 'docs') &&
+        !contains(github.event.pull_request.labels.*.name, 'docs-automation')
+      }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Exibir informações do PR
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          echo "PR #${PR_NUMBER}"
+          echo "Título: ${PR_TITLE}"
+          echo "Commit do merge: ${MERGE_SHA}"
+          echo "PR elegível para análise documental."
+
+      - name: Registrar resultado
+        run: |
+          echo "## Living Docs MVP" >> "$GITHUB_STEP_SUMMARY"
+          echo "Gatilho validado com sucesso." >> "$GITHUB_STEP_SUMMARY"
+          echo "Próxima etapa: executar a skill living-docs." >> "$GITHUB_STEP_SUMMARY"
