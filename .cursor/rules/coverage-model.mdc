@@ -1,0 +1,15 @@
+---
+description: >-
+  Quando a skill de coverage for invocada (cobertura de testes, coverage,
+  jacoco, quais classes não estão cobertas, verificar testes unitários),
+  verificar o modelo ativo e avisar se não for Claude Sonnet 4.6 medium.
+alwaysApply: false
+---
+
+Ao executar a skill de cobertura de testes (`coverage`):
+
+Se o modelo ativo não for **Claude Sonnet 4.6 medium**, exiba esta mensagem
+antes de qualquer outro passo e aguarde confirmação do desenvolvedor:
+
+> Esta skill é otimizada para **Claude Sonnet 4.6 medium**.
+> Troque o modelo no seletor do Cursor e reenvie a mensagem para continuar.

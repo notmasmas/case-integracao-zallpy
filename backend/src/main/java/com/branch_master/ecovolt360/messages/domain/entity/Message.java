@@ -35,6 +35,6 @@ public class Message {
         this.ticketId = ticketId;
         this.senderUserId = senderUserId;
         this.content = content;
-        this.createdAt = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        this.createdAt = createdAt;
     }
 }

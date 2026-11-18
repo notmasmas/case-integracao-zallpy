@@ -2,11 +2,16 @@ import { Box, Button, Checkbox, Field, Input } from "@chakra-ui/react";
 import axios from "axios";
 import api from "../../../api/api";
 import "../loginPage.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../../components/ui/toaster";
 import { useAuth } from "../../../context/AuthContext";
-import { homePath, paths, type UserRole } from "../../../routes/routes";
+import {
+  expiredSessionSearch,
+  homePath,
+  paths,
+  type UserRole,
+} from "../../../routes/routes";
 
 type LoginPageFormProps = {
   email: string;
@@ -19,6 +24,21 @@ function LoginPageForm() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get(expiredSessionSearch.key) !== expiredSessionSearch.value) {
+      return;
+    }
+    params.delete(expiredSessionSearch.key);
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `${paths.login}?${query}` : paths.login);
+    toaster.create({
+      title: "Sessão inválida ou expirada",
+      description: "Faça login novamente.",
+      type: "error",
+    });
+  }, []);
 
   const handleSubmit = async (formData: LoginPageFormProps): Promise<void> => {
     if (!formData.email.trim() || !formData.password.trim()) {

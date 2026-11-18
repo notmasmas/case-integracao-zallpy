@@ -8,17 +8,22 @@ import {
 type StatusDropdownProps = {
   status: TicketStatus;
   onChange: (status: TicketStatus) => void;
+  disabled?: boolean;
 };
 
 const statuses = Object.keys(ticketStatusLabels) as TicketStatus[];
 
-export default function StatusDropdown({ status, onChange }: StatusDropdownProps) {
+export default function StatusDropdown({
+  status,
+  onChange,
+  disabled = false,
+}: StatusDropdownProps) {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     onChange(event.target.value as TicketStatus);
   };
 
   return (
-    <NativeSelect.Root className="ticket-status-dropdown">
+    <NativeSelect.Root className="ticket-status-dropdown" disabled={disabled}>
       <NativeSelect.Field
         aria-label="Status do chamado"
         className={`ticket-status-badge ticket-status-badge--${status} ticket-status-dropdown__field`}

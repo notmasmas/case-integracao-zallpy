@@ -43,7 +43,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       const unauthorized = axios.isAxiosError(error) && error.response?.status === 401;
       if (unauthorized) {
-        endSession();
         return;
       }
 

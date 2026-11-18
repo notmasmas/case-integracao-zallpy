@@ -11,8 +11,13 @@ import TicketDetailsModal from "../../components/TicketDetailsModal/TicketDetail
 import "./TicketsQueue.css";
 
 function TicketsQueue() {
-  const { tickets, error, loading } = useAllTickets();
+  const { tickets, error, loading, updateTicket } = useAllTickets();
   const [selectedTicket, setSelectedTicket] = useState<CustomerTicket | null>(null);
+
+  function handleTicketUpdated(updatedTicket: CustomerTicket) {
+    updateTicket(updatedTicket);
+    setSelectedTicket(updatedTicket);
+  }
 
   useEffect(() => {
     if (selectedTicket) {
@@ -36,6 +41,7 @@ function TicketsQueue() {
       <TicketDetailsModal
         ticket={selectedTicket}
         onClose={() => setSelectedTicket(null)}
+        onTicketUpdated={handleTicketUpdated}
       />
 
       <Box className="support-panel-tickets__header">
@@ -76,7 +82,7 @@ function TicketsQueue() {
             </Box>
             <Box className="support-panel-tickets__list__left">
               <Box className="support-panel-tickets__list__responsible">
-                {ticket.status === "pending" ? (
+                {!ticket.supportName || ticket.supportName === "Não atribuído" ? (
                   <Box className="support-panel-tickets__list__action">
                     <button type="button">Atender chamado</button>
                     <BsArrowRight aria-hidden="true" />

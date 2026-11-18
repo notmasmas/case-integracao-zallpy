@@ -1,6 +1,7 @@
 package com.branch_master.ecovolt360.auth.infrastructure.security;
 
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
+import com.branch_master.ecovolt360.auth.application.exception.SessionExpiredException;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
 import com.branch_master.ecovolt360.auth.domain.entity.User;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
@@ -13,12 +14,20 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,5 +86,94 @@ class JwtTokenVerifierTest {
     @Test
     void shouldRejectMalformedToken() {
         assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify("a.b.c"));
+    }
+
+    @Test
+    void shouldReturnAuthenticatedUserWhenTokenAndVersionMatch() {
+        UUID userId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+        String token = tokenIssuer.issue(userId, Role.SUPPORT, 3);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(3);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        var authenticated = tokenVerifier.verify(token);
+
+        assertEquals(userId, authenticated.userId());
+        assertEquals(Role.SUPPORT, authenticated.role());
+    }
+
+    @Test
+    void shouldRejectExpiredToken() {
+        JwtTokenIssuer expiredIssuer = new JwtTokenIssuer(SECRET, 0);
+        UUID userId = UUID.randomUUID();
+        String token = expiredIssuer.issue(userId, Role.CUSTOMER, 0);
+
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(token));
+    }
+
+    @Test
+    void shouldRejectTokenWithInvalidSignature() {
+        UUID userId = UUID.randomUUID();
+        String token = tokenIssuer.issue(userId, Role.CUSTOMER, 0);
+        String tampered = token.substring(0, token.length() - 2) + "aa";
+
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(tampered));
+    }
+
+    @Test
+    void shouldRejectTokenWithoutThreeParts() {
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify("only-two.parts"));
+    }
+
+    @Test
+    void shouldRejectTokenWithoutVersionClaim() {
+        String header = java.util.Base64.getUrlEncoder().withoutPadding()
+                .encodeToString("{\"alg\":\"HS256\",\"typ\":\"JWT\"}".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String payload = java.util.Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(("{\"sub\":\"" + UUID.randomUUID()
+                        + "\",\"role\":\"CUSTOMER\",\"iat\":1,\"exp\":9999999999}")
+                        .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        JwtTokenIssuer signer = new JwtTokenIssuer(SECRET, 60);
+        String valid = signer.issue(UUID.randomUUID(), Role.CUSTOMER, 0);
+        String signature = valid.substring(valid.lastIndexOf('.') + 1);
+        String tokenWithoutVersion = header + "." + payload + "." + signature;
+
+        assertThrows(InvalidTokenException.class, () -> tokenVerifier.verify(tokenWithoutVersion));
+    }
+
+    private static final Instant NOW = Instant.parse("2026-11-17T12:00:00Z");
+
+    private JwtTokenVerifier verifierAt(Instant instant) {
+        return new JwtTokenVerifier(
+                SECRET, new ObjectMapper(), userRepository, 15, Clock.fixed(instant, ZoneOffset.UTC));
+    }
+
+    @Test
+    void shouldAcceptSessionThatIsStillActive() {
+        UUID userId = UUID.randomUUID();
+        String token = tokenIssuer.issue(userId, Role.CUSTOMER, 0);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(0);
+        when(user.isIdleFor(Duration.ofMinutes(15), NOW)).thenReturn(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        var authenticated = verifierAt(NOW).verify(token);
+
+        assertEquals(userId, authenticated.userId());
+        verify(userRepository, never()).registerActivity(any(), any());
+    }
+
+    @Test
+    void shouldRejectWithSessionExpiredWhenIdleForTooLong() {
+        UUID userId = UUID.randomUUID();
+        String token = tokenIssuer.issue(userId, Role.SUPPORT, 0);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(0);
+        when(user.isIdleFor(Duration.ofMinutes(15), NOW)).thenReturn(true);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(SessionExpiredException.class, () -> verifierAt(NOW).verify(token));
+
+        verify(userRepository, never()).registerActivity(any(), any());
     }
 }

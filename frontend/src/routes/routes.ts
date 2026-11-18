@@ -1,5 +1,6 @@
 export const paths = {
-  login: "/",
+  landing: "/",
+  login: "/login",
   registration: "/cadastro",
   customer: {
     home: "/cliente",
@@ -15,6 +16,15 @@ export type UserRole = "CUSTOMER" | "SUPPORT";
 
 export function homePath(role: UserRole) {
   return role === "SUPPORT" ? paths.support.home : paths.customer.home;
+}
+
+export const expiredSessionSearch = {
+  key: "sessao",
+  value: "expirada",
+} as const;
+
+export function expiredSessionLoginPath() {
+  return `${paths.login}?${expiredSessionSearch.key}=${expiredSessionSearch.value}`;
 }
 
 export type Session = {

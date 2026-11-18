@@ -19,6 +19,7 @@ Este repositório refere-se ao desenvolvimento do **Portal do Cliente** para o p
  - [Escolha de fatia](#escolha-de-fatia)
  - [Tech Stack](#tech-stack)
  - [Instalação](#instalação)
+ - [Iniciar uma tarefa](#iniciar-uma-tarefa)
  - [Equipe](#equipe)
 
 
@@ -71,7 +72,15 @@ Este repositório refere-se ao desenvolvimento do **Portal do Cliente** para o p
   cd backend
   ./mvnw spring-boot:run
 ```
-    
+
+## Iniciar uma tarefa
+
+No Cursor, ao começar um card, a skill de TDD do repositório (`.cursor/skills/tdd`) entra no contexto. Ela lê os critérios de aceite no Jira, mapeia o teste na borda já usada pelo backend e para no vermelho, antes da implementação.
+
+`Iniciar PROJ-123 com TDD. Gere os testes pelos critérios de aceite e pare no vermelho.`
+
+Troque `PROJ-123` pela chave do card. O pedido seguinte, "ficar verde", implementa só o suficiente para esse teste passar.
+
 ## Equipe
 
 Este projeto foi desenvolvido como case integrador pela equipe **Branch Master**, formada por membros do programa Zallpy Academy.

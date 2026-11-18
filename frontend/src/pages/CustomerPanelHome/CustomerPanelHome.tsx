@@ -15,14 +15,6 @@ function CustomerPanelHome() {
   return (
     <Box className="support-panel-home">
       <Box className="customer-panel-summary">
-        {/* <p className="customer-panel-summary__projects">
-          Ver todos os projetos (1)
-          <LuChevronDown
-            className="customer-panel-summary__projects-icon"
-            aria-hidden="true"
-          />
-        </p>
-        */}
         <Box className="customer-panel-summary__cards">
           {customerSummaryMock.map((item) => {
             const Icon = item.icon;

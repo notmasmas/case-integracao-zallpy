@@ -5,9 +5,11 @@ import com.branch_master.ecovolt360.auth.application.dto.LoginResult;
 import com.branch_master.ecovolt360.auth.application.service.LoginService;
 import com.branch_master.ecovolt360.auth.presentation.dto.LoginRequest;
 import com.branch_master.ecovolt360.auth.presentation.dto.LoginResponse;
+import com.branch_master.ecovolt360.auth.presentation.dto.SessionResponse;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,6 +39,12 @@ public class LoginController {
                 "Bearer"
         );
     }
+
+    @GetMapping("/session")
+    public SessionResponse session(@CurrentUser AuthenticatedUser user) {
+        return new SessionResponse(user.role());
+    }
+
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(@CurrentUser AuthenticatedUser user) {

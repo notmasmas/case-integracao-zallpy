@@ -1,0 +1,55 @@
+.project-status-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: var(--space-4) var(--space-12);
+  border: 1px solid var(--color-border-gray);
+  border-radius: var(--radius-full);
+  background-color: var(--color-background-gray);
+  color: var(--color-text-gray-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-label);
+}
+
+.project-status-badge--awaiting-installation {
+  border-color: var(--color-status-waiting-customer-light);
+  background-color: var(--color-status-waiting-customer-light);
+  color: var(--color-status-waiting-customer);
+}
+
+.project-status-badge--awaiting-approval {
+  border-color: var(--color-status-under-review-light);
+  background-color: var(--color-status-under-review-light);
+  color: var(--color-status-under-review);
+}
+
+.project-status-badge--installation-schedule {
+  border-color: var(--color-status-pending-light);
+  background-color: var(--color-status-pending-light);
+  color: var(--color-status-pending);
+}
+
+.project-status-badge--installation-in-progress,
+.project-status-badge--in-progress {
+  border-color: var(--color-status-in-progress-light);
+  background-color: var(--color-status-in-progress-light);
+  color: var(--color-status-in-progress);
+}
+
+.project-status-badge--installed {
+  border-color: var(--color-success-light);
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.project-status-badge--completed {
+  border-color: var(--color-status-resolved-light);
+  background-color: var(--color-status-resolved-light);
+  color: var(--color-status-resolved);
+}
+
+.project-status-badge--cancelled {
+  border-color: var(--color-warning-light);
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}

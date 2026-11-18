@@ -51,6 +51,7 @@ export type CustomerTicket = {
   evaluate: number | null;
   evaluateComment: string | null;
   isEvaluated: boolean;
+  isAssignedToCurrentSupport?: boolean;
 };
 
 type TicketSummaryResponse = {
@@ -64,6 +65,11 @@ type TicketSummaryResponse = {
   evaluate: number | null;
   evaluateComment: string | null;
   isEvaluated: boolean;
+};
+
+type TicketAssignmentResponse = {
+  category: TicketCategory;
+  supportName: string;
 };
 
 export type TicketMessage = {
@@ -150,7 +156,10 @@ export async function evaluateTicket(
   });
 }
 
-export async function updateTicketStatus(ticketId: string, status: TicketStatus): Promise<void> {
+export async function updateTicketStatus(
+  ticketId: string,
+  status: TicketStatus,
+): Promise<TicketStatus> {
   const statusByApiKey: Record<TicketStatus, string> = {
     pending: "PENDING",
     under_review: "UNDER_REVIEW",
@@ -161,19 +170,49 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
   };
 
   const apiStatus = statusByApiKey[status];
-  await api.patch(`/support/tickets/${encodeURIComponent(ticketId)}/status`, { status: apiStatus });
+  const response = await api.patch<{ status: string }>(
+    `/support/tickets/${encodeURIComponent(ticketId)}/status`,
+    { status: apiStatus },
+  );
+  const updatedStatus = statusByApiValue[response.data.status];
+  if (!updatedStatus) {
+    throw new Error(`Unexpected ticket status returned by API: ${response.data.status}`);
+  }
+  return updatedStatus;
 }
 
-export async function updateTicketCategory(ticketId: string, category: TicketCategory): Promise <void> {
-    await api.patch(`/tickets/${encodeURIComponent(ticketId)}/category`, category);
+export async function resumeTicketAfterCustomerReply(
+  ticketId: string,
+): Promise<TicketStatus> {
+  const response = await api.patch<{ status: string }>(
+    `/tickets/${encodeURIComponent(ticketId)}/status`,
+  );
+  const updatedStatus = statusByApiValue[response.data.status];
+  if (!updatedStatus) {
+    throw new Error(`Unexpected ticket status returned by API: ${response.data.status}`);
+  }
+  return updatedStatus;
+}
+
+export async function assignTicket(
+  ticketId: string,
+  category: TicketCategory,
+): Promise<TicketAssignmentResponse> {
+  const response = await api.patch<TicketAssignmentResponse>(
+    `/support/tickets/${encodeURIComponent(ticketId)}/assign`,
+    { category },
+  );
+  return response.data;
 }
 
 export async function getTicketMessages(
   ticketId: string,
   page: number,
+  role: "CUSTOMER" | "SUPPORT",
 ): Promise<TicketMessagesPage> {
+  const basePath = role === "SUPPORT" ? "/support/tickets" : "/tickets";
   const response = await api.get<TicketMessagesPage>(
-    `/tickets/${encodeURIComponent(ticketId)}/messages`,
+    `${basePath}/${encodeURIComponent(ticketId)}/messages`,
     { params: { page } },
   );
   return response.data;
@@ -181,6 +220,14 @@ export async function getTicketMessages(
 
 export async function sendTicketMessage(ticketId: string, content: string): Promise<void> {
   const url = `/tickets/${encodeURIComponent(ticketId)}/messages`;
+  await api.post(url, { content });
+}
+
+export async function sendSupportTicketMessage(
+  ticketId: string,
+  content: string,
+): Promise<void> {
+  const url = `/support/tickets/${encodeURIComponent(ticketId)}/messages`;
   await api.post(url, { content });
 }
 
@@ -239,7 +286,15 @@ export function useCustomerTickets() {
     );
   };
 
-  return { tickets, error, loading, markTicketEvaluated };
+  const updateTicket = (updatedTicket: CustomerTicket) => {
+    setTickets((current) =>
+      current.map((ticket) =>
+        ticket.id === updatedTicket.id ? updatedTicket : ticket,
+      ),
+    );
+  };
+
+  return { tickets, error, loading, markTicketEvaluated, updateTicket };
 }
 
 export function useAllTickets() {
@@ -250,12 +305,18 @@ export function useAllTickets() {
   useEffect(() => {
     let active = true;
 
-    listTickets()
-      .then((data) => {
+    Promise.all([listTickets(), listSupportTickets()])
+      .then(([allTickets, supportTickets]) => {
         if (!active) {
           return;
         }
-        setTickets(data);
+        const ownedTicketIds = new Set(supportTickets.map((ticket) => ticket.id));
+        setTickets(
+          allTickets.map((ticket) => ({
+            ...ticket,
+            isAssignedToCurrentSupport: ownedTicketIds.has(ticket.id),
+          })),
+        );
         setError(null);
       })
       .catch(() => {
@@ -276,7 +337,15 @@ export function useAllTickets() {
     };
   }, []);
 
-  return { tickets, error, loading };
+  const updateTicket = (updatedTicket: CustomerTicket) => {
+    setTickets((current) =>
+      current.map((ticket) =>
+        ticket.id === updatedTicket.id ? updatedTicket : ticket,
+      ),
+    );
+  };
+
+  return { tickets, error, loading, updateTicket };
 }
 
 export function useSupportTickets() {

@@ -1,5 +1,6 @@
 package com.branch_master.ecovolt360.ticket.infrastructure.persistence;
 
+import com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
@@ -60,13 +61,79 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
 
     @Modifying(clearAutomatically = true)
     @Query("""
-        update Ticket t
-        set t.category = :category,
-        t.updatedAt = :updatedAt
-        where t.id = :id
-    """)
-    int updateCategory(@Param("id") UUID id,
-                          @Param("category") TicketCategory category,
-                          @Param("updatedAt") ZonedDateTime updatedAt
+            update Ticket t
+               set t.status = com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.IN_PROGRESS,
+                   t.updatedAt = :updatedAt
+             where t.id = :id
+               and t.customerId = :customerId
+               and t.status = com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.WAITING_CUSTOMER
+            """)
+    int resumeAfterCustomerReply(
+            @Param("id") UUID id,
+            @Param("customerId") UUID customerId,
+            @Param("updatedAt") ZonedDateTime updatedAt
     );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
+               set t.supportId = :supportId,
+                   t.category = :category,
+                   t.updatedAt = :updatedAt
+             where t.id = :ticketId
+               and (t.supportId is null or t.supportId = :supportId)
+               and t.status not in (:resolved, :closed)
+            """)
+    int assign(
+            @Param("ticketId") UUID ticketId,
+            @Param("supportId") UUID supportId,
+            @Param("category") TicketCategory category,
+            @Param("updatedAt") ZonedDateTime updatedAt,
+            @Param("resolved") TicketStatus resolved,
+            @Param("closed") TicketStatus closed
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
+               set t.updatedAt = :updatedAt
+             where t.id = :ticketId
+               and t.supportId = :supportId
+               and t.status not in (:resolved, :closed)
+            """)
+    int touchUpdatedAt(
+            @Param("ticketId") UUID ticketId,
+            @Param("supportId") UUID supportId,
+            @Param("updatedAt") ZonedDateTime updatedAt,
+            @Param("resolved") TicketStatus resolved,
+            @Param("closed") TicketStatus closed
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Query("""
+            update Ticket t
+               set t.category = :category,
+                   t.updatedAt = :updatedAt
+             where t.id = :id
+            """)
+    int updateCategory(
+            @Param("id") UUID id,
+            @Param("category") TicketCategory category,
+            @Param("updatedAt") ZonedDateTime updatedAt
+    );
+
+    @Query(""" 
+        select new com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO(
+            round(avg(t.evaluate), 1),
+            count(t.evaluate),
+            sum(case when t.evaluate = 1 then 1 else 0 end),
+            sum(case when t.evaluate = 2 then 1 else 0 end),
+            sum(case when t.evaluate = 3 then 1 else 0 end),
+            sum(case when t.evaluate = 4 then 1 else 0 end),
+            sum(case when t.evaluate = 5 then 1 else 0 end)
+          )
+          from Ticket t
+          where t.supportId = :id
+    """)
+    MetricsDTO findMetricsBySupportId(@Param("id") UUID supportId);
 }
