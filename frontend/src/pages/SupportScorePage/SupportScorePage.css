@@ -1,0 +1,70 @@
+.support-score-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.support-score-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    width: 24rem;
+    
+}
+.support-score-cards h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.support-score-cards p {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.support-score-cards-content{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    
+}
+
+.support-score-progress-header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.support-score-cards-header {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.support-score-cards-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.support-score-cards-header span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.support-score-cards-value {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.5rem
+}
+
+.support-score-cards-description{
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary)
+}
+

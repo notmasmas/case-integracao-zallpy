@@ -27,6 +27,9 @@ export default function Sidebar() {
           <li>
             <NavLink to={paths.support.tickets}>Chamados</NavLink>
           </li> 
+          <li>
+            <NavLink to={paths.support.score}>Avaliação</NavLink>
+          </li>
           </>
         ) : (
           <>

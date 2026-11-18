@@ -12,6 +12,7 @@ import SupportTicket from "./pages/SupportTicket/SupportTicket";
 import SupportPanelHome from "./pages/SupportPanelHome/SupportPanelHome";
 import CustomerPanelHome from "./pages/CustomerPanelHome/CustomerPanelHome";
 import TicketsQueue from "./pages/TicketsQueue/TicketsQueue";
+import SupportScorePage from "./pages/SupportScorePage/SupportScorePage";
 
 function App() {
   return (
@@ -42,6 +43,10 @@ function App() {
                 <Route
                   path={paths.support.tickets}
                   element={<TicketsQueue />}
+                />
+                <Route
+                  path={paths.support.score}
+                  element={<SupportScorePage />}
                 />
               </Route>
             </Route>
