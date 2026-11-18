@@ -1,0 +1,24 @@
+### 1) Login do gerente (o token deve trazer role=GERENTE)
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{managerEmail}}",
+  "password": "{{managerPassword}}"
+}
+
+> {% client.global.set("token", response.body.accessToken); %}
+
+### 2) Sessão: confirma que o token do gerente é aceito
+GET {{baseUrl}}/session
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("role do token é GERENTE", function () {
+        client.assert(response.body.role === "GERENTE", "role esperada GERENTE, veio " + response.body.role);
+    });
+%}
+
+### 3) Gerente não acessa rota de cliente (esperado: 403)
+GET {{baseUrl}}/tickets
+Authorization: Bearer {{token}}
