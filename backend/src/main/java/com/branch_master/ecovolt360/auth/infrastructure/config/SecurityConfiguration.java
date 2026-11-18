@@ -1,5 +1,6 @@
 package com.branch_master.ecovolt360.auth.infrastructure.config;
 
+import com.branch_master.ecovolt360.auth.application.exception.SessionExpiredException;
 import com.branch_master.ecovolt360.auth.application.port.TokenVerifier;
 import com.branch_master.ecovolt360.auth.infrastructure.security.JwtAuthenticationFilter;
 import com.branch_master.ecovolt360.auth.presentation.dto.ApiError;
@@ -37,8 +38,14 @@ public class SecurityConfiguration {
             TokenVerifier tokenVerifier,
             ObjectMapper objectMapper
     ) throws Exception {
-        AuthenticationEntryPoint authenticationEntryPoint = (request, response, authException) ->
-                write(response, objectMapper, HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED", UNAUTHORIZED_MESSAGE);
+        AuthenticationEntryPoint authenticationEntryPoint = (request, response, authException) -> {
+            if (authException.getCause() instanceof SessionExpiredException expired) {
+                write(response, objectMapper, HttpServletResponse.SC_UNAUTHORIZED,
+                        SessionExpiredException.CODE, expired.getMessage());
+                return;
+            }
+            write(response, objectMapper, HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED", UNAUTHORIZED_MESSAGE);
+        };
         AccessDeniedHandler accessDeniedHandler = (request, response, accessDeniedException) ->
                 write(response, objectMapper, HttpServletResponse.SC_FORBIDDEN, "FORBIDDEN", FORBIDDEN_MESSAGE);
 
@@ -57,6 +64,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/tickets", "/tickets/**").hasRole("CUSTOMER")
                         .requestMatchers("/support", "/support/**").hasRole("SUPPORT")
                         .requestMatchers(HttpMethod.GET, "/session").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/session/activity").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/session/activity").authenticated()
                         .requestMatchers(HttpMethod.POST, "/logout").authenticated()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/projects").hasRole("CUSTOMER")
