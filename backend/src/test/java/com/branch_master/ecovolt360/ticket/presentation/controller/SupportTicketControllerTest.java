@@ -2,28 +2,19 @@ package com.branch_master.ecovolt360.ticket.presentation.controller;
 
 import com.branch_master.ecovolt360.auth.application.dto.AuthenticatedUser;
 import com.branch_master.ecovolt360.auth.domain.entity.Role;
-import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import com.branch_master.ecovolt360.auth.presentation.exception.AccessExceptionHandler;
 import com.branch_master.ecovolt360.auth.presentation.security.CurrentUserArgumentResolver;
-import com.branch_master.ecovolt360.customer.domain.entity.Customer;
-import com.branch_master.ecovolt360.customer.domain.repository.CustomerRepository;
-import com.branch_master.ecovolt360.messages.application.service.MessageService;
-import com.branch_master.ecovolt360.messages.domain.entity.Message;
-import com.branch_master.ecovolt360.messages.domain.repository.MessageRepository;
-import com.branch_master.ecovolt360.support.domain.entity.Support;
-import com.branch_master.ecovolt360.support.domain.repository.SupportRepository;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketBodyStatusDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketDetailsDTO;
+import com.branch_master.ecovolt360.ticket.application.dto.TicketSummaryDTO;
+import com.branch_master.ecovolt360.ticket.application.exception.TicketAlreadyClosedException;
 import com.branch_master.ecovolt360.ticket.application.service.TicketService;
-import com.branch_master.ecovolt360.ticket.presentation.controller.CustomerTicketController;
-import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
-import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
-import com.branch_master.ecovolt360.ticket.domain.repository.TicketRepository;
 import com.branch_master.ecovolt360.ticket.presentation.exception.TicketExceptionHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
@@ -32,397 +23,134 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class SupportTicketControllerTest {
 
-    @Mock
-    private TicketRepository ticketRepository;
+    private static final UUID USER_ID = UUID.fromString("66666666-6666-6666-6666-666666666666");
+    private static final UUID TICKET_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
 
     @Mock
-    private CustomerRepository customerRepository;
-
-    @Mock
-    private MessageRepository messageRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private SupportRepository supportRepository;
+    private TicketService ticketService;
 
     private MockMvc mockMvc;
 
-    private final UUID userId = UUID.randomUUID();
-    private final UUID ticketId = UUID.randomUUID();
-    private Support support;
-
     @BeforeEach
     void setUp() {
-        TicketService ticketService = new TicketService(
-                ticketRepository,
-                customerRepository,
-                messageRepository,
-                userRepository,
-                supportRepository
-        );
-        MessageService messageService = new MessageService(
-                messageRepository,
-                ticketRepository,
-                customerRepository,
-                supportRepository
-        );
-
-        SupportTicketController controller = new SupportTicketController(ticketService, messageService);
-
         mockMvc = MockMvcBuilders
-                .standaloneSetup(controller)
-                .setControllerAdvice(new TicketExceptionHandler(), new AccessExceptionHandler())
+                .standaloneSetup(new SupportTicketController(ticketService))
                 .setCustomArgumentResolvers(new CurrentUserArgumentResolver())
+                .setControllerAdvice(new TicketExceptionHandler(), new AccessExceptionHandler())
                 .build();
-
-        support = new Support(userId);
-        support.setId(UUID.randomUUID());
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(new AuthenticatedUser(userId, Role.SUPPORT), null, List.of())
-        );
-    }
-
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
-
-    private Ticket ticket(UUID supportId, TicketStatus status) {
-        Ticket ticket = new Ticket(UUID.randomUUID(), UUID.randomUUID(), "Inversor", "Inversor apitando");
-        ticket.setId(ticketId);
-        ticket.setSupportId(supportId);
-        ticket.setStatus(status);
-        return ticket;
-    }
-
-    private String assignBody(String category) {
-        return """
-                { "category": "%s" }
-                """.formatted(category);
-    }
-
-    private String messageBody(String content) {
-        return """
-                { "content": "%s" }
-                """.formatted(content);
-    }
-
-    @Test
-    void shouldAssignTicketToAuthenticatedSupport() throws Exception {
-        Ticket assigned = ticket(support.getId(), TicketStatus.PENDING);
-        assigned.setCategory(TicketCategory.EQUIPMENT);
-
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.assign(eq(ticketId), eq(support.getId()), eq(TicketCategory.EQUIPMENT), any(ZonedDateTime.class)))
-                .thenReturn(1);
-        when(ticketRepository.findByIdAndSupportId(ticketId, support.getId())).thenReturn(Optional.of(assigned));
-
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("EQUIPMENT")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(ticketId.toString()))
-                .andExpect(jsonPath("$.category").value("EQUIPMENT"));
-    }
-
-    @Test
-    void shouldListMessagesForSupportTicket() throws Exception {
-        when(ticketRepository.findById(ticketId))
-                .thenReturn(Optional.of(ticket(UUID.randomUUID(), TicketStatus.PENDING)));
-        when(messageRepository.findByTicketId(ticketId)).thenReturn(List.of());
-
-        mockMvc.perform(get("/support/tickets/{ticketId}/messages", ticketId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.messages").isEmpty())
-                .andExpect(jsonPath("$.totalMessages").value(0));
-    }
-
-    @Test
-    void shouldResumeWaitingTicketWhenCustomerReplies() throws Exception {
-        UUID customerUserId = UUID.randomUUID();
-        Customer customer = new Customer(customerUserId);
-        customer.setId(UUID.randomUUID());
-        Ticket waitingTicket = ticket(support.getId(), TicketStatus.WAITING_CUSTOMER);
-        Ticket resumedTicket = ticket(support.getId(), TicketStatus.IN_PROGRESS);
-
-        when(customerRepository.findByUserId(customerUserId)).thenReturn(Optional.of(customer));
-        when(ticketRepository.findByIdAndCustomerId(ticketId, customer.getId()))
-                .thenReturn(Optional.of(waitingTicket), Optional.of(resumedTicket));
-        when(ticketRepository.resumeAfterCustomerReply(eq(ticketId), eq(customer.getId()), any(ZonedDateTime.class)))
-                .thenReturn(1);
-        when(messageRepository.findByTicketId(ticketId)).thenReturn(List.of());
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
-                        new AuthenticatedUser(customerUserId, Role.CUSTOMER),
+                        new AuthenticatedUser(USER_ID, Role.SUPPORT),
                         null,
                         List.of()
                 )
         );
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(new CustomerTicketController(new TicketService(
-                        ticketRepository,
-                        customerRepository,
-                        messageRepository,
-                        userRepository,
-                        supportRepository
-                )))
-                .setControllerAdvice(new TicketExceptionHandler(), new AccessExceptionHandler())
-                .setCustomArgumentResolvers(new CurrentUserArgumentResolver())
-                .build();
+    }
 
-        mockMvc.perform(patch("/tickets/{id}/status", ticketId))
+    @AfterEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
+    @Test
+    void shouldListAssignedSupportTickets() throws Exception {
+        when(ticketService.listSupportTickets(USER_ID)).thenReturn(List.of(summary("Meu chamado")));
+
+        mockMvc.perform(get("/support/tickets"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Meu chamado"));
+    }
+
+    @Test
+    void shouldListAllTickets() throws Exception {
+        when(ticketService.listAllTickets()).thenReturn(List.of(summary("Todos")));
+
+        mockMvc.perform(get("/support/tickets/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Todos"));
+    }
+
+    @Test
+    void shouldUpdateTicketStatus() throws Exception {
+        when(ticketService.updateStatus(eq(USER_ID), eq(TICKET_ID), any(TicketBodyStatusDTO.class)))
+                .thenReturn(new TicketDetailsDTO(
+                        TICKET_ID,
+                        "Meu chamado",
+                        "Descricao",
+                        null,
+                        TicketStatus.IN_PROGRESS,
+                        "Ana Suporte",
+                        List.of(),
+                        0,
+                        0,
+                        0,
+                        null,
+                        null,
+                        false,
+                        ZonedDateTime.of(2026, 11, 4, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo")),
+                        ZonedDateTime.of(2026, 11, 4, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+                ));
+
+        mockMvc.perform(patch("/support/tickets/{ticketId}/status", TICKET_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "status": "IN_PROGRESS"
+                                }
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
+    }
 
-        verify(ticketRepository).resumeAfterCustomerReply(
-                eq(ticketId),
-                eq(customer.getId()),
-                any(ZonedDateTime.class)
+    @Test
+    void shouldReturnConflictWhenClosedTicketCannotChangeStatus() throws Exception {
+        when(ticketService.updateStatus(eq(USER_ID), eq(TICKET_ID), any(TicketBodyStatusDTO.class)))
+                .thenThrow(new TicketAlreadyClosedException());
+
+        mockMvc.perform(patch("/support/tickets/{ticketId}/status", TICKET_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "status": "IN_PROGRESS"
+                                }
+                                """))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TICKET_ALREADY_CLOSED"))
+                .andExpect(jsonPath("$.message")
+                        .value("Chamado encerrado não pode ter o status alterado."));
+    }
+
+    private static TicketSummaryDTO summary(String title) {
+        return new TicketSummaryDTO(
+                TICKET_ID,
+                UUID.fromString("22222222-2222-2222-2222-222222222222"),
+                UUID.fromString("55555555-5555-5555-5555-555555555555"),
+                UUID.fromString("33333333-3333-3333-3333-333333333333"),
+                title,
+                "Descricao",
+                null,
+                TicketStatus.PENDING,
+                ZonedDateTime.of(2026, 11, 4, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo")),
+                "Ana Suporte",
+                null,
+                null,
+                false
         );
-        verify(ticketRepository, never()).updateStatus(
-                eq(ticketId),
-                any(TicketStatus.class),
-                any(ZonedDateTime.class),
-                any(UUID.class)
-        );
-    }
-
-    @Test
-    void shouldUpdateCategoryOfOwnTicket() throws Exception {
-        Ticket updated = ticket(support.getId(), TicketStatus.IN_PROGRESS);
-        updated.setCategory(TicketCategory.PAYMENT);
-
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.assign(eq(ticketId), eq(support.getId()), eq(TicketCategory.PAYMENT), any(ZonedDateTime.class)))
-                .thenReturn(1);
-        when(ticketRepository.findByIdAndSupportId(ticketId, support.getId())).thenReturn(Optional.of(updated));
-
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("PAYMENT")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(ticketId.toString()))
-                .andExpect(jsonPath("$.category").value("PAYMENT"));
-
-        verify(ticketRepository).findByIdAndSupportId(ticketId, support.getId());
-        verify(ticketRepository, never()).findById(any());
-    }
-
-    @Test
-    void shouldRejectAssignWhenTicketBelongsToAnotherSupport() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.assign(eq(ticketId), eq(support.getId()), eq(TicketCategory.PAYMENT), any(ZonedDateTime.class)))
-                .thenReturn(0);
-        when(ticketRepository.findById(ticketId))
-                .thenReturn(Optional.of(ticket(UUID.randomUUID(), TicketStatus.UNDER_REVIEW)));
-
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("PAYMENT")))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("TICKET_ALREADY_ASSIGNED"));
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenAssigningMissingTicket() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.assign(eq(ticketId), eq(support.getId()), eq(TicketCategory.OTHER), any(ZonedDateTime.class)))
-                .thenReturn(0);
-        when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());
-
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("OTHER")))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("TICKET_NOT_FOUND"));
-    }
-
-    @Test
-    void shouldRejectAssignWhenTicketIsClosed() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.assign(eq(ticketId), eq(support.getId()), eq(TicketCategory.OTHER), any(ZonedDateTime.class)))
-                .thenReturn(0);
-        when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticket(null, TicketStatus.CLOSED)));
-
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("OTHER")))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("TICKET_CLOSED"));
-    }
-
-    @Test
-    void shouldRejectAssignWithoutCategory() throws Exception {
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
-                .andExpect(jsonPath("$.fieldErrors.category").exists());
-
-        verifyNoInteractions(ticketRepository);
-    }
-
-    @Test
-    void shouldRejectAssignWithInvalidCategory() throws Exception {
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("NAO_EXISTE")))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("INVALID_REQUEST_BODY"));
-
-        verifyNoInteractions(ticketRepository);
-    }
-
-    @Test
-    void shouldReturnForbiddenWhenUserHasNoSupportRecord() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.empty());
-
-        mockMvc.perform(patch("/support/tickets/{ticketId}/assign", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(assignBody("OTHER")))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.code").value("FORBIDDEN"));
-    }
-
-    @Test
-    void shouldCreateMessageOnAssignedTicket() throws Exception {
-        UUID messageId = UUID.randomUUID();
-
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.touchUpdatedAt(eq(ticketId), eq(support.getId()), any(ZonedDateTime.class))).thenReturn(1);
-        when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> {
-            Message message = invocation.getArgument(0);
-            message.setId(messageId);
-            return message;
-        });
-
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("  Vamos verificar o inversor hoje.  ")))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/support/tickets/" + ticketId + "/messages/" + messageId))
-                .andExpect(jsonPath("$.senderUserId").value(userId.toString()))
-                .andExpect(jsonPath("$.role").value("SUPPORT"))
-                .andExpect(jsonPath("$.content").value("Vamos verificar o inversor hoje."));
-
-        ArgumentCaptor<ZonedDateTime> touchedAt = ArgumentCaptor.forClass(ZonedDateTime.class);
-        verify(ticketRepository).touchUpdatedAt(eq(ticketId), eq(support.getId()), touchedAt.capture());
-        ArgumentCaptor<Message> savedMessage = ArgumentCaptor.forClass(Message.class);
-        verify(messageRepository).save(savedMessage.capture());
-        assertEquals(touchedAt.getValue(), savedMessage.getValue().getCreatedAt());
-        verify(ticketRepository, never()).save(any(Ticket.class));
-    }
-
-    @Test
-    void shouldRejectMessageOnUnassignedTicket() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticket(null, TicketStatus.PENDING)));
-
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("Olá")))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.code").value("TICKET_NOT_ASSIGNED"));
-
-        verifyNoInteractions(messageRepository);
-    }
-
-    @Test
-    void shouldRejectMessageOnTicketOfAnotherSupport() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.findById(ticketId))
-                .thenReturn(Optional.of(ticket(UUID.randomUUID(), TicketStatus.IN_PROGRESS)));
-
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("Olá")))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.code").value("TICKET_NOT_ASSIGNED"));
-
-        verifyNoInteractions(messageRepository);
-    }
-
-    @Test
-    void shouldReturnNotFoundWhenMessagingMissingTicket() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());
-
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("Olá")))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("TICKET_NOT_FOUND"));
-    }
-
-    @Test
-    void shouldRejectMessageOnClosedTicket() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.findById(ticketId))
-                .thenReturn(Optional.of(ticket(support.getId(), TicketStatus.RESOLVED)));
-
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("Olá")))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("TICKET_CLOSED"));
-
-        verifyNoInteractions(messageRepository);
-    }
-
-    @Test
-    void shouldRejectBlankMessage() throws Exception {
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("   ")))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
-                .andExpect(jsonPath("$.fieldErrors.content").exists());
-
-        verifyNoInteractions(messageRepository);
-    }
-
-    @Test
-    void shouldRejectMessageLongerThan150Characters() throws Exception {
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("a".repeat(151))))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
-
-        verifyNoInteractions(messageRepository);
-    }
-
-    @Test
-    void shouldAccept150CharactersIgnoringSurroundingSpaces() throws Exception {
-        when(supportRepository.findByUserId(userId)).thenReturn(Optional.of(support));
-        when(ticketRepository.touchUpdatedAt(eq(ticketId), eq(support.getId()), any(ZonedDateTime.class))).thenReturn(1);
-        when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        mockMvc.perform(post("/support/tickets/{ticketId}/messages", ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(messageBody("   " + "a".repeat(150) + "   ")))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.content").value("a".repeat(150)));
     }
 }
