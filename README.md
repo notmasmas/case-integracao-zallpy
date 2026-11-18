@@ -19,6 +19,7 @@ Este repositório refere-se ao desenvolvimento do **Portal do Cliente** para o p
  - [Escolha de fatia](#escolha-de-fatia)
  - [Tech Stack](#tech-stack)
  - [Instalação](#instalação)
+ - [Gerente pré-cadastrado](#gerente-pré-cadastrado)
  - [Iniciar uma tarefa](#iniciar-uma-tarefa)
  - [Equipe](#equipe)
 
@@ -72,6 +73,26 @@ Este repositório refere-se ao desenvolvimento do **Portal do Cliente** para o p
   cd backend
   ./mvnw spring-boot:run
 ```
+
+## Gerente pré-cadastrado
+
+O usuário gerente (role `GERENTE`) não tem tela nem endpoint de cadastro. Ele é criado quando o backend sobe, a partir de variáveis de ambiente, sem nenhuma senha no repositório.
+
+Defina no `backend/.env` (local) ou nas variáveis do ambiente (QA, produção):
+
+```properties
+MANAGER_NAME=Gerente Teste
+MANAGER_EMAIL=gerente@ecovolt.com
+MANAGER_PASSWORD=<defina uma senha>
+MANAGER_CPF=<11 dígitos, único na tabela users>
+```
+
+Depois suba o backend (`./mvnw spring-boot:run`). No log aparece `Gerente pré-cadastrado criado`.
+
+- Subir de novo não duplica: se o e-mail já existe, nada é alterado (inclusive a senha).
+- Se alguma variável `MANAGER_*` estiver vazia, o cadastro é ignorado e a aplicação sobe normalmente.
+- O `MANAGER_CPF` não pode ser de outro usuário, senão a subida falha por CPF duplicado.
+- Para trocar a senha de um gerente já criado, altere o registro diretamente no banco do ambiente.
 
 ## Iniciar uma tarefa
 
