@@ -11,5 +11,7 @@ public interface SpringDataUserAccountRepository
 
     Optional<User> findByCpf(String cpf);
 
+    boolean existsByEmail(String email);
+
     boolean existsByEmailAndIdNot(String email, UUID id);
 }
