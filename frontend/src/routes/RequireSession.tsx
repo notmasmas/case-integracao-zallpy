@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import api from "../api/api";
+import InactivityMonitor from "../components/InactivityMonitor";
 import { useAuth } from "../context/AuthContext";
 import { clearSession, expiredSessionLoginPath, type UserRole } from "./routes";
 import "./RequireSession.css";
@@ -85,5 +86,10 @@ export default function RequireSession() {
     );
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <InactivityMonitor />
+      <Outlet />
+    </>
+  );
 }
