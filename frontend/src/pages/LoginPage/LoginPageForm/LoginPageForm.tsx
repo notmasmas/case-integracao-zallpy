@@ -62,12 +62,24 @@ function LoginPageForm() {
       });
       navigate(homePath(response.data.role));
     } catch (error) {
-      const offline = axios.isAxiosError(error) && !error.response;
+      const response = axios.isAxiosError(error) ? error.response : undefined;
+      const offline = axios.isAxiosError(error) && !response;
+      const serverError = !!response && response.status >= 500;
+
+      if (offline || serverError) {
+        toaster.create({
+          title: "Erro ao entrar",
+          description: offline
+            ? "Não foi possível conectar ao servidor."
+            : "Não foi possível realizar o login no momento. Tente novamente ou entre em contato com o suporte se o problema persistir.",
+          type: "error",
+        });
+        return;
+      }
+
       toaster.create({
         title: "Login inválido",
-        description: offline
-          ? "Não foi possível conectar ao servidor."
-          : "E-mail ou senha inválidos.",
+        description: "E-mail ou senha inválidos.",
         type: "error",
       });
     }
