@@ -3,6 +3,7 @@ import "./App.css";
 
 import PanelBase from "./pages/PanelBase/PanelBase";
 import Login from "./pages/LoginPage/LoginPage";
+import LandingPage from "./pages/LandingPage/LandingPage";
 import { AuthProvider } from "./context/AuthContext";
 import { paths } from "./routes/routes";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
@@ -18,6 +19,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path={paths.landing} element={<LandingPage />} />
           <Route path={paths.login} element={<Login />} />
           <Route path={paths.registration} element={<RegistrationPage />} />
           <Route element={<RequireSession />}>

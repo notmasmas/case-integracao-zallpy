@@ -1,5 +1,6 @@
 package com.branch_master.ecovolt360.ticket.infrastructure.persistence;
 
+import com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
@@ -120,4 +121,19 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
             @Param("category") TicketCategory category,
             @Param("updatedAt") ZonedDateTime updatedAt
     );
+
+    @Query(""" 
+        select new com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO(
+            round(avg(t.evaluate), 1),
+            count(t.evaluate),
+            sum(case when t.evaluate = 1 then 1 else 0 end),
+            sum(case when t.evaluate = 2 then 1 else 0 end),
+            sum(case when t.evaluate = 3 then 1 else 0 end),
+            sum(case when t.evaluate = 4 then 1 else 0 end),
+            sum(case when t.evaluate = 5 then 1 else 0 end)
+          )
+          from Ticket t
+          where t.supportId = :id
+    """)
+    MetricsDTO findMetricsBySupportId(@Param("id") UUID supportId);
 }
