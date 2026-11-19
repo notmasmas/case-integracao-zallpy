@@ -3,6 +3,8 @@ import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import api from "../api/api";
 import InactivityMonitor from "../components/InactivityMonitor";
+import { ACTIVITY_REPORT_INTERVAL_MS } from "../config/inactivity";
+import { useSessionActivityReporter } from "../hooks/useSessionActivityReporter";
 import { useAuth } from "../context/AuthContext";
 import { clearSession, sessionEndedLoginPath, type UserRole } from "./routes";
 import "./RequireSession.css";
@@ -15,6 +17,7 @@ function isUserRole(value: string): value is UserRole {
 
 export default function RequireSession() {
   const { session, endedLoginPath, setSession, endSessionByInactivity } = useAuth();
+  const reportActivity = useSessionActivityReporter(ACTIVITY_REPORT_INTERVAL_MS);
   const [status, setStatus] = useState<SessionStatus>("checking");
   const [attempt, setAttempt] = useState(0);
   const sessionRef = useRef(session);
@@ -90,7 +93,7 @@ export default function RequireSession() {
 
   return (
     <>
-      <InactivityMonitor onTimeout={endSessionByInactivity} />
+      <InactivityMonitor onTimeout={endSessionByInactivity} onActivity={reportActivity} />
       <Outlet />
     </>
   );
