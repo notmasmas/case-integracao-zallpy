@@ -23,12 +23,12 @@ export const expiredSessionSearch = {
   value: "expirada",
 } as const;
 
-export type SessionEndReason = "expirada" | "inatividade";
+export type SessionEndReason = "expirada" | "inatividade" | "ausente";
 
 export function isSessionEndReason(
   value: string | null,
 ): value is SessionEndReason {
-  return value === "expirada" || value === "inatividade";
+  return value === "expirada" || value === "inatividade" || value === "ausente";
 }
 
 export function sessionEndedLoginPath(reason: SessionEndReason) {
