@@ -14,7 +14,7 @@ function isUserRole(value: string): value is UserRole {
 }
 
 export default function RequireSession() {
-  const { session, endedLoginPath, setSession } = useAuth();
+  const { session, endedLoginPath, setSession, endSessionByInactivity } = useAuth();
   const [status, setStatus] = useState<SessionStatus>("checking");
   const [attempt, setAttempt] = useState(0);
   const sessionRef = useRef(session);
@@ -90,7 +90,7 @@ export default function RequireSession() {
 
   return (
     <>
-      <InactivityMonitor />
+      <InactivityMonitor onTimeout={endSessionByInactivity} />
       <Outlet />
     </>
   );
