@@ -103,6 +103,19 @@ class JwtTokenVerifierTest {
     }
 
     @Test
+    void shouldReturnGerenteRoleWhenTokenIsFromManager() {
+        UUID userId = UUID.fromString("22222222-2222-2222-2222-222222222222");
+        String token = tokenIssuer.issue(userId, Role.GERENTE, 0);
+        User user = mock(User.class);
+        when(user.getTokenVersion()).thenReturn(0);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        var authenticated = tokenVerifier.verify(token);
+
+        assertEquals(Role.GERENTE, authenticated.role());
+    }
+
+    @Test
     void shouldRejectExpiredToken() {
         JwtTokenIssuer expiredIssuer = new JwtTokenIssuer(SECRET, 0);
         UUID userId = UUID.randomUUID();

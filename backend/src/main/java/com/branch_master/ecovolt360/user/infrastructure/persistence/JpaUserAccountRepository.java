@@ -22,6 +22,11 @@ public class JpaUserAccountRepository implements UserRepository {
     }
 
     @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
+    }
+
+    @Override
     public boolean existsByEmailAndIdNot(String email, UUID id) {
         return repository.existsByEmailAndIdNot(email, id);
     }
