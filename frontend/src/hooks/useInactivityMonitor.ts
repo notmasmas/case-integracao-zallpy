@@ -17,6 +17,7 @@ export const DEFAULT_CHECK_INTERVAL_MS = 15_000;
 export type InactivityMonitorOptions = {
   timeoutMs: number;
   onTimeout: () => void;
+  onActivity?: () => void;
   enabled?: boolean;
   checkIntervalMs?: number;
 };
@@ -29,6 +30,9 @@ const LISTENER_OPTIONS: AddEventListenerOptions = { capture: true, passive: true
  * component remounts or one of `enabled`, `timeoutMs`, `checkIntervalMs`
  * changes. API requests do not count as activity.
  *
+ * `onActivity` is called for each interaction that passes the throttle, at
+ * most once per `ACTIVITY_THROTTLE_MS`.
+ *
  * Elapsed time is measured from a timestamp (not a single long timer) and is
  * re-checked when the tab becomes visible, because browsers throttle timers in
  * background tabs.
@@ -36,6 +40,7 @@ const LISTENER_OPTIONS: AddEventListenerOptions = { capture: true, passive: true
 export function useInactivityMonitor({
   timeoutMs,
   onTimeout,
+  onActivity,
   enabled = true,
   checkIntervalMs = DEFAULT_CHECK_INTERVAL_MS,
 }: InactivityMonitorOptions): void {
@@ -43,6 +48,8 @@ export function useInactivityMonitor({
   // countdown nor re-registers listeners.
   const onTimeoutRef = useRef(onTimeout);
   onTimeoutRef.current = onTimeout;
+  const onActivityRef = useRef(onActivity);
+  onActivityRef.current = onActivity;
 
   const lastActivityAtRef = useRef(0);
   const firedRef = useRef(false);
@@ -61,6 +68,7 @@ export function useInactivityMonitor({
         return;
       }
       lastActivityAtRef.current = now;
+      onActivityRef.current?.();
     };
 
     const check = () => {

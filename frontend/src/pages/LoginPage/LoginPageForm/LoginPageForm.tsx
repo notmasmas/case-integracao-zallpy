@@ -9,12 +9,34 @@ import { useAuth } from "../../../context/AuthContext";
 import {
   expiredSessionSearch,
   homePath,
+  isSessionEndReason,
   paths,
+  type SessionEndReason,
   type UserRole,
 } from "../../../routes/routes";
 
 // Texto oficial do CA8 que é falha no serviço de autenticação
 const LOGIN_FAILED_MESSAGE = "Não foi possível realizar o login";
+
+const SESSION_END_TOASTS = {
+  expirada: {
+    title: "Sessão inválida ou expirada",
+    description: "Faça login novamente.",
+    type: "error",
+  },
+  inatividade: {
+    title: "Sessão encerrada por inatividade",
+    description: "Faça login novamente para continuar.",
+    type: "info",
+  },
+  ausente: {
+    title: "Por favor realize o login",
+    type: "info",
+  },
+} satisfies Record<
+  SessionEndReason,
+  { title: string; description?: string; type: "error" | "info" }
+>;
 
 type LoginPageFormProps = {
   email: string;
@@ -31,17 +53,14 @@ function LoginPageForm() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get(expiredSessionSearch.key) !== expiredSessionSearch.value) {
+    const reason = params.get(expiredSessionSearch.key);
+    if (!isSessionEndReason(reason)) {
       return;
     }
     params.delete(expiredSessionSearch.key);
     const query = params.toString();
     window.history.replaceState(null, "", query ? `${paths.login}?${query}` : paths.login);
-    toaster.create({
-      title: "Sessão inválida ou expirada",
-      description: "Faça login novamente.",
-      type: "error",
-    });
+    toaster.create(SESSION_END_TOASTS[reason]);
   }, []);
 
   const handleSubmit = async (formData: LoginPageFormProps): Promise<void> => {
