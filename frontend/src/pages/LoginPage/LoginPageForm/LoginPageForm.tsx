@@ -1,3 +1,4 @@
+
 import { Box, Button, Checkbox, Field, Input } from "@chakra-ui/react";
 import axios from "axios";
 import api from "../../../api/api";
@@ -67,6 +68,7 @@ function LoginPageForm() {
     if (isSubmitting) {
       return;
     }
+
     if (!formData.email.trim() || !formData.password.trim()) {
       toaster.create({
         title: "Login inválido",
@@ -75,24 +77,35 @@ function LoginPageForm() {
       });
       return;
     }
+
     setIsSubmitting(true);
+
     try {
       const response = await api.post<{
         role: UserRole;
         name: string;
         accessToken: string;
       }>("/login", formData);
+
       setSession({
         role: response.data.role,
         name: response.data.name,
         accessToken: response.data.accessToken,
       });
+
       navigate(homePath(response.data.role));
+
     } catch (error) {
-      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
-      // 400 e 401: a API respondeu e recusou as credenciais.
+      const response = axios.isAxiosError(error)
+        ? error.response
+        : undefined;
+
+      const status = response?.status;
+      const offline = axios.isAxiosError(error) && !response;
+      const serverError = status !== undefined && status >= 500;
       const credentialsRejected = status === 400 || status === 401;
 
+      // 400 e 401: credenciais recusadas pela API
       if (credentialsRejected) {
         toaster.create({
           title: "Login inválido",
@@ -102,12 +115,34 @@ function LoginPageForm() {
         return;
       }
 
-      // 5xx, sem resposta ou qualquer outra falha não é erro de credencial!!
+      // Sem resposta: problema de conexão
+      if (offline) {
+        toaster.create({
+          title: "Erro ao entrar",
+          description: "Não foi possível conectar ao servidor.",
+          type: "error",
+        });
+        return;
+      }
+
+      // 5xx: falha no servidor ou serviço de autenticação
+      if (serverError) {
+        toaster.create({
+          title: "Erro ao entrar",
+          description:
+            "Não foi possível realizar o login no momento. Tente novamente ou entre em contato com o suporte se o problema persistir.",
+          type: "error",
+        });
+        return;
+      }
+
+      // Demais erros: mensagem genérica definida pelo CA8
       toaster.create({
         title: "Erro ao entrar",
         description: LOGIN_FAILED_MESSAGE,
         type: "error",
       });
+
     } finally {
       setIsSubmitting(false);
     }
@@ -137,6 +172,7 @@ function LoginPageForm() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Field.Root>
+
           <Field.Root>
             <Field.Label className="login-form__label">Senha</Field.Label>
             <Input
@@ -148,6 +184,7 @@ function LoginPageForm() {
           </Field.Root>
         </form>
       </Box>
+
       <Box className="login-form__options">
         <Box className="login-form__options-row">
           <Box>
@@ -161,6 +198,7 @@ function LoginPageForm() {
               </Checkbox.Label>
             </Checkbox.Root>
           </Box>
+
           <Box>
             <a className="login-form__link" href="#">
               Esqueceu sua senha?
@@ -168,6 +206,7 @@ function LoginPageForm() {
           </Box>
         </Box>
       </Box>
+
       <Box className="login-form__actions">
         <Box>
           <Button
@@ -181,6 +220,7 @@ function LoginPageForm() {
           </Button>
         </Box>
       </Box>
+
       <Box className="login-form__footer">
         <Link className="login-form__link" to={paths.registration}>
           Primeiro acesso?
