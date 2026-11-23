@@ -87,6 +87,35 @@ class CustomerExceptionHandlerTest {
                 .andExpect(jsonPath("$['fieldErrors']['user.password']").exists());
     }
 
+    @Test
+    void shouldReturnFieldErrorsWithFriendlyMessagesWithoutTechnicalDetails() throws Exception {
+        String invalid = validBody()
+                .replace("98765432100", "123")
+                .replace("cliente@email.com", "abc")
+                .replace("Cliente de teste", "");
+
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalid))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$['fieldErrors']['user.cpf']").value("O CPF deve conter 11 dígitos, apenas números."))
+                .andExpect(jsonPath("$['fieldErrors']['user.email']").value("Informe um e-mail válido."))
+                .andExpect(jsonPath("$['fieldErrors']['user.name']").value("Campo obrigatório."))
+                .andExpect(jsonPath("$.trace").doesNotExist())
+                .andExpect(jsonPath("$.errors").doesNotExist());
+    }
+
+    @Test
+    void shouldReturnApiErrorWhenBodyIsNotValidJson() throws Exception {
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ isto nao e json"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_REQUEST_BODY"))
+                .andExpect(jsonPath("$.trace").doesNotExist());
+    }
+
     private static String validBody() {
         return """
                 {

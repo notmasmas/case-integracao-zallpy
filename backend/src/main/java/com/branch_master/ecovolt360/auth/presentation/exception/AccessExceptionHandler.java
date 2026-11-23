@@ -2,6 +2,7 @@ package com.branch_master.ecovolt360.auth.presentation.exception;
 
 import com.branch_master.ecovolt360.auth.application.exception.ForbiddenException;
 import com.branch_master.ecovolt360.auth.application.exception.InvalidTokenException;
+import com.branch_master.ecovolt360.auth.application.exception.SessionExpiredException;
 import com.branch_master.ecovolt360.auth.presentation.dto.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,13 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class AccessExceptionHandler {
+
+    @ExceptionHandler(SessionExpiredException.class)
+    public ResponseEntity<ApiError> handleSessionExpired(SessionExpiredException exception) {
+        ApiError error = new ApiError(SessionExpiredException.CODE, exception.getMessage(), Map.of());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ApiError> handleInvalidToken(InvalidTokenException exception) {

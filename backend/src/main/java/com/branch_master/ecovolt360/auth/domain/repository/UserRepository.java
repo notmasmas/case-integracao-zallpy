@@ -2,6 +2,7 @@ package com.branch_master.ecovolt360.auth.domain.repository;
 
 import com.branch_master.ecovolt360.auth.domain.entity.User;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +14,7 @@ public interface UserRepository {
     Optional<User> findById(UUID id);
 
     void save(User user);
+
+    /** Atualiza apenas a última atividade, sem sobrescrever os demais campos do usuário. */
+    void registerActivity(UUID userId, Instant now);
 }

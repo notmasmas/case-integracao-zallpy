@@ -5,4 +5,8 @@ public class InvalidTokenException extends RuntimeException {
     public InvalidTokenException() {
         super("Sessão inválida ou expirada. Faça login novamente.");
     }
+
+    protected InvalidTokenException(String message) {
+        super(message);
+    }
 }

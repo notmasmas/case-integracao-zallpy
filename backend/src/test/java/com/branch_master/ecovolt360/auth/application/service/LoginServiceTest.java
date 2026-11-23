@@ -14,6 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -107,5 +111,28 @@ class LoginServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(InvalidTokenException.class, () -> loginService.logout(userId));
+    }
+
+    @Test
+    void shouldStartInactivityControlOnLogin() {
+        Instant now = Instant.parse("2026-11-17T12:00:00Z");
+        LoginService service = new LoginService(
+                userRepository, passwordVerifier, tokenIssuer,
+                Duration.ofMinutes(15), Clock.fixed(now, ZoneOffset.UTC));
+        UUID userId = UUID.fromString("22222222-2222-2222-2222-222222222222");
+        User user = mock(User.class);
+        when(user.getId()).thenReturn(userId);
+        when(user.getName()).thenReturn("Suporte de teste");
+        when(user.getRole()).thenReturn(Role.SUPPORT);
+        when(user.getPassword()).thenReturn("stored-hash");
+        when(user.getTokenVersion()).thenReturn(4);
+        when(userRepository.findByEmail("suporte@example.com")).thenReturn(Optional.of(user));
+        when(passwordVerifier.matches("senhaTeste", "stored-hash")).thenReturn(true);
+        when(tokenIssuer.issue(userId, Role.SUPPORT, 4)).thenReturn("support-token");
+
+        service.login("suporte@example.com", "senhaTeste");
+
+        verify(user).startSession(Duration.ofMinutes(15), now);
+        verify(userRepository).save(user);
     }
 }

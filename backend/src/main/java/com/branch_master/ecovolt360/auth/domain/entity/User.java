@@ -1,4 +1,6 @@
 package com.branch_master.ecovolt360.auth.domain.entity;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 import jakarta.persistence.*;
 
@@ -36,6 +38,9 @@ public class  User {
     @Column(name = "token_version", nullable = false)
     private int tokenVersion = 0;
 
+    @Column(name = "last_activity_at")
+    private Instant lastActivityAt;
+
     public UUID getId() {
         return id;
     }
@@ -56,8 +61,31 @@ public class  User {
         return tokenVersion;
     }
 
+    public Instant getLastActivityAt() {
+        return lastActivityAt;
+    }
+
     public void incrementTokenVersion() {
         this.tokenVersion++;
+    }
+
+    /**
+     * A sessão está inativa quando não há atividade registrada ou quando o limite de
+     * inatividade foi atingido (exatamente no limite já conta como expirada).
+     */
+    public boolean isIdleFor(Duration limit, Instant now) {
+        return lastActivityAt == null || !now.isBefore(lastActivityAt.plus(limit));
+    }
+
+    /**
+     * Inicia uma nova sessão no login. Se havia uma sessão inativa, invalida os tokens
+     * antigos para que não voltem a valer quando a atividade for reiniciada.
+     */
+    public void startSession(Duration limit, Instant now) {
+        if (isIdleFor(limit, now)) {
+            incrementTokenVersion();
+        }
+        this.lastActivityAt = now;
     }
 
     protected  User() {

@@ -1,5 +1,6 @@
 package com.branch_master.ecovolt360.ticket.infrastructure.persistence;
 
+import com.branch_master.ecovolt360.ticket.application.dto.MetricsDTO;
 import com.branch_master.ecovolt360.ticket.domain.entity.Ticket;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketCategory;
 import com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus;
@@ -96,5 +97,10 @@ public class JpaTicketRepository implements TicketRepository {
     @Override
     public int updateCategory(UUID ticketId, TicketCategory category, ZonedDateTime updatedAt) {
         return repository.updateCategory(ticketId, category, updatedAt);
+    }
+
+    @Override
+    public MetricsDTO findMetricsBySupportId(UUID supportId) {
+        return repository.findMetricsBySupportId(supportId);
     }
 }

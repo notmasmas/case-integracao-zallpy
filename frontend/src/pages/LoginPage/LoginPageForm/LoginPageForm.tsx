@@ -1,3 +1,4 @@
+
 import { Box, Button, Checkbox, Field, Input } from "@chakra-ui/react";
 import axios from "axios";
 import api from "../../../api/api";
@@ -13,6 +14,9 @@ import {
   type UserRole,
 } from "../../../routes/routes";
 
+// Texto oficial do CA8 que é falha no serviço de autenticação
+const LOGIN_FAILED_MESSAGE = "Não foi possível realizar o login";
+
 type LoginPageFormProps = {
   email: string;
   password: string;
@@ -24,6 +28,7 @@ function LoginPageForm() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -32,7 +37,11 @@ function LoginPageForm() {
     }
     params.delete(expiredSessionSearch.key);
     const query = params.toString();
-    window.history.replaceState(null, "", query ? `${paths.login}?${query}` : paths.login);
+    window.history.replaceState(
+      null,
+      "",
+      query ? `${paths.login}?${query}` : paths.login
+    );
     toaster.create({
       title: "Sessão inválida ou expirada",
       description: "Faça login novamente.",
@@ -41,6 +50,10 @@ function LoginPageForm() {
   }, []);
 
   const handleSubmit = async (formData: LoginPageFormProps): Promise<void> => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (!formData.email.trim() || !formData.password.trim()) {
       toaster.create({
         title: "Login inválido",
@@ -49,39 +62,74 @@ function LoginPageForm() {
       });
       return;
     }
+
+    setIsSubmitting(true);
+
     try {
       const response = await api.post<{
         role: UserRole;
         name: string;
         accessToken: string;
       }>("/login", formData);
+
       setSession({
         role: response.data.role,
         name: response.data.name,
         accessToken: response.data.accessToken,
       });
-      navigate(homePath(response.data.role));
-    } catch (error) {
-      const response = axios.isAxiosError(error) ? error.response : undefined;
-      const offline = axios.isAxiosError(error) && !response;
-      const serverError = !!response && response.status >= 500;
 
-      if (offline || serverError) {
+      navigate(homePath(response.data.role));
+
+    } catch (error) {
+      const response = axios.isAxiosError(error)
+        ? error.response
+        : undefined;
+
+      const status = response?.status;
+      const offline = axios.isAxiosError(error) && !response;
+      const serverError = status !== undefined && status >= 500;
+      const credentialsRejected = status === 400 || status === 401;
+
+      // 400 e 401: credenciais recusadas pela API
+      if (credentialsRejected) {
         toaster.create({
-          title: "Erro ao entrar",
-          description: offline
-            ? "Não foi possível conectar ao servidor."
-            : "Não foi possível realizar o login no momento. Tente novamente ou entre em contato com o suporte se o problema persistir.",
+          title: "Login inválido",
+          description: "E-mail ou senha inválidos.",
           type: "error",
         });
         return;
       }
 
+      // Sem resposta: problema de conexão
+      if (offline) {
+        toaster.create({
+          title: "Erro ao entrar",
+          description: "Não foi possível conectar ao servidor.",
+          type: "error",
+        });
+        return;
+      }
+
+      // 5xx: falha no servidor ou serviço de autenticação
+      if (serverError) {
+        toaster.create({
+          title: "Erro ao entrar",
+          description:
+            "Não foi possível realizar o login no momento. Tente novamente ou entre em contato com o suporte se o problema persistir.",
+          type: "error",
+        });
+        return;
+      }
+
+      // Demais erros: mensagem genérica definida pelo CA8
       toaster.create({
-        title: "Login inválido",
-        description: "E-mail ou senha inválidos.",
+        title: "Erro ao entrar",
+        description: LOGIN_FAILED_MESSAGE,
         type: "error",
       });
+
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -109,6 +157,7 @@ function LoginPageForm() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Field.Root>
+
           <Field.Root>
             <Field.Label className="login-form__label">Senha</Field.Label>
             <Input
@@ -120,6 +169,7 @@ function LoginPageForm() {
           </Field.Root>
         </form>
       </Box>
+
       <Box className="login-form__options">
         <Box className="login-form__options-row">
           <Box>
@@ -133,6 +183,7 @@ function LoginPageForm() {
               </Checkbox.Label>
             </Checkbox.Root>
           </Box>
+
           <Box>
             <a className="login-form__link" href="#">
               Esqueceu sua senha?
@@ -140,17 +191,21 @@ function LoginPageForm() {
           </Box>
         </Box>
       </Box>
+
       <Box className="login-form__actions">
         <Box>
           <Button
             form="login-form"
             type="submit"
             className="login-form__submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
           >
             Entrar
           </Button>
         </Box>
       </Box>
+
       <Box className="login-form__footer">
         <Link className="login-form__link" to={paths.registration}>
           Primeiro acesso?
