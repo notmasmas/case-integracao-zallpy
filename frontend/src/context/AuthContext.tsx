@@ -15,13 +15,16 @@ import {
   loadSession,
   paths,
   saveSession,
+  sessionEndedLoginPath,
   type Session,
 } from "../routes/routes";
 
 type AuthContextValue = {
   session: Session | null;
+  endedLoginPath: string | null;
   setSession: (session: Session) => void;
   logout: () => Promise<void>;
+  endSessionByInactivity: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -29,17 +32,28 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [session, setSessionState] = useState<Session | null>(() => loadSession());
+  const [endedLoginPath, setEndedLoginPath] = useState<string | null>(null);
 
-  const endSession = useCallback(() => {
-    clearSession();
-    setSessionState(null);
-    navigate(paths.login, { replace: true });
-  }, [navigate]);
+  // endedLoginPath is set in the same tick as the session, so RequireSession,
+  // which may render before the route changes, redirects to the same target.
+  const endSession = useCallback(
+    (target: string = paths.login) => {
+      clearSession();
+      setEndedLoginPath(target);
+      setSessionState(null);
+      navigate(target, { replace: true });
+    },
+    [navigate],
+  );
 
   const logout = useCallback(async () => {
     try {
       await api.post("/logout");
       endSession();
+      toaster.create({
+        title: "Logout realizado com sucesso",
+        type: "success",
+      });
     } catch (error) {
       const unauthorized = axios.isAxiosError(error) && error.response?.status === 401;
       if (unauthorized) {
@@ -57,16 +71,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [endSession]);
 
+  const endSessionByInactivity = useCallback(() => {
+    // Read before clearSession(): the request interceptor runs later and
+    // would find no stored token.
+    const token = loadSession()?.accessToken;
+    if (token) {
+      void api
+        .post("/logout", undefined, {
+          skipSessionRedirect: true,
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .catch(() => {
+          // Best effort: the backend already rejects this token for
+          // inactivity, and the next login issues a new one.
+        });
+    }
+    endSession(sessionEndedLoginPath("inatividade"));
+  }, [endSession]);
+
   const value = useMemo(
     () => ({
       session,
+      endedLoginPath,
       setSession: (next: Session) => {
         saveSession(next);
+        setEndedLoginPath(null);
         setSessionState(next);
       },
       logout,
+      endSessionByInactivity,
     }),
-    [session, logout],
+    [session, endedLoginPath, logout, endSessionByInactivity],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
