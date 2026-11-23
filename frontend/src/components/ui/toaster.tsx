@@ -33,6 +33,7 @@ export function Toaster() {
                 color: "var(--color-text-primary)",
                 padding: "var(--space-12) var(--space-16)",
                 minWidth: "17.5rem",
+                maxWidth: "22rem",
               }}
             >
               <strong style={{ color: accentColor }}>{toast.title}</strong>
