@@ -39,7 +39,7 @@ export const supportPanelScore : SupportPanelScore[] = [
   },
   {
     id: "3",
-    title:"Avaliados",
+    title:"Aguardando",
     icon: FaQuestionCircle,
     value: 3,
     complement: "chamados",
@@ -47,7 +47,7 @@ export const supportPanelScore : SupportPanelScore[] = [
   },
   {
     id: "4",
-    title: "Últmos 30 dias",    
+    title: "Mês atual",    
     icon: LuCalendar,
     value: 0,
     complement: "avaliados",
@@ -58,11 +58,11 @@ export const supportPanelScore : SupportPanelScore[] = [
 export const supportPanelScoreProgress : SupportPanelScoreProgress = 
     {
         id: "1",
-        "scoreAverage": 3.3,
+        "scoreAverage": 15,
         "totalAmount": 3,
         "totalOne": 1,
         "totalTwo": 0,
         "totalThree": 0,
         "totalFour": 1,
-        "totalFive": 1
+        "totalFive": 3
     }

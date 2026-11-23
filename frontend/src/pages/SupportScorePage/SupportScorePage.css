@@ -1,33 +1,40 @@
 .support-score-page {
     display: flex;
+    width: 100%;
+    padding: 3rem;
+    gap: 2rem;
+    align-items: center;
     flex-direction: column;
-    gap: 20px;
+}
+.support-score-cards-content{
+    display: flex;
+    gap: 1.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    
 }
 .support-score-cards {
     display: flex;
+    width: 100%;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 20px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border-gray);
     border-radius: 10px;
-    padding: 20px;
-    width: 24rem;
+    padding: 2rem;
+    width: 16.5rem;
+    height: 14rem;
     
 }
 .support-score-cards h2 {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight:var(--font-weight-body-regular);
+    color: var(--color-gray);
 }
 .support-score-cards p {
     font-size: 1rem;
     font-weight: 400;
-}
-
-.support-score-cards-content{
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    
 }
 
 .support-score-progress-header {
@@ -39,32 +46,81 @@
 .support-score-cards-header {
     display: flex;
     width: 100%;
-    padding: 10px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
 .support-score-cards-header h2 {
     font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-weight: var(--font-weight-body-medium);
+    color: var(--text-black);
 }
-.support-score-cards-header span {
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--text-secondary);
+.support-score-cards-header p {
+    color:var(--color-primary);
+    font-size: 1.5rem;
 }
 
 .support-score-cards-value {
     display: flex;
+    width: 100%;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.5rem
+}
+
+.support-score-cards-value p{
+    font-size: var(--font-size-heading-md);
+    color: var(--color-primary);
+}
+
+.support-score-cards-value span{
+    color: var(--color-text-gray-tertiary);
 }
 
 .support-score-cards-description{
     display: flex;
     align-items: center;
-    color: var(--text-secondary)
+    font-size: .5rem;
+    color: var(--color-text-gray-tertiary)
 }
+
+.support-score-progress {
+    display: flex;
+    width: 100%;
+    border: 1px var(--color-border-gray);
+    border-radius: var(--radius-md);
+    background-color: var(--sidebar-light);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.support-score-progress-header {
+    display: flex;
+    gap: .3rem;
+}
+.support-score-progress-header h2{
+    font-size: var(--font-size-heading-sm);
+    color: var(--color-black);
+    font-weight: var(--font-weight-display-bold);
+}
+.support-score-progress-header p{
+    font-size: var(--font-size-body);
+    color: var(--color-gray);
+}
+
+.support-score-progress-content {
+    display: flex;
+    width: 100%;
+    gap: var(--space-24);
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px var(--color-border-gray);
+    border-radius:var(--radius-md) ;
+    background-color: var(--color-background-gray)
+}
+
+/* PÁGINA AINDA SEM CHAMADOS /*
 
