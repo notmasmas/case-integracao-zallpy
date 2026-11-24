@@ -6,7 +6,7 @@ import {
 } from "./SupportScorePagemock";
 import "./SupportScorePage.css";
 import { LuStar } from "react-icons/lu";
-import WithoutScorePage from "../../components/NoScore/WithoutScore";
+import WithoutScorePage from "./NoScore/WithoutScore";
 
 export type Score = {
   label:string;
@@ -22,7 +22,7 @@ function SupportScorePage() {
   ];
 
   return (
-    /*<Box className="support-score-page">
+    <Box className="support-score-page">
       <Box className="support-score-cards-content">
 
       {supportPanelScore.map((item) => (
@@ -74,8 +74,8 @@ function SupportScorePage() {
             ))}
         </Box>
       </Box>
-    </Box>*/
-    <WithoutScorePage/>
+    </Box>
+    /*<WithoutScorePage/>*/
   );
 }
 
