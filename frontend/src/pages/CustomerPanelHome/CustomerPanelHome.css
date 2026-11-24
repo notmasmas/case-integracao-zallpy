@@ -5,28 +5,6 @@
   width: 100%;
 }
 
-.customer-panel-summary__header {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.customer-panel-summary__projects-button {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  gap: var(--space-8);
-  padding: var(--space-8) var(--space-16);
-  background-color: var(--sidebar-light);
-  border-radius: var(--radius-md);
-  color: black;
-  font-size: var(--font-size-body-lead);
-  font-weight: var(--font-weight-body-medium);
-}
-
-.customer-panel-summary__projects-button:hover {
-  background: var(--color-primary-light);
-}
-
 .customer-panel-summary__projects-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;

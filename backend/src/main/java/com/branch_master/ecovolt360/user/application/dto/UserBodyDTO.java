@@ -10,13 +10,13 @@ import jakarta.validation.constraints.Size;
 
 public record UserBodyDTO (
 
-        @NotBlank
-        @Size(max=100)
+        @NotBlank(message = "Campo obrigatório.")
+        @Size(max=100, message = "O nome deve ter no máximo 100 caracteres.")
         String name,
 
-        @NotBlank
-        @Email
-        @Size(max=30)
+        @NotBlank(message = "Campo obrigatório.")
+        @Email(message = "Informe um e-mail válido.")
+        @Size(max=30, message = "O e-mail deve ter no máximo 30 caracteres.")
         String email,
 
         @NotBlank(message = "Campo obrigatório.")
@@ -24,11 +24,11 @@ public record UserBodyDTO (
         @Pattern(regexp = "^(?=.*\\p{L})(?=.*\\d).+$", message = "A senha deve conter letras e números.")
         String password,
 
-        @NotBlank
-        @Pattern(regexp = "\\d{11}")
+        @NotBlank(message = "Campo obrigatório.")
+        @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos, apenas números.")
         String cpf,
 
-        @NotNull
+        @NotNull(message = "Campo obrigatório.")
         @Valid
         AddressBodyDTO address) {
 }

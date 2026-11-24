@@ -4,6 +4,7 @@ import com.branch_master.ecovolt360.auth.domain.entity.User;
 import com.branch_master.ecovolt360.auth.domain.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -36,5 +37,10 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public void save(User user) {
         repository.save(user);
+    }
+
+    @Override
+    public void registerActivity(UUID userId, Instant now) {
+        repository.updateLastActivity(userId, now);
     }
 }

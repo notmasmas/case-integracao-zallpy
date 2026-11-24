@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import api from "../api/api";
+import InactivityMonitor from "../components/InactivityMonitor";
+import { ACTIVITY_REPORT_INTERVAL_MS } from "../config/inactivity";
+import { useSessionActivityReporter } from "../hooks/useSessionActivityReporter";
 import { useAuth } from "../context/AuthContext";
-import { clearSession, expiredSessionLoginPath, type UserRole } from "./routes";
+import { clearSession, sessionEndedLoginPath, type UserRole } from "./routes";
 import "./RequireSession.css";
 
 type SessionStatus = "checking" | "ready" | "offline";
@@ -13,7 +16,8 @@ function isUserRole(value: string): value is UserRole {
 }
 
 export default function RequireSession() {
-  const { session, setSession } = useAuth();
+  const { session, endedLoginPath, setSession, endSessionByInactivity } = useAuth();
+  const reportActivity = useSessionActivityReporter(ACTIVITY_REPORT_INTERVAL_MS);
   const [status, setStatus] = useState<SessionStatus>("checking");
   const [attempt, setAttempt] = useState(0);
   const sessionRef = useRef(session);
@@ -63,7 +67,9 @@ export default function RequireSession() {
 
   if (!session || !accessToken) {
     clearSession();
-    return <Navigate to={expiredSessionLoginPath()} replace />;
+    // Without endedLoginPath (e.g. a protected URL typed after logout reloads
+    // the app) there was simply no stored session: ask the user to log in.
+    return <Navigate to={endedLoginPath ?? sessionEndedLoginPath("ausente")} replace />;
   }
 
   if (status === "offline") {
@@ -85,5 +91,10 @@ export default function RequireSession() {
     );
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <InactivityMonitor onTimeout={endSessionByInactivity} onActivity={reportActivity} />
+      <Outlet />
+    </>
+  );
 }
