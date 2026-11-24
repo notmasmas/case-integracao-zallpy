@@ -20,7 +20,9 @@ public class User {
 
     private String name;
     private String phone;
-    private String cpf;
+
+    @Column(name = "fiscal_id")
+    private String fiscalId;
 
     @Column(name = "address_id")
     private UUID addressId;

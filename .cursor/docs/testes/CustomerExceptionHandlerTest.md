@@ -15,48 +15,48 @@
 
 Validar o contrato HTTP dos erros de cadastro de cliente: quando o serviço já lançou uma exceção de domínio, ou quando a validação de bean rejeita o corpo, a API responde com o status, o código e a mensagem combinados com o cliente.
 
-Estes testes não protegem a regra “só cadastra quem tem CPF pré-cadastrado”. Essa regra fica em `CustomerService` / `CustomerServiceTest`. Aqui o 404 só aparece depois que o mock já lançou `CpfNotFoundException`.
+Estes testes não protegem a regra “só cadastra quem tem CPF/CNPJ pré-cadastrado”. Essa regra fica em `CustomerService` / `CustomerServiceTest`. Aqui o 404 só aparece depois que o mock já lançou `FiscalIdNotFoundException`.
 
 ---
 
 ## 3. Cenários de testes
 
-### 3.1. handleCpfNotFound
+### 3.1. handleFiscalIdNotFound
 
-**Método:** handleCpfNotFound()
+**Método:** handleFiscalIdNotFound()
 
 **Objetivo:**
-Garantir que CPF não pré-cadastrado (na visão HTTP: o serviço lançou `CpfNotFoundException`) vira 404 com o payload de erro estável.
+Garantir que CPF/CNPJ não pré-cadastrado (na visão HTTP: o serviço lançou `FiscalIdNotFoundException`) vira 404 com o payload de erro estável.
 
 #### Teste 01 — shouldReturnNotFoundWhenCpfIsUnknown
 
-- **Cenário:** `processCustomer` lança `CpfNotFoundException`.
-- **Entrada:** `POST /customers` com o JSON de `validBody()` (CPF `98765432100`, senha `Senha1234`).
-- **Comportamento esperado:** O advice converte a exceção em `ApiError` com código `CPF_NOT_FOUND`.
+- **Cenário:** `processCustomer` lança `FiscalIdNotFoundException`.
+- **Entrada:** `POST /customers` com o JSON de `validBody()` (fiscalId `98765432100`, senha `Senha1234`).
+- **Comportamento esperado:** O advice converte a exceção em `ApiError` com código `FISCAL_ID_NOT_FOUND`.
 - **Validações (Assertions):**
   - Status HTTP 404.
-  - `$.code` igual a `CPF_NOT_FOUND`.
-  - `$.message` igual a `CPF não cadastrado.`
+  - `$.code` igual a `FISCAL_ID_NOT_FOUND`.
+  - `$.message` igual a `CPF/CNPJ não cadastrado.`
 - **Resultado:** Aprovado se as três asserções passarem.
 
 ---
 
-### 3.2. handleCpfAlreadyRegistered
+### 3.2. handleFiscalIdAlreadyRegistered
 
-**Método:** handleCpfAlreadyRegistered()
+**Método:** handleFiscalIdAlreadyRegistered()
 
 **Objetivo:**
-Garantir que CPF que já completou o cadastro (já existe customer) vira 409, distinto do 404 de pré-cadastro ausente.
+Garantir que CPF/CNPJ que já completou o cadastro (já existe customer) vira 409, distinto do 404 de pré-cadastro ausente.
 
 #### Teste 02 — shouldReturnConflictWhenCpfIsAlreadyRegistered
 
-- **Cenário:** `processCustomer` lança `CpfAlreadyRegisteredException`.
+- **Cenário:** `processCustomer` lança `FiscalIdAlreadyRegisteredException`.
 - **Entrada:** `POST /customers` com o JSON de `validBody()`.
-- **Comportamento esperado:** O advice responde conflito com código `CPF_ALREADY_REGISTERED`.
+- **Comportamento esperado:** O advice responde conflito com código `FISCAL_ID_ALREADY_REGISTERED`.
 - **Validações (Assertions):**
   - Status HTTP 409.
-  - `$.code` igual a `CPF_ALREADY_REGISTERED`.
-  - `$.message` igual a `Este CPF já possui cadastro.`
+  - `$.code` igual a `FISCAL_ID_ALREADY_REGISTERED`.
+  - `$.message` igual a `Este CPF/CNPJ já possui cadastro.`
 - **Resultado:** Aprovado se as três asserções passarem.
 
 ---
@@ -66,7 +66,7 @@ Garantir que CPF que já completou o cadastro (já existe customer) vira 409, di
 **Método:** handleEmailAlreadyInUse()
 
 **Objetivo:**
-Garantir que e-mail já usado por outro usuário vira 409 com código próprio, sem reutilizar o código de CPF.
+Garantir que e-mail já usado por outro usuário vira 409 com código próprio, sem reutilizar o código de CPF/CNPJ.
 
 #### Teste 03 — shouldReturnConflictWhenEmailIsAlreadyInUse
 
@@ -106,9 +106,9 @@ Garantir que falha de bean validation (senha em branco) vira 400 com `fieldError
 
 | Cenário | Comportamento esperado |
 |---|---|
-| CPF não pré-cadastrado (`CpfNotFoundException`) | 404, `CPF_NOT_FOUND`, mensagem `CPF não cadastrado.` |
-| CPF de outro papel (SUPPORT) | O serviço lança a mesma `CpfNotFoundException`; no HTTP cai no Teste 01. Esta suíte não distingue o papel. |
-| CPF já com linha em `customers` | 409, `CPF_ALREADY_REGISTERED` |
+| CPF/CNPJ não pré-cadastrado (`FiscalIdNotFoundException`) | 404, `FISCAL_ID_NOT_FOUND`, mensagem `CPF/CNPJ não cadastrado.` |
+| CPF/CNPJ de outro papel (SUPPORT) | O serviço lança a mesma `FiscalIdNotFoundException`; no HTTP cai no Teste 01. Esta suíte não distingue o papel. |
+| CPF/CNPJ já com linha em `customers` | 409, `FISCAL_ID_ALREADY_REGISTERED` |
 | E-mail em uso por outro usuário | 409, `EMAIL_ALREADY_IN_USE` |
 | Senha em branco | 400, `VALIDATION_ERROR`, `fieldErrors['user.password']` |
 
@@ -128,20 +128,20 @@ Garantir que falha de bean validation (senha em branco) vira 400 com `fieldError
 
 | Regra de negócio | Teste relacionado | Coberto? |
 |---|---|---|
-| CPF não pré-cadastrado responde 404 HTTP | Teste 01 — shouldReturnNotFoundWhenCpfIsUnknown | Sim (contrato HTTP; o serviço já lançou a exceção) |
-| CPF com cadastro completo responde 409 | Teste 02 — shouldReturnConflictWhenCpfIsAlreadyRegistered | Sim |
+| CPF/CNPJ não pré-cadastrado responde 404 HTTP | Teste 01 — shouldReturnNotFoundWhenCpfIsUnknown | Sim (contrato HTTP; o serviço já lançou a exceção) |
+| CPF/CNPJ com cadastro completo responde 409 | Teste 02 — shouldReturnConflictWhenCpfIsAlreadyRegistered | Sim |
 | E-mail em uso responde 409 | Teste 03 — shouldReturnConflictWhenEmailIsAlreadyInUse | Sim |
 | Senha em branco responde 400 | Teste 04 — shouldReturnValidationErrorForBlankPassword | Sim |
-| Lookup de CPF, papel CUSTOMER e persistência do cadastro | CustomerServiceTest | Não |
+| Lookup de CPF/CNPJ, papel CUSTOMER e persistência do cadastro | CustomerServiceTest | Não |
 
 ---
 
 ## 7. Observações
 
-- “CPF não cadastrado” no HTTP é falta de pré-cadastro; “Este CPF já possui cadastro” é cadastro já concluído. São estados diferentes.
-- Esta suíte não prova que o cadastro exige CPF pré-cadastrado; só traduz a exceção já lançada.
+- “CPF/CNPJ não cadastrado” no HTTP é falta de pré-cadastro; “Este CPF/CNPJ já possui cadastro” é cadastro já concluído. São estados diferentes.
+- Esta suíte não prova que o cadastro exige CPF/CNPJ pré-cadastrado; só traduz a exceção já lançada.
 - `shouldReturnValidationErrorForBlankPassword` sobrepõe `CustomerControllerTest.shouldRejectBlankPassword`.
-- Papel SUPPORT com CPF existente não tem teste HTTP próprio: o handler trata a mesma `CpfNotFoundException`.
+- Papel SUPPORT com CPF/CNPJ existente não tem teste HTTP próprio: o handler trata a mesma `FiscalIdNotFoundException`.
 - Para executar só esta classe, a partir de `backend/`:
 
 ```powershell

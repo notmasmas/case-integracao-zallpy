@@ -18,8 +18,8 @@ public class  User {
 
     private String phone;
 
-    @Column(nullable = false, unique = true)
-    private String cpf;
+    @Column(name = "fiscal_id", nullable = false, unique = true)
+    private String fiscalId;
 
     @Column(nullable = false, unique = true)
     private String email;

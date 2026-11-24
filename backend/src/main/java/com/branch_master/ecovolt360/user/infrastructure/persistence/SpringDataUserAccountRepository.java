@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface SpringDataUserAccountRepository
         extends JpaRepository<User, UUID> {
 
-    Optional<User> findByCpf(String cpf);
+    Optional<User> findByFiscalId(String fiscalId);
 
     boolean existsByEmailAndIdNot(String email, UUID id);
 }

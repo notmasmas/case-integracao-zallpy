@@ -48,7 +48,7 @@ class CustomerControllerTest {
                     "name": "Cliente de teste",
                     "email": "cliente@email.com",
                     "password": "%s",
-                    "cpf": "98765432100",
+                    "fiscalId": "98765432100",
                     "address": {
                       "cep": "90010-000",
                       "state": "RS",

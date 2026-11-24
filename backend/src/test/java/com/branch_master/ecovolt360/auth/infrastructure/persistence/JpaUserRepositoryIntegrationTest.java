@@ -48,14 +48,14 @@ class JpaUserRepositoryIntegrationTest {
     void shouldFindExistingUserByEmail() {
         UUID userId = UUID.randomUUID();
         String email = "it-" + userId + "@e.com";
-        String cpf = "00000000000";
+        String fiscalId = "00000000000";
         String storedHash = "hash-placeholder-for-persistence-test";
 
         jdbcTemplate.update("""
             INSERT INTO users (
                 id,
                 name,
-                cpf,
+                fiscal_id,
                 email,
                 password,
                 role
@@ -64,7 +64,7 @@ class JpaUserRepositoryIntegrationTest {
             """,
                 userId,
                 "Usuário de integração",
-                cpf,
+                fiscalId,
                 email,
                 storedHash,
                 Role.CUSTOMER.name()

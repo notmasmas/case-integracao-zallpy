@@ -1,6 +1,8 @@
+import { MdFormatLineSpacing } from "react-icons/md";
+
 export type RegistrationFormValues = {
   fullName: string;
-  cpf: string;
+  fiscalId: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -23,8 +25,8 @@ export const PASSWORD_MAX_LENGTH = 25;
 export const validationMessages = {
   required: "Campo obrigatório.",
   email: "Informe um email válido.",
-  cpf: "Informe um CPF com 11 dígitos.",
-  cpfNotFound: "CPF não encontrado na base de clientes.",
+  fiscalId: "Informe um CPF ou CNPJ",
+  fiscalIdNotFound: "CPF/CNPJ não encontrado na base de clientes.",
   passwordLength: `A senha deve ter entre ${PASSWORD_MIN_LENGTH} e ${PASSWORD_MAX_LENGTH} caracteres.`,
   passwordPattern: "A senha deve conter letras e números.",
   passwordHint: `Use de ${PASSWORD_MIN_LENGTH} a ${PASSWORD_MAX_LENGTH} caracteres, com letras e números.`,
@@ -38,7 +40,7 @@ export const validationMessages = {
 
 export const initialRegistrationValues: RegistrationFormValues = {
   fullName: "",
-  cpf: "",
+  fiscalId: "",
   email: "",
   password: "",
   confirmPassword: "",
@@ -52,7 +54,7 @@ export const initialRegistrationValues: RegistrationFormValues = {
 };
 
 export const stepFields: RegistrationField[][] = [
-  ["fullName", "cpf", "email", "password", "confirmPassword"],
+  ["fullName", "fiscalId", "email", "password", "confirmPassword"],
   ["zipCode", "state", "city", "district", "street", "complement", "number"],
 ];
 
@@ -74,7 +76,13 @@ export function formatZipCode(value: string) {
     : digits;
 }
 
-export function formatCpf(value: string) {
+export function formatFiscalId(value: string) {
+  return value.length > 12? 
+    formatCnpj(value) 
+    : formatCpf(value);
+}
+
+function formatCpf(value: string) {
   const digits = onlyDigits(value).slice(0, 11);
   if (digits.length > 9) {
     return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
@@ -86,6 +94,12 @@ export function formatCpf(value: string) {
     return `${digits.slice(0, 3)}.${digits.slice(3)}`;
   }
   return digits;
+}
+
+function formatCnpj(value: string) {
+  const digits = onlyDigits(value).slice(0, 14);
+
+  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
 }
 
 export function validatePassword(value: string) {
@@ -122,9 +136,11 @@ export function validateField(
     case "email":
       if (!value) return validationMessages.required;
       return EMAIL_PATTERN.test(value) ? undefined : validationMessages.email;
-    case "cpf":
+    case "fiscalId":
       if (!value) return validationMessages.required;
-      return onlyDigits(value).length === 11 ? undefined : validationMessages.cpf;
+      return onlyDigits(value).length === 11 || onlyDigits(value).length === 14 
+      ? undefined 
+      : validationMessages.fiscalId;
     case "zipCode":
       if (!value) return validationMessages.required;
       return onlyDigits(value).length === 8
