@@ -37,8 +37,20 @@ export const expiredSessionSearch = {
   value: "expirada",
 } as const;
 
+export type SessionEndReason = "expirada" | "inatividade" | "ausente";
+
+export function isSessionEndReason(
+  value: string | null,
+): value is SessionEndReason {
+  return value === "expirada" || value === "inatividade" || value === "ausente";
+}
+
+export function sessionEndedLoginPath(reason: SessionEndReason) {
+  return `${paths.login}?${expiredSessionSearch.key}=${reason}`;
+}
+
 export function expiredSessionLoginPath() {
-  return `${paths.login}?${expiredSessionSearch.key}=${expiredSessionSearch.value}`;
+  return sessionEndedLoginPath(expiredSessionSearch.value);
 }
 
 export type Session = {
