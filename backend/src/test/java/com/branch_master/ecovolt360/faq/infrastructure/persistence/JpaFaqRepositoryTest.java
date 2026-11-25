@@ -31,20 +31,20 @@ class JpaFaqRepositoryTest {
     }
 
     @Test
-    void shouldDelegateFindAllToFindAllByOrderByTitleAsc() {
+    void shouldDelegateFindAllToFindAllByOrderByCategoryAscTitleAsc() {
         List<Faq> faqs = List.of(new Faq(UUID.randomUUID(), "Titulo", "Resposta", FaqCategory.OTHER));
-        when(springDataFaqRepository.findAllByOrderByTitleAsc()).thenReturn(faqs);
+        when(springDataFaqRepository.findAllByOrderByCategoryAscTitleAsc()).thenReturn(faqs);
 
         List<Faq> result = jpaFaqRepository.findAll();
 
         assertSame(faqs, result);
-        verify(springDataFaqRepository).findAllByOrderByTitleAsc();
+        verify(springDataFaqRepository).findAllByOrderByCategoryAscTitleAsc();
         verifyNoMoreInteractions(springDataFaqRepository);
     }
 
     @Test
     void shouldReturnEmptyListWhenSpringDataRepositoryHasNoFaqs() {
-        when(springDataFaqRepository.findAllByOrderByTitleAsc()).thenReturn(List.of());
+        when(springDataFaqRepository.findAllByOrderByCategoryAscTitleAsc()).thenReturn(List.of());
 
         List<Faq> result = jpaFaqRepository.findAll();
 

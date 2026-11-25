@@ -16,6 +16,6 @@ public class JpaFaqRepository implements FaqRepository {
 
     @Override
     public List<Faq> findAll(){
-        return repository.findAllByOrderByTitleAsc();
+        return repository.findAllByOrderByCategoryAscTitleAsc();
     }
 }

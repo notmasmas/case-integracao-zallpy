@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SpringDataFaqRepository extends JpaRepository<Faq,UUID> {
-    List<Faq> findAllByOrderByTitleAsc();
+    List<Faq> findAllByOrderByCategoryAscTitleAsc();
 }
