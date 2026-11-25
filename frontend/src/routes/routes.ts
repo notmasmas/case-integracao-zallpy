@@ -2,6 +2,7 @@ export const paths = {
   landing: "/",
   login: "/login",
   registration: "/cadastro",
+  faq: "/faq",
   customer: {
     home: "/cliente",
     tickets: "/cliente/chamados",
