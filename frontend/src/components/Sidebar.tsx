@@ -1,5 +1,5 @@
 import { Avatar } from "@chakra-ui/react";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiUser } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import { useAuth } from "../context/AuthContext";
@@ -8,18 +8,38 @@ import { paths } from "../routes/routes";
 export default function Sidebar() {
   const { session, logout } = useAuth();
   const isSupport = session?.role === "SUPPORT";
+  const isManager = session?.role === "MANAGER";
 
   return (
     <nav className="sidebar-wrapper">
       <div className="profile-wrapper">
-        <Avatar.Root>
-          <Avatar.Fallback name="Foto de perfil" />
-          <Avatar.Image src="/assets/Image.png" />
-        </Avatar.Root>
+        {isManager ? (
+          <FiUser size={24} aria-hidden="true" />
+        ) : (
+          <Avatar.Root>
+            <Avatar.Fallback name="Foto de perfil" />
+            <Avatar.Image src="/assets/Image.png" />
+          </Avatar.Root>
+        )}
         <p title={session?.name}>{session?.name}</p>
       </div>
-      <ul className="sidebar-links">
-        {isSupport ? (
+      <ul
+        className={
+          isManager ? "sidebar-links sidebar-links--manager" : "sidebar-links"
+        }
+      >
+        {isManager ? (
+          <>
+            <li>
+              <NavLink to={paths.manager.home} end>
+                Painel do Admin
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to={paths.manager.tickets}>Chamados de Equipe</NavLink>
+            </li>
+          </>
+        ) : isSupport ? (
           <>
           <li>
             <NavLink to={paths.support.home}>Painel de Suporte</NavLink>

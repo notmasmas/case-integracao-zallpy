@@ -3,14 +3,10 @@ import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import api from "../api/api";
 import { useAuth } from "../context/AuthContext";
-import { clearSession, expiredSessionLoginPath, type UserRole } from "./routes";
+import { clearSession, expiredSessionLoginPath, isUserRole } from "./routes";
 import "./RequireSession.css";
 
 type SessionStatus = "checking" | "ready" | "offline";
-
-function isUserRole(value: string): value is UserRole {
-  return value === "CUSTOMER" || value === "SUPPORT";
-}
 
 export default function RequireSession() {
   const { session, setSession } = useAuth();

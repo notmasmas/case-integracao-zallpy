@@ -17,3 +17,9 @@
     font-size: 18px;
     font-weight: bold;
 }
+
+.header-wrapper--manager {
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: var(--space-40) var(--space-24) 0 calc(var(--sidebar-width) + var(--space-64));
+}
