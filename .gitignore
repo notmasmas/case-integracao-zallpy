@@ -6,3 +6,5 @@ node_modules/
 
 # Servidor local para testes manuais do login
 /backend/src/test/java/com/branch_master/ecovolt360/auth/manual/ManualLoginPostman.java
+# Senha local usada pelo HTTP Client do IntelliJ
+/backend/http/http-client.private.env.json
