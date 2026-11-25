@@ -1,6 +1,8 @@
 package com.branch_master.ecovolt360.faq.presentation.controller;
 
 import com.branch_master.ecovolt360.faq.application.dto.FaqDTO;
+import com.branch_master.ecovolt360.faq.application.exception.FaqUnavailableException;
+import com.branch_master.ecovolt360.faq.presentation.exception.FaqExceptionHandler;
 import com.branch_master.ecovolt360.faq.application.service.FaqService;
 import com.branch_master.ecovolt360.faq.domain.entity.FaqCategory;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,7 @@ class FaqControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders
                 .standaloneSetup(new FaqController(faqService))
+                .setControllerAdvice(new FaqExceptionHandler())
                 .build();
     }
 
@@ -65,5 +68,16 @@ class FaqControllerTest {
         mockMvc.perform(get("/faqs"));
 
         verify(faqService).listFaqs();
+    }
+
+    @Test
+    void shouldReturnServiceUnavailableWhenFaqsCannotBeLoaded() throws Exception {
+        when(faqService.listFaqs())
+                .thenThrow(new FaqUnavailableException(new RuntimeException("jdbc:postgresql://db:5432 refused")));
+
+        mockMvc.perform(get("/faqs"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.code").value("FAQ_UNAVAILABLE"))
+                .andExpect(jsonPath("$.message").value(FaqUnavailableException.MESSAGE));
     }
 }
