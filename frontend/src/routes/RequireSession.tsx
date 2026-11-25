@@ -6,14 +6,10 @@ import InactivityMonitor from "../components/InactivityMonitor";
 import { ACTIVITY_REPORT_INTERVAL_MS } from "../config/inactivity";
 import { useSessionActivityReporter } from "../hooks/useSessionActivityReporter";
 import { useAuth } from "../context/AuthContext";
-import { clearSession, sessionEndedLoginPath, type UserRole } from "./routes";
+import { clearSession, isUserRole, sessionEndedLoginPath } from "./routes";
 import "./RequireSession.css";
 
 type SessionStatus = "checking" | "ready" | "offline";
-
-function isUserRole(value: string): value is UserRole {
-  return value === "CUSTOMER" || value === "SUPPORT";
-}
 
 export default function RequireSession() {
   const { session, endedLoginPath, setSession, endSessionByInactivity } = useAuth();

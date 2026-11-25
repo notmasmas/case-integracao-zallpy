@@ -1,0 +1,21 @@
+.page {
+  align-items: center;
+  justify-content: center;
+  /* Desconta o Header duas vezes para centralizar o texto na tela, como no Figma. */
+  min-height: calc(100vh - 2 * var(--header-height) - var(--space-48));
+}
+
+.title {
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-heading-md);
+  font-weight: var(--font-weight-body-regular);
+  line-height: normal;
+  text-align: center;
+}
+
+@media (min-width: 64rem) {
+  .title {
+    font-size: var(--font-size-display);
+  }
+}

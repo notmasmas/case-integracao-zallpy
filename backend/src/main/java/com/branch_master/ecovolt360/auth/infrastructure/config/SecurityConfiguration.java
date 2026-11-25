@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, "/tickets/{ticketId}/evaluation").hasRole("CUSTOMER")
                         .requestMatchers("/tickets", "/tickets/**").hasRole("CUSTOMER")
                         .requestMatchers("/support", "/support/**").hasRole("SUPPORT")
+                        .requestMatchers("/manager", "/manager/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.GET, "/session").authenticated()
                         .requestMatchers(HttpMethod.GET, "/session/activity").authenticated()
                         .requestMatchers(HttpMethod.POST, "/session/activity").authenticated()

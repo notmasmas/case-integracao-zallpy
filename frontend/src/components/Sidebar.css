@@ -70,6 +70,20 @@ ul {
   background-color: var(--primary);
 }
 
+.sidebar-links--manager {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.sidebar-links--manager a {
+  padding-left: var(--space-12);
+}
+
+.sidebar-links--manager a.active::before {
+  left: -20px;
+}
+
 .sidebar-logout {
   margin-top: auto;
   width: 100%;

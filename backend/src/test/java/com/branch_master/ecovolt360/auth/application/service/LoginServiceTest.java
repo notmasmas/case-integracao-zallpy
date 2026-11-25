@@ -69,6 +69,25 @@ class LoginServiceTest {
     }
 
     @Test
+    void shouldIssueTokenWithManagerRoleForManager() {
+        UUID userId = UUID.fromString("33333333-3333-3333-3333-333333333333");
+        User user = mock(User.class);
+        when(user.getId()).thenReturn(userId);
+        when(user.getName()).thenReturn("Gerente Teste");
+        when(user.getRole()).thenReturn(Role.MANAGER);
+        when(user.getPassword()).thenReturn("stored-hash");
+        when(user.getTokenVersion()).thenReturn(0);
+        when(userRepository.findByEmail("gerente@ecovolt.com")).thenReturn(Optional.of(user));
+        when(passwordVerifier.matches("senhaTeste", "stored-hash")).thenReturn(true);
+        when(tokenIssuer.issue(userId, Role.MANAGER, 0)).thenReturn("manager-token");
+
+        LoginResult result = loginService.login("gerente@ecovolt.com", "senhaTeste");
+
+        assertEquals(Role.MANAGER, result.role());
+        assertEquals("manager-token", result.accessToken());
+    }
+
+    @Test
     void shouldRejectUnknownEmail() {
         when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
 

@@ -38,7 +38,7 @@ There are two `User` entities mapping the same `users` table: `auth.domain.entit
 
 - `POST /login` (`LoginService`) verifies a PBKDF2 hash and issues a JWT (`JwtTokenIssuer`, secret `app.jwt.secret`). `JwtAuthenticationFilter` validates the bearer token on every request; stateless sessions, CSRF off.
 - Controllers get the caller via `@CurrentUser AuthenticatedUser currentUser` (resolver registered in `WebAuthConfiguration`); use `currentUser.userId()` and scope queries by owner (e.g. `findByIdAndCustomerId`, `findByIdAndSupportId`) so users only touch their own records.
-- Roles: `CUSTOMER`, `SUPPORT`. Route access is declared centrally in `auth/infrastructure/config/SecurityConfiguration.java` and ends with `.anyRequest().denyAll()` — **every new endpoint must get a `requestMatchers` rule there or it will return 403.** Current convention: `/tickets/**` → CUSTOMER, `/support/**` → SUPPORT; public: `POST /login`, `POST /customers`, Swagger paths. More specific matchers must come before broader ones.
+- Roles: `CUSTOMER`, `SUPPORT`, `MANAGER` (the "gerente" in Jira; never `GERENTE` in code). Route access is declared centrally in `auth/infrastructure/config/SecurityConfiguration.java` and ends with `.anyRequest().denyAll()` — **every new endpoint must get a `requestMatchers` rule there or it will return 403.** Current convention: `/tickets/**` → CUSTOMER, `/support/**` → SUPPORT, `/manager/**` → MANAGER; public: `POST /login`, `POST /customers`, Swagger paths. More specific matchers must come before broader ones.
 - 401/403 responses are written as `ApiError` JSON by the entry point/denied handler in `SecurityConfiguration`.
 
 ### Database

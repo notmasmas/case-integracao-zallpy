@@ -72,7 +72,11 @@ function TicketDetailsModal({ ticket, onClose, onTicketUpdated }: TicketDetailsM
     setMessagesLoading(true);
     setMessagesError(null);
 
-    getTicketMessages(ticketId, page, session?.role ?? "CUSTOMER")
+    getTicketMessages(
+      ticketId,
+      page,
+      session?.role === "SUPPORT" ? "SUPPORT" : "CUSTOMER",
+    )
       .then((data) => {
         if (active) {
           setMessages(data.messages);

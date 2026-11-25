@@ -13,7 +13,7 @@ O payload é um JSON com quatro campos:
 | Campo | Conteúdo |
 | --- | --- |
 | `sub` | id do usuário (`users.id`) |
-| `role` | `CUSTOMER` ou `SUPPORT` |
+| `role` | `CUSTOMER`, `SUPPORT` ou `MANAGER` |
 | `iat` | instante em que o token foi emitido |
 | `exp` | instante em que o token expira |
 
@@ -28,8 +28,8 @@ Para uma rota protegida, a ordem é esta:
 1. O filtro lê `Authorization: Bearer ...` e passa só o token ao `JwtTokenVerifier`.
 2. O verifier separa as três partes, recalcula a assinatura e compara com `MessageDigest.isEqual`. Assinatura errada ou `exp` vencido vira 401 `UNAUTHORIZED`.
 3. Ele monta um `AuthenticatedUser` com `UUID.fromString(sub)` e `Role.valueOf(role)`.
-4. O filtro grava esse usuário no `SecurityContext`, com a authority `ROLE_CUSTOMER` ou `ROLE_SUPPORT`.
-5. A cadeia exige `CUSTOMER` em `/tickets/**` e `SUPPORT` em `/support/**`. Perfil diferente vira 403 `FORBIDDEN`.
+4. O filtro grava esse usuário no `SecurityContext`, com a authority `ROLE_CUSTOMER`, `ROLE_SUPPORT` ou `ROLE_MANAGER`.
+5. A cadeia exige `CUSTOMER` em `/tickets/**`, `SUPPORT` em `/support/**` e `MANAGER` em `/manager/**`. Perfil diferente vira 403 `FORBIDDEN`.
 6. O `CurrentUserArgumentResolver` lê o principal do `SecurityContext` e entrega o `AuthenticatedUser` no parâmetro anotado com `@CurrentUser`.
 
 `POST /login` e `POST /customers` são públicos. Qualquer outro path é recusado.
@@ -40,13 +40,13 @@ O `AccessExceptionHandler` continua tratando `ForbiddenException` lançada pelo 
 
 | Peça | Onde | Uso no módulo |
 | --- | --- | --- |
-| Path na `SecurityConfiguration` | `/tickets/**` ou `/support/**` | perfil exigido pela rota |
+| Path na `SecurityConfiguration` | `/tickets/**`, `/support/**` ou `/manager/**` | perfil exigido pela rota |
 | `@CurrentUser AuthenticatedUser` | parâmetro do método | usuário logado; o módulo usa `userId()` |
 | `ForbiddenException` | service | usuário autenticado sem o cadastro daquele perfil |
 
 O `userId()` é `users.id`. A foreign key de ticket aponta para `customers.id` ou `supports.id`, então o service do módulo faz essa conversão. O service não lê a role: a cadeia já barrou o perfil errado.
 
-Uma rota nova só fica protegida se o path estiver na `SecurityConfiguration`. Fora de `POST /login`, `POST /customers`, `/tickets` e `/support`, a resposta é 403.
+Uma rota nova só fica protegida se o path estiver na `SecurityConfiguration`. Fora de `POST /login`, `POST /customers`, `/tickets`, `/support` e `/manager`, a resposta é 403.
 
 ## Ticket
 
@@ -81,6 +81,12 @@ O `TicketService` recebe esse `userId` e chama `customerRepository.findByUserId`
 ## Support
 
 `Support`, `SupportRepository`, `SpringDataSupportRepository` e `JpaSupportRepository` já buscam o suporte por `userId`, no mesmo formato do customer. Ainda não há controller em `/support`. Quando existir, `/support/**` já exige `SUPPORT`. A conversão de `userId` para `supports.id` fica só na listagem "meus chamados".
+
+## Manager
+
+`/manager/**` exige `MANAGER`. Sem token a resposta é 401 `UNAUTHORIZED`; com token de `CUSTOMER` ou `SUPPORT`, 403 `FORBIDDEN`. O gerente também recebe 403 em `/tickets/**`, `/projects` e `/support/**`.
+
+Ainda não há controller em `/manager` (a listagem vem na US08), então uma chamada do próprio gerente responde 404. O gerente usa o mesmo `POST /login`, `GET /session` e a mesma política de inatividade dos demais perfis.
 
 ## O que não usa auth
 

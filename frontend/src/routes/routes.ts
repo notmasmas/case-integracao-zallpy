@@ -10,12 +10,26 @@ export const paths = {
     home: "/suporte",
     tickets: "/suporte/chamados",
   },
+  manager: {
+    home: "/gerente",
+    tickets: "/gerente/chamados",
+  },
 } as const;
 
-export type UserRole = "CUSTOMER" | "SUPPORT";
+export type UserRole = "CUSTOMER" | "SUPPORT" | "MANAGER";
+
+const homePaths: Record<UserRole, string> = {
+  CUSTOMER: paths.customer.home,
+  SUPPORT: paths.support.home,
+  MANAGER: paths.manager.home,
+};
+
+export function isUserRole(value: string): value is UserRole {
+  return value === "CUSTOMER" || value === "SUPPORT" || value === "MANAGER";
+}
 
 export function homePath(role: UserRole) {
-  return role === "SUPPORT" ? paths.support.home : paths.customer.home;
+  return homePaths[role];
 }
 
 export const expiredSessionSearch = {
@@ -63,7 +77,7 @@ export function loadSession(): Session | null {
 
   try {
     const parsed = JSON.parse(raw) as Session;
-    if (parsed.role !== "CUSTOMER" && parsed.role !== "SUPPORT") {
+    if (!isUserRole(parsed.role)) {
       return null;
     }
     return parsed;

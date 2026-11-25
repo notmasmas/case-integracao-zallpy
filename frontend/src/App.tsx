@@ -13,6 +13,7 @@ import SupportTicket from "./pages/SupportTicket/SupportTicket";
 import SupportPanelHome from "./pages/SupportPanelHome/SupportPanelHome";
 import CustomerPanelHome from "./pages/CustomerPanelHome/CustomerPanelHome";
 import TicketsQueue from "./pages/TicketsQueue/TicketsQueue";
+import ManagerPanelHome from "./pages/ManagerPanelHome/ManagerPanelHome";
 
 function App() {
   return (
@@ -44,6 +45,18 @@ function App() {
                 <Route
                   path={paths.support.tickets}
                   element={<TicketsQueue />}
+                />
+              </Route>
+            </Route>
+            <Route element={<RequireRole role="MANAGER" />}>
+              <Route element={<PanelBase />}>
+                <Route
+                  path={paths.manager.home}
+                  element={<ManagerPanelHome />}
+                />
+                <Route
+                  path={paths.manager.tickets}
+                  element={<ManagerPanelHome />}
                 />
               </Route>
             </Route>

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { showAccessDeniedToast } from "../components/ui/accessDeniedToast";
 import {
   clearSession,
   expiredSessionLoginPath,
@@ -40,6 +41,15 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
+    if (
+      axios.isAxiosError<{ code?: string }>(error) &&
+      error.response?.status === 403 &&
+      error.response.data?.code === "FORBIDDEN"
+    ) {
+      showAccessDeniedToast();
+      return Promise.reject(error);
+    }
+
     if (!axios.isAxiosError(error) || error.response?.status !== 401) {
       return Promise.reject(error);
     }
