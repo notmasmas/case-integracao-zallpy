@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { homePath, paths } from "../../routes/routes";
 import LogoEcoVolt from "../../assets/landing/logo-ecovolt.svg";
@@ -11,24 +11,32 @@ import IconeSuporte from "../../assets/landing/icone-suporte.png";
 import IconeEnergiaLimpa from "../../assets/landing/icone-energia-limpa.png";
 import styles from "./LandingPage.module.css";
 
-// Cada item aponta para o id da seção da landing. Só "inicio" existe hoje;
-// as demais seções ganham o id correspondente quando forem criadas.
-const navItems = [
+// Seções da landing. Só "inicio" existe hoje; as demais ganham o id
+// correspondente quando forem criadas.
+const sectionIds = ["inicio", "solucoes", "sobre", "contato"] as const;
+
+type SectionId = (typeof sectionIds)[number];
+
+// Itens do menu: a maioria rola até uma seção da landing; "FAQ" navega
+// para a página /faq e por isso não entra na lógica de seção ativa.
+type NavItem =
+  | { label: string; sectionId: SectionId }
+  | { label: string; path: string };
+
+const navItems: readonly NavItem[] = [
   { label: "Início", sectionId: "inicio" },
-  { label: "FAQ", sectionId: "faq" },
+  { label: "FAQ", path: paths.faq },
   { label: "Soluções", sectionId: "solucoes" },
   { label: "Sobre", sectionId: "sobre" },
   { label: "Contato", sectionId: "contato" },
-] as const;
-
-type SectionId = (typeof navItems)[number]["sectionId"];
+];
 
 // Distância do topo a partir da qual uma seção passa a ser a "atual".
 const activeSectionOffset = 120;
 
 function currentSection(): SectionId {
   let active: SectionId = "inicio";
-  for (const { sectionId } of navItems) {
+  for (const sectionId of sectionIds) {
     const section = document.getElementById(sectionId);
     if (section && section.getBoundingClientRect().top <= activeSectionOffset) {
       active = sectionId;
@@ -49,6 +57,7 @@ function LandingPage() {
   const { session } = useAuth();
   const enterPath = session ? homePath(session.role) : paths.login;
   const [activeSection, setActiveSection] = useState<SectionId>("inicio");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setActiveSection(currentSection());
@@ -84,20 +93,29 @@ function LandingPage() {
 
         <Flex className={styles.actions}>
           <Flex as="nav" className={styles.nav} aria-label="Navegação principal">
-            {navItems.map(({ label, sectionId }) => (
-              <Button
-                key={sectionId}
-                type="button"
-                variant="plain"
-                size="sm"
-                px="0"
-                className={styles.navLink}
-                aria-current={activeSection === sectionId ? "location" : undefined}
-                onClick={() => goToSection(sectionId)}
-              >
-                {label}
-              </Button>
-            ))}
+            {navItems.map((item) => {
+              const isSection = "sectionId" in item;
+              return (
+                <Button
+                  key={item.label}
+                  type="button"
+                  variant="plain"
+                  size="sm"
+                  px="0"
+                  className={styles.navLink}
+                  aria-current={
+                    isSection && activeSection === item.sectionId
+                      ? "location"
+                      : undefined
+                  }
+                  onClick={() =>
+                    isSection ? goToSection(item.sectionId) : navigate(item.path)
+                  }
+                >
+                  {item.label}
+                </Button>
+              );
+            })}
           </Flex>
 
           <Button

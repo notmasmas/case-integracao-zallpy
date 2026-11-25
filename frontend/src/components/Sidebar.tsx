@@ -26,7 +26,10 @@ export default function Sidebar() {
           </li>
           <li>
             <NavLink to={paths.support.tickets}>Chamados</NavLink>
-          </li> 
+          </li>
+          <li>
+            <NavLink to={paths.faq}>FAQ</NavLink>
+          </li>
           </>
         ) : (
           <>
@@ -37,7 +40,7 @@ export default function Sidebar() {
               <NavLink to={paths.customer.tickets}>Chamados</NavLink>
             </li>
             <li>
-              <NavLink to="/faq">FAQ</NavLink>
+              <NavLink to={paths.faq}>FAQ</NavLink>
             </li>
           </>
         )}
