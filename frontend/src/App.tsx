@@ -13,6 +13,8 @@ import SupportTicket from "./pages/SupportTicket/SupportTicket";
 import SupportPanelHome from "./pages/SupportPanelHome/SupportPanelHome";
 import CustomerPanelHome from "./pages/CustomerPanelHome/CustomerPanelHome";
 import TicketsQueue from "./pages/TicketsQueue/TicketsQueue";
+import FaqRoute from "./routes/FaqRoute";
+import PanelFaqPage from "./pages/PanelFaqPage/PanelFaqPage";
 
 function App() {
   return (
@@ -22,6 +24,13 @@ function App() {
           <Route path={paths.landing} element={<LandingPage />} />
           <Route path={paths.login} element={<Login />} />
           <Route path={paths.registration} element={<RegistrationPage />} />
+          <Route path={paths.faq} element={<FaqRoute />}>
+            <Route element={<RequireSession />}>
+              <Route element={<PanelBase />}>
+                <Route index element={<PanelFaqPage />} />
+              </Route>
+            </Route>
+          </Route>
           <Route element={<RequireSession />}>
             <Route element={<RequireRole role="CUSTOMER" />}>
               <Route element={<PanelBase />}>
