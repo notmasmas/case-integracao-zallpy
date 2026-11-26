@@ -19,10 +19,6 @@ public class JpaFaqRepository implements FaqRepository {
 
     @Override
     public List<Faq> findAll(){
-        try {
-            return repository.findAllByOrderByTitleAsc();
-        } catch (DataAccessException | TransactionException exception) {
-            throw new FaqUnavailableException(exception);
-        }
+        return repository.findAllByOrderByCategoryAscTitleAsc();
     }
 }
