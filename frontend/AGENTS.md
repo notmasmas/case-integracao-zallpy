@@ -9,9 +9,10 @@ All commands run from `frontend/`:
 - `npm run dev` — start the Vite dev server
 - `npm run build` — type-check (`tsc -b`) then production build via Vite
 - `npm run lint` — run oxlint (config in `.oxlintrc.json`)
+- `npm run test:registration` — run registration masking and validation tests
 - `npm run preview` — preview the production build
 
-There is no test runner configured in this project.
+The registration validation tests use Node's built-in test runner.
 
 ## Architecture
 

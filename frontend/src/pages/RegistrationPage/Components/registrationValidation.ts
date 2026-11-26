@@ -94,8 +94,8 @@ function formatCpf(value: string) {
 
 function formatCnpj(value: string) {
   const digits = onlyDigits(value).slice(0, 14);
-
-  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
+  const base = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}`;
+  return digits.length > 12 ? `${base}-${digits.slice(12)}` : base;
 }
 
 export function validatePassword(value: string) {
