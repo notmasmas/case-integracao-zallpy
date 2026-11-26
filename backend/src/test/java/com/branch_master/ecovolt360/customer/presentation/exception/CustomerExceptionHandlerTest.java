@@ -8,6 +8,8 @@ import com.branch_master.ecovolt360.customer.application.service.CustomerService
 import com.branch_master.ecovolt360.customer.presentation.controller.CustomerController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -62,6 +64,20 @@ class CustomerExceptionHandlerTest {
                 .andExpect(jsonPath("$.code").value("FISCAL_ID_NOT_FOUND"));
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {12, 13})
+    void shouldRejectFiscalIdWithTwelveOrThirteenDigits(int digitCount) throws Exception {
+        String invalidFiscalId = "1".repeat(digitCount);
+
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validBody().replace("98765432100", invalidFiscalId)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$['fieldErrors']['user.fiscalId']")
+                        .value("O CPF/CNPJ deve conter 11 ou 14 dígitos numéricos."));
+    }
+
     @Test
     void shouldReturnConflictWhenCpfIsAlreadyRegistered() throws Exception {
         when(customerService.processCustomer(any(CustomerBodyDTO.class)))
@@ -111,7 +127,8 @@ class CustomerExceptionHandlerTest {
                         .content(invalid))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
-                .andExpect(jsonPath("$['fieldErrors']['user.fiscalId']").value("O CPF/CNPJ deve conter apenas números."))
+                .andExpect(jsonPath("$['fieldErrors']['user.fiscalId']")
+                        .value("O CPF/CNPJ deve conter 11 ou 14 dígitos numéricos."))
                 .andExpect(jsonPath("$['fieldErrors']['user.email']").value("Informe um e-mail válido."))
                 .andExpect(jsonPath("$['fieldErrors']['user.name']").value("Campo obrigatório."))
                 .andExpect(jsonPath("$.trace").doesNotExist())

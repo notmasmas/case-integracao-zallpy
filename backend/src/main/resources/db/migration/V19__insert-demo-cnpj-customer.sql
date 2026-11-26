@@ -7,6 +7,3 @@ VALUES (
            '248afa0d328e67db55738f227da784f77f30f28ee7f5ea273893c9ab03b62a1f5830018af9bfd95641663a65b95ffe45',
            'CUSTOMER'
        );
-
-INSERT INTO customers (id, user_id)
-VALUES ('5cf96d1c-2a70-4db1-a0ec-1be2f8d173b6', '8aa7e183-f97d-4447-ad2a-02e7e6e0b010');

@@ -25,7 +25,7 @@ public record UserBodyDTO (
         String password,
 
         @NotBlank(message = "Campo obrigatório.")
-        @Pattern(regexp = "^(\\d{11}|\\d{14})$", message = "O CPF/CNPJ deve conter apenas números.")
+        @Pattern(regexp = "^(\\d{11}|\\d{14})$", message = "O CPF/CNPJ deve conter 11 ou 14 dígitos numéricos.")
         String fiscalId,
 
         @NotNull(message = "Campo obrigatório.")
