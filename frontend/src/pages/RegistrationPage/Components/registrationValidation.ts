@@ -1,5 +1,3 @@
-import { MdFormatLineSpacing } from "react-icons/md";
-
 export type RegistrationFormValues = {
   fullName: string;
   fiscalId: string;
@@ -25,7 +23,7 @@ export const PASSWORD_MAX_LENGTH = 25;
 export const validationMessages = {
   required: "Campo obrigatório.",
   email: "Informe um email válido.",
-  fiscalId: "Informe um CPF ou CNPJ",
+  fiscalId: "Informe um CPF (11 dígitos) ou CNPJ (14 dígitos).",
   fiscalIdNotFound: "CPF/CNPJ não encontrado na base de clientes.",
   passwordLength: `A senha deve ter entre ${PASSWORD_MIN_LENGTH} e ${PASSWORD_MAX_LENGTH} caracteres.`,
   passwordPattern: "A senha deve conter letras e números.",
@@ -77,9 +75,7 @@ export function formatZipCode(value: string) {
 }
 
 export function formatFiscalId(value: string) {
-  return value.length > 12? 
-    formatCnpj(value) 
-    : formatCpf(value);
+  return onlyDigits(value).length > 11 ? formatCnpj(value) : formatCpf(value);
 }
 
 function formatCpf(value: string) {
@@ -136,11 +132,13 @@ export function validateField(
     case "email":
       if (!value) return validationMessages.required;
       return EMAIL_PATTERN.test(value) ? undefined : validationMessages.email;
-    case "fiscalId":
+    case "fiscalId": {
       if (!value) return validationMessages.required;
-      return onlyDigits(value).length === 11 || onlyDigits(value).length === 14 
-      ? undefined 
-      : validationMessages.fiscalId;
+      const fiscalIdLength = onlyDigits(value).length;
+      return fiscalIdLength === 11 || fiscalIdLength === 14
+        ? undefined
+        : validationMessages.fiscalId;
+    }
     case "zipCode":
       if (!value) return validationMessages.required;
       return onlyDigits(value).length === 8
