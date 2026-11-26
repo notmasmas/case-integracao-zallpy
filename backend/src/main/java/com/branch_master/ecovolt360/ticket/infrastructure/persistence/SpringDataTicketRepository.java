@@ -130,7 +130,11 @@ public interface SpringDataTicketRepository extends JpaRepository<Ticket, UUID> 
             sum(case when t.evaluate = 2 then 1 else 0 end),
             sum(case when t.evaluate = 3 then 1 else 0 end),
             sum(case when t.evaluate = 4 then 1 else 0 end),
-            sum(case when t.evaluate = 5 then 1 else 0 end)
+            sum(case when t.evaluate = 5 then 1 else 0 end),
+            coalesce(sum(case when (t.status = com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.RESOLVED
+                                    or t.status = com.branch_master.ecovolt360.ticket.domain.entity.TicketStatus.CLOSED)
+                              and t.isEvaluated = false then 1 else 0 end), 0),
+            count(t)
           )
           from Ticket t
           where t.supportId = :id

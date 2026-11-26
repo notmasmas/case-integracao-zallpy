@@ -9,6 +9,8 @@ export type SupportMetrics = {
   totalThree: number;
   totalFour: number;
   totalFive: number;
+  pendingAmount: number;
+  totalTickets: number;
 };
 
 export async function getSupportMetrics(): Promise<SupportMetrics> {
