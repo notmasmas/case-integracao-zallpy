@@ -8,7 +8,9 @@ public record MetricsDTO(
     int totalTwo,
     int totalThree,
     int totalFour,
-    int totalFive
+    int totalFive,
+    int pendingAmount,
+    int totalTickets
 ) {
     public MetricsDTO (Double scoreAverage,
                        Long totalAmount,
@@ -16,13 +18,17 @@ public record MetricsDTO(
                        Long totalTwo,
                        Long totalThree,
                        Long totalFour,
-                       Long totalFive) {
+                       Long totalFive,
+                       Long pendingAmount,
+                       Long totalTickets) {
         this(scoreAverage,
-                totalAmount.intValue(),
-                totalOne.intValue(),
-                totalTwo.intValue(),
-                totalThree.intValue(),
-                totalFour.intValue(),
-                totalFive.intValue());
+                totalAmount != null ? totalAmount.intValue() : 0,
+                totalOne != null ? totalOne.intValue() : 0,
+                totalTwo != null ? totalTwo.intValue() : 0,
+                totalThree != null ? totalThree.intValue() : 0,
+                totalFour != null ? totalFour.intValue() : 0,
+                totalFive != null ? totalFive.intValue() : 0,
+                pendingAmount != null ? pendingAmount.intValue() : 0,
+                totalTickets != null ? totalTickets.intValue() : 0);
     }
 }
