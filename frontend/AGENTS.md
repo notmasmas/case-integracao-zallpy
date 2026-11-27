@@ -9,9 +9,10 @@ All commands run from `frontend/`:
 - `npm run dev` — start the Vite dev server
 - `npm run build` — type-check (`tsc -b`) then production build via Vite
 - `npm run lint` — run oxlint (config in `.oxlintrc.json`)
+- `npm run test:registration` — run registration masking and validation tests
 - `npm run preview` — preview the production build
 
-There is no test runner configured in this project.
+The registration validation tests use Node's built-in test runner.
 
 ## Architecture
 
@@ -35,7 +36,7 @@ This is a client-facing portal for "EcoVolt 360" (a solar-energy company), built
 - Validation is hand-rolled (no form library) in `Components/registrationValidation.ts`: pure validators, `validateStep`, and every user-facing message in `validationMessages`, so change texts there. Fields are checked on blur and re-checked on change once they show an error. Advancing with "→" or the dots requires step 1 to be valid, and submit validates both steps, jumping back to step 1 if it has errors. Errors render through `Field.Root invalid` + `Field.ErrorText`, colored with the `--color-warning-*` tokens.
 - Password rule: 8–25 characters with at least one letter and one number.
 - CEP lookup is in `Components/viaCep.ts` (ViaCEP, `AbortController` cancels stale requests). Once 8 digits are typed it fills Estado/Cidade/Bairro/Rua with whatever is returned, and those fields stay editable. "CEP não encontrado" blocks submit, while a failed lookup doesn't, since the user can fill the address manually.
-- `handleSubmit` builds the nested body and sends `POST /customers`. On success it shows a toast and navigates to the login (`/`). On 404 it marks the CPF with `validationMessages.cpfNotFound` and goes back to step 1. On 409 it shows the backend's `message`, and otherwise a generic error or connection error.
+- `handleSubmit` builds the nested body and sends `POST /customers`. On success it shows a toast and navigates to the login (`/`). On 404 it marks the CPF/CNPJ with `validationMessages.fiscalIdNotFound` and goes back to step 1. On 409 it shows the backend's `message`, and otherwise a generic error or connection error.
 
 **Toasts**: `src/components/ui/toaster.tsx` exports both the Chakra `toaster` instance and the `<Toaster />` component, styled with the project's success/warning tokens (it renders title + description only, no close button). `<Toaster />` is rendered once in `src/main.tsx`, outside the router, so toasts survive route changes. Trigger them with `toaster.create({ type: "success" | "error", title, description })`; used across forms, modals, and `AuthContext`.
 

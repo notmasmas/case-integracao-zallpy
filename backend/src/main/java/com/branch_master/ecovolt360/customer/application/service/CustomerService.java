@@ -5,8 +5,8 @@ import com.branch_master.ecovolt360.address.domain.entity.Address;
 import com.branch_master.ecovolt360.address.domain.repository.AddressRepository;
 import com.branch_master.ecovolt360.customer.application.dto.CustomerBodyDTO;
 import com.branch_master.ecovolt360.customer.application.dto.CustomerDetailsDTO;
-import com.branch_master.ecovolt360.customer.application.exception.CpfAlreadyRegisteredException;
-import com.branch_master.ecovolt360.customer.application.exception.CpfNotFoundException;
+import com.branch_master.ecovolt360.customer.application.exception.FiscalIdAlreadyRegisteredException;
+import com.branch_master.ecovolt360.customer.application.exception.FiscalIdNotFoundException;
 import com.branch_master.ecovolt360.customer.application.exception.EmailAlreadyInUseException;
 import com.branch_master.ecovolt360.customer.domain.entity.Customer;
 import com.branch_master.ecovolt360.customer.domain.repository.CustomerRepository;
@@ -39,12 +39,12 @@ public class CustomerService {
     public CustomerDetailsDTO processCustomer(CustomerBodyDTO customerDTO) {
         UserBodyDTO userDTO = customerDTO.user();
 
-        User user = userRepository.findByCpf(userDTO.cpf())
+        User user = userRepository.findByFiscalId(userDTO.fiscalId())
                 .filter(found -> "CUSTOMER".equals(found.getRole()))
-                .orElseThrow(CpfNotFoundException::new);
+                .orElseThrow(FiscalIdNotFoundException::new);
 
         if (customerRepository.existsByUserId(user.getId())) {
-            throw new CpfAlreadyRegisteredException();
+            throw new FiscalIdAlreadyRegisteredException();
         }
 
         if (userRepository.existsByEmailAndIdNot(userDTO.email(), user.getId())) {

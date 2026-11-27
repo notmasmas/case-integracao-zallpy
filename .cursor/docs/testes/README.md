@@ -87,3 +87,12 @@ Na raiz do repositório: `docker compose up`.
 |-----------|-----------------|
 | [MessageServiceTest.md](MessageServiceTest.md) | Criação de mensagens |
 | [MessageControllerTest.md](MessageControllerTest.md) | API de mensagens |
+
+## Validação de cadastro no frontend
+
+Execute `npm run test:registration` em `frontend/`. Os testes de
+`tests/registrationValidation.test.mjs` cobrem:
+
+- `formats a CPF while typing and switches to CNPJ after the eleventh digit`: digitação de CPF e mudança para CNPJ.
+- `returns to the CPF mask when deleting from a CNPJ`: backspace de 14 para 11 dígitos.
+- `rejects 12 or 13 digits while accepting 11 or 14`: validação dos comprimentos permitidos.

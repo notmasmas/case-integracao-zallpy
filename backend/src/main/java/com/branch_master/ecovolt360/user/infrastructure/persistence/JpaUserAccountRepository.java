@@ -17,8 +17,8 @@ public class JpaUserAccountRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByCpf(String cpf) {
-        return repository.findByCpf(cpf);
+    public Optional<User> findByFiscalId(String fiscalId) {
+        return repository.findByFiscalId(fiscalId);
     }
 
     @Override

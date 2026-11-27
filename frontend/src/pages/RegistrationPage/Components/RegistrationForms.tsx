@@ -26,7 +26,7 @@ import api from "../../../api/api";
 import { toaster } from "../../../components/ui/toaster";
 import { paths } from "../../../routes/routes";
 import {
-  formatCpf,
+  formatFiscalId,
   formatZipCode,
   hasErrors,
   initialRegistrationValues,
@@ -117,7 +117,7 @@ type CustomerRequest = {
     name: string;
     email: string;
     password: string;
-    cpf: string;
+    fiscalId: string;
     address: {
       cep: string;
       state: string;
@@ -199,7 +199,7 @@ function RegistrationForms() {
     return (event: ChangeEvent<HTMLInputElement>) => {
       let value = event.target.value;
       if (field === "zipCode") value = formatZipCode(value);
-      if (field === "cpf") value = formatCpf(value);
+      if (field === "fiscalId") value = formatFiscalId(value);
       if (field === "state") value = value.toUpperCase();
 
       const nextValues = { ...values, [field]: value };
@@ -298,7 +298,7 @@ function RegistrationForms() {
         name: values.fullName.trim(),
         email: values.email.trim(),
         password: values.password,
-        cpf: onlyDigits(values.cpf),
+        fiscalId: onlyDigits(values.fiscalId),
         address: {
           cep: values.zipCode,
           state: values.state.trim(),
@@ -327,7 +327,7 @@ function RegistrationForms() {
         : undefined;
 
       if (status === 404) {
-        setFieldError("cpf", validationMessages.cpfNotFound);
+        setFieldError("fiscalId", validationMessages.fiscalIdNotFound);
         setStep(0);
       }
 
@@ -336,7 +336,7 @@ function RegistrationForms() {
         title: "Não foi possível concluir o cadastro",
         description:
           status === 404
-            ? validationMessages.cpfNotFound
+            ? validationMessages.fiscalIdNotFound
             : status === 409 && apiMessage
               ? apiMessage
               : status
@@ -373,11 +373,11 @@ function RegistrationForms() {
           autoComplete="name"
         />
         <FormField
-          {...fieldProps("cpf")}
-          label="CPF"
-          placeholder="000.000.000-00"
+          {...fieldProps("fiscalId")}
+          label="CPF/CNPJ"
+          placeholder="000.000.000-00 ou 00.000.000/0000-00"
           inputMode="numeric"
-          maxLength={14}
+          maxLength={18}
         />
         <FormField
           {...fieldProps("email")}

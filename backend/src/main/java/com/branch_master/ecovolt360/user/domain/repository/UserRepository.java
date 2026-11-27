@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository {
-    Optional<User> findByCpf(String cpf);
+    Optional<User> findByFiscalId(String fiscalId);
 
     boolean existsByEmailAndIdNot(String email, UUID id);
 

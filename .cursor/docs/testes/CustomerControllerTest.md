@@ -13,7 +13,7 @@
 
 ## 2. Objetivo dos testes
 
-Proteger o contrato HTTP da senha no cadastro: senhas fora da regra ou em branco viram 400 sem chamar o serviço; senhas válidas viram 201 e invocam `processCustomer`. Não cobre pré-cadastro de CPF.
+Proteger o contrato HTTP da senha no cadastro: senhas fora da regra ou em branco viram 400 sem chamar o serviço; senhas válidas viram 201 e invocam `processCustomer`. Não cobre pré-cadastro de CPF/CNPJ.
 
 ---
 
@@ -67,7 +67,7 @@ Validar binding e regra de senha no JSON de cadastro.
 | Senha curta, só letras, só números, longa demais | 400, serviço não chamado |
 | Senha em branco | 400, serviço não chamado |
 | Senha dentro da regra | 201 (serviço mockado devolve sucesso) |
-| CPF não pré-cadastrado / e-mail em uso | Não nesta suíte |
+| CPF/CNPJ não pré-cadastrado / e-mail em uso | Não nesta suíte |
 
 ---
 
@@ -87,13 +87,13 @@ Validar binding e regra de senha no JSON de cadastro.
 | Senha fora da regra → 400 | Teste 01 | Sim |
 | Senha válida → 201 e chama o serviço | Teste 02 | Sim |
 | Senha em branco → 400 | Teste 03 | Sim |
-| CPF pré-cadastrado / duplicidade | CustomerServiceTest, CustomerExceptionHandlerTest | Não |
+| CPF/CNPJ pré-cadastrado / duplicidade | CustomerServiceTest, CustomerExceptionHandlerTest | Não |
 
 ---
 
 ## 7. Observações
 
-- O fluxo feliz HTTP não prova pré-cadastro de CPF: o mock sempre “cadastra”.
+- O fluxo feliz HTTP não prova pré-cadastro de CPF/CNPJ: o mock sempre “cadastra”.
 - Senha em branco também aparece em `CustomerExceptionHandlerTest`.
 - Para executar só esta classe, a partir de `backend/`:
 

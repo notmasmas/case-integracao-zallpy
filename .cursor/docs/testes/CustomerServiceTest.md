@@ -7,13 +7,13 @@
 - **Arquivo de testes:** CustomerServiceTest.java
 - **Framework de testes:** JUnit 5, Mockito
 - **Dependências simuladas:** CustomerRepository, AddressRepository, UserRepository, PasswordHasher
-- **Responsabilidade do serviço:** Completar o cadastro de um CPF já pré-existente como `User` com papel `CUSTOMER`: validar duplicidade, persistir endereço e customer, atualizar nome/e-mail/senha.
+- **Responsabilidade do serviço:** Completar o cadastro de um CPF/CNPJ já pré-existente como `User` com papel `CUSTOMER`: validar duplicidade, persistir endereço e customer, atualizar nome/e-mail/senha.
 
 ---
 
 ## 2. Objetivo dos testes
 
-Proteger a regra de pré-cadastro: só registra se `findByCpf` achar um usuário `CUSTOMER` ainda sem linha em `customers` e com e-mail livre. CPF ausente ou de outro papel viram `CpfNotFoundException`; customer já existente ou e-mail de outro usuário viram as exceções de conflito.
+Proteger a regra de pré-cadastro: só registra se `findByFiscalId` achar um usuário `CUSTOMER` ainda sem linha em `customers` e com e-mail livre. CPF/CNPJ ausente ou de outro papel viram `FiscalIdNotFoundException`; customer já existente ou e-mail de outro usuário viram as exceções de conflito.
 
 ---
 
@@ -24,12 +24,12 @@ Proteger a regra de pré-cadastro: só registra se `findByCpf` achar um usuário
 **Método:** processCustomer()
 
 **Objetivo:**
-Validar persistência no fluxo feliz e as rejeições de CPF, papel, duplicidade e e-mail.
+Validar persistência no fluxo feliz e as rejeições de CPF/CNPJ, papel, duplicidade e e-mail, cobrindo separadamente documentos de 11 e 14 dígitos.
 
 #### Teste 01 — shouldRegisterCustomerWhenCpfExistsAndEmailIsFree
 
-- **Cenário:** User CUSTOMER com CPF `98765432100`, sem customer, e-mail livre.
-- **Entrada:** `customerBody()` (nome `Cliente de teste`, e-mail `cliente@email.com`, senha `Senha1234`, mesmo CPF).
+- **Cenário:** User CUSTOMER com fiscalId `98765432100`, sem customer, e-mail livre.
+- **Entrada:** `customerBody("98765432100")` (nome `Cliente de teste`, e-mail `cliente@email.com`, senha `Senha1234`, mesmo fiscalId).
 - **Comportamento esperado:** Atualiza o user existente, persiste endereço e customer; não cria user do zero.
 - **Validações (Assertions):**
   - `result.id()` e `result.userId()` iguais aos UUIDs stubados.
@@ -37,38 +37,70 @@ Validar persistência no fluxo feliz e as rejeições de CPF, papel, duplicidade
   - `verify(passwordHasher).hash("Senha1234")`.
 - **Resultado:** Aprovado se DTO e estado do user baterem.
 
-#### Teste 02 — shouldRejectUnknownCpf
+#### Teste 02 — shouldRegisterCustomerWhenCnpjExistsAndEmailIsFree
 
-- **Cenário:** `findByCpf` vazio.
-- **Entrada:** `customerBody()`.
-- **Comportamento esperado:** `CpfNotFoundException`; não persiste customer.
+- **Cenário:** User CUSTOMER com fiscalId `12345678998765`, sem customer, e-mail livre.
+- **Entrada:** `customerBody("12345678998765")`.
+- **Comportamento esperado:** Atualiza o user existente, persiste endereço e customer; não cria user do zero.
+- **Validações (Assertions):** UUIDs retornados, nome, e-mail, senha hash e `addressId` no user; hash da senha verificado.
+- **Resultado:** Aprovado se DTO e estado do user baterem.
+
+#### Teste 03 — shouldRejectUnknownCpf
+
+- **Cenário:** `findByFiscalId` vazio.
+- **Entrada:** `customerBody("98765432100")`.
+- **Comportamento esperado:** `FiscalIdNotFoundException`; não persiste customer.
 - **Validações (Assertions):**
-  - `assertThrows(CpfNotFoundException.class, ...)`.
+  - `assertThrows(FiscalIdNotFoundException.class, ...)`.
   - `verify(customerRepository, never()).save(any())`.
 - **Resultado:** Aprovado se a exceção e o never passarem.
 
-#### Teste 03 — shouldRejectCpfThatDoesNotBelongToCustomerRole
+#### Teste 04 — shouldRejectUnknownCnpj
 
-- **Cenário:** User com o CPF existe, role `SUPPORT`.
-- **Entrada:** `customerBody()`.
-- **Comportamento esperado:** Mesma `CpfNotFoundException` do CPF ausente.
+- **Cenário:** `findByFiscalId` vazio para o CNPJ `12345678998765`.
+- **Entrada:** `customerBody("12345678998765")`.
+- **Comportamento esperado:** `FiscalIdNotFoundException`; não persiste customer.
+- **Validações (Assertions):** `assertThrows(FiscalIdNotFoundException.class, ...)` e `verify(customerRepository, never()).save(any())`.
+- **Resultado:** Aprovado se a exceção for lançada e não houver persistência.
+
+#### Teste 05 — shouldRejectCpfThatDoesNotBelongToCustomerRole
+
+- **Cenário:** User com o CPF/CNPJ existe, role `SUPPORT`.
+- **Entrada:** `customerBody("98765432100")`.
+- **Comportamento esperado:** Mesma `FiscalIdNotFoundException` do CPF/CNPJ ausente.
 - **Validações (Assertions):**
-  - `assertThrows(CpfNotFoundException.class, ...)`.
+  - `assertThrows(FiscalIdNotFoundException.class, ...)`.
 - **Resultado:** Aprovado se a exceção for lançada.
 
-#### Teste 04 — shouldRejectCpfAlreadyRegisteredAsCustomer
+#### Teste 06 — shouldRejectCnpjThatDoesNotBelongToCustomerRole
+
+- **Cenário:** User com CNPJ `12345678998765` existe, role `SUPPORT`.
+- **Entrada:** `customerBody("12345678998765")`.
+- **Comportamento esperado:** `FiscalIdNotFoundException`.
+- **Validações (Assertions):** `assertThrows(FiscalIdNotFoundException.class, ...)`.
+- **Resultado:** Aprovado se a exceção for lançada.
+
+#### Teste 07 — shouldRejectCpfAlreadyRegisteredAsCustomer
 
 - **Cenário:** User CUSTOMER existe e `existsByUserId` é true.
-- **Entrada:** `customerBody()`.
-- **Comportamento esperado:** `CpfAlreadyRegisteredException`.
+- **Entrada:** `customerBody("98765432100")`.
+- **Comportamento esperado:** `FiscalIdAlreadyRegisteredException`.
 - **Validações (Assertions):**
-  - `assertThrows(CpfAlreadyRegisteredException.class, ...)`.
+  - `assertThrows(FiscalIdAlreadyRegisteredException.class, ...)`.
 - **Resultado:** Aprovado se a exceção for lançada.
 
-#### Teste 05 — shouldRejectEmailAlreadyInUseByAnotherUser
+#### Teste 08 — shouldRejectCnpjAlreadyRegisteredAsCustomer
 
-- **Cenário:** CPF pré-cadastrado, ainda sem customer, `existsByEmailAndIdNot` true.
-- **Entrada:** `customerBody()`.
+- **Cenário:** User CUSTOMER com CNPJ `12345678998765` existe e `existsByUserId` é true.
+- **Entrada:** `customerBody("12345678998765")`.
+- **Comportamento esperado:** `FiscalIdAlreadyRegisteredException`.
+- **Validações (Assertions):** `assertThrows(FiscalIdAlreadyRegisteredException.class, ...)`.
+- **Resultado:** Aprovado se a exceção for lançada.
+
+#### Teste 09 — shouldRejectEmailAlreadyInUseByAnotherUser
+
+- **Cenário:** CPF/CNPJ pré-cadastrado, ainda sem customer, `existsByEmailAndIdNot` true.
+- **Entrada:** `customerBody("98765432100")`.
 - **Comportamento esperado:** `EmailAlreadyInUseException`.
 - **Validações (Assertions):**
   - `assertThrows(EmailAlreadyInUseException.class, ...)`.
@@ -80,11 +112,13 @@ Validar persistência no fluxo feliz e as rejeições de CPF, papel, duplicidade
 
 | Cenário | Comportamento esperado |
 |---|---|
-| CPF inexistente | `CpfNotFoundException`, sem save de customer |
-| CPF de papel SUPPORT | `CpfNotFoundException` |
-| Já existe customer para o user | `CpfAlreadyRegisteredException` |
+| CPF inexistente | `FiscalIdNotFoundException`, sem save de customer |
+| CNPJ inexistente | `FiscalIdNotFoundException`, sem save de customer |
+| CPF/CNPJ de papel SUPPORT | `FiscalIdNotFoundException` |
+| CPF já registrado como customer | `FiscalIdAlreadyRegisteredException` |
+| CNPJ já registrado como customer | `FiscalIdAlreadyRegisteredException` |
 | E-mail de outro usuário | `EmailAlreadyInUseException` |
-| CPF CUSTOMER pré-existente e e-mail livre | Persiste endereço, atualiza user, cria customer |
+| CPF/CNPJ CUSTOMER pré-existente e e-mail livre | Persiste endereço, atualiza user, cria customer |
 
 ---
 
@@ -92,7 +126,7 @@ Validar persistência no fluxo feliz e as rejeições de CPF, papel, duplicidade
 
 | Dependência | Tipo | Comportamento simulado |
 |---|---|---|
-| UserRepository | Mock | `findByCpf`, `existsByEmailAndIdNot`, `save` |
+| UserRepository | Mock | `findByFiscalId`, `existsByEmailAndIdNot`, `save` |
 | CustomerRepository | Mock | `existsByUserId`, `save` |
 | AddressRepository | Mock | `save` atribui id de endereço |
 | PasswordHasher | Mock | `hash("Senha1234")` → `hashed-password` |
@@ -103,9 +137,9 @@ Validar persistência no fluxo feliz e as rejeições de CPF, papel, duplicidade
 
 | Regra de negócio | Teste relacionado | Coberto? |
 |---|---|---|
-| Só cadastra com CPF pré-cadastrado CUSTOMER | Testes 01, 02 e 03 | Sim |
-| Cadastro já concluído | Teste 04 | Sim |
-| E-mail em uso | Teste 05 | Sim |
+| Só cadastra com CPF pré-cadastrado CUSTOMER | Testes 01, 03, 05 e 07 | Sim |
+| Só cadastra com CNPJ pré-cadastrado CUSTOMER | Testes 02, 04, 06 e 08 | Sim |
+| E-mail em uso | Teste 09 | Sim |
 | Contrato HTTP 404/409 | CustomerExceptionHandlerTest | Não |
 
 ---
